@@ -1,0 +1,19 @@
+<ul n:class="$class">
+    <li n:foreach="$items as $key => $item">
+    {var $current = false}
+    {if is_array($item)}
+        {var $first = reset($item)}
+        {capture $submenu}
+            <li n:foreach="$item as $subkey => $subitem">
+            <a href='{$subitem}'{ifCurrent $subitem}
+            class='current'{var $current = true}{/ifCurrent}>
+            {$subkey}</a></li>
+        {/capture}
+        <a href='{plink $first}' n:class='$current ? current'>{$key}</a>
+        <ul>{!$submenu}</ul>
+    {else}
+        <a href='{$item}'{ifCurrent $item}
+        class='current'{/ifCurrent}>{$key}</a>
+    {/if}
+    </li>
+</ul>

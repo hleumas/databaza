@@ -16,5 +16,9 @@
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
+    public function createComponentMenu()
+    {
+        return new Menu(APP_DIR . '/templates/menu.neon', 'menu');
+    }
 
 }

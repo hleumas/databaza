@@ -1,0 +1,7 @@
+'HojHoj': 
+    'Jejej': 'HomePage:default'
+    'Jujuj': 'HomePage:trhinis'
+'Juchu' : 'HomePage:else'
+'Jenko' :
+    'Bol': NewPage:extra
+    'Nebol': blb:vidi
