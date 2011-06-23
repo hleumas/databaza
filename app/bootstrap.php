@@ -9,7 +9,6 @@ use Nette\Diagnostics\Debugger,
 	Nette\Application\Routers\SimpleRouter,
 	Nette\Application\Routers\Route;
 
-
 // Load Nette Framework
 // this allows load Nette Framework classes automatically so that
 // you don't have to litter your code with 'require' statements
@@ -43,4 +42,6 @@ $application->onStartup[] = function() use ($application) {
 
 
 // Run the application!
-$application->run();
+if (!$configurator->container->params['consoleMode']) {
+    $application->run();
+}
