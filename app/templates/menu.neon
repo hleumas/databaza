@@ -1,7 +1,5 @@
-'HojHoj': 
-    'Jejej': 'HomePage:default'
-    'Jujuj': 'HomePage:trhinis'
-'Juchu' : 'HomePage:else'
-'Jenko' :
-    'Bol': NewPage:extra
-    'Nebol': blb:vidi
+Zoznamy:
+    Riešitelia: 'Zoznamy:riesitelia'
+    Školy:      'Zoznamy:skoly'
+Semester:
+    'Smola': Smolenka:smola
