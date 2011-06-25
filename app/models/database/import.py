@@ -69,13 +69,12 @@ r = db1.store_result()
 d = r.fetch_row(0, 1)
 
 studia=[
-        {'id': 1, 'nazov': u'Neštudent', 'dlzka': 0, 'maturitny_rocnik': 0},
-        {'id': 2, 'nazov': u'Vysoká škola', 'dlzka': 5, 'maturitny_rocnik': -1},
-        {'id': 4, 'nazov': u'Stredná škola', 'dlzka': 4, 'maturitny_rocnik': 4},
-        {'id': 5, 'nazov': u'Päťročná stredná škola', 'dlzka': 5, 'maturitny_rocnik': 5},
-        {'id': 6, 'nazov': u'Šesťročná stredná škola', 'dlzka': 6, 'maturitny_rocnik': 6},
-        {'id': 8, 'nazov': u'Osemročné gymnázium', 'dlzka': 8, 'maturitny_rocnik': 8},
-        {'id': 13, 'nazov': u'Základná škola', 'dlzka': 9, 'maturitny_rocnik': 13},
+        {'id': 1, 'nazov': u'Neštudent', 'skratka': u'N/A', 'dlzka': 0, 'maturitny_rocnik': 0},
+        {'id': 4, 'nazov': u'Stredná škola', 'skratka': u'SŠ', 'dlzka': 4, 'maturitny_rocnik': 4},
+        {'id': 5, 'nazov': u'Päťročná stredná škola', 'skratka': u'SŠ5r', 'dlzka': 5, 'maturitny_rocnik': 5},
+        {'id': 6, 'nazov': u'Šesťročná stredná škola', 'skratka': u'SŠ6r', 'dlzka': 6, 'maturitny_rocnik': 6},
+        {'id': 8, 'nazov': u'Osemročné gymnázium', 'skratka': u'Gym', 'dlzka': 8, 'maturitny_rocnik': 8},
+        {'id': 13, 'nazov': u'Základná škola', 'skratka': u'ZŠ', 'dlzka': 9, 'maturitny_rocnik': 13},
        ]
 
 for typ in studia:
@@ -123,6 +122,7 @@ for riesitel in d:
               'osoba_id'        : riesitel['id'],
               'telefon_rodic'   : riesitel['telefon_rodica'],
               'skola_id'        : riesitel['skola'],
+              'rok_maturity'    : riesitel['rok_maturity'],
               'typ_studia_id'   : riesitel['typ_studia'],
               'koresp_kam'      : riesitel['koresp_kam'],
               'koresp_adresa_id': korespAdresa[riesitel['koresp_kam']],

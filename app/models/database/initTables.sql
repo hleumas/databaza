@@ -40,6 +40,7 @@ CREATE TABLE skola (
 CREATE TABLE typ_studia (
     id INT NOT NULL AUTO_INCREMENT,
     nazov VARCHAR(64),
+    skratka VARCHAR(5),
     dlzka TINYINT,
     maturitny_rocnik TINYINT,
     PRIMARY KEY (id)
@@ -49,12 +50,14 @@ CREATE TABLE riesitel (
     id INT NOT NULL AUTO_INCREMENT,
     osoba_id INT NOT NULL,
     skola_id INT NOT NULL,
+    rok_maturity SMALLINT NOT NULL,
     typ_studia_id INT NOT NULL,
     telefon_rodic VARCHAR(255),
     koresp_adresa_id INT NOT NULL,
     koresp_kam TINYINT NOT NULL,
     PRIMARY KEY (id),
     INDEX(osoba_id),
+    INDEX(rok_maturity),
     FOREIGN KEY (osoba_id) REFERENCES osoba(id),
     FOREIGN KEY (skola_id) REFERENCES skola(id),
     FOREIGN KEY (typ_studia_id) REFERENCES typ_studia(id),
