@@ -41,9 +41,9 @@
                         <th n:foreach="$control['columns']->getComponents() as $column">
                             {block tableheadercontent}
                             <span class="gridito-sorting" n:if="$column->isSortable()">
-                                <a n:if="$column->getSorting() === null" n:href="sort!, $column->getName(), asc" n:class="$control->getAjaxClass()"><span class="ui-icon ui-icon-carat-2-n-s"></span></a>
-                                <a n:if="$column->sorting === 'asc'" n:href="sort!, $column->getName(), desc" n:class="$control->getAjaxClass()"><span class="ui-icon ui-icon-triangle-1-n"></span></a>
-                                <a n:if="$column->sorting === 'desc'" n:href="sort!, null, null" n:class="$control->getAjaxClass()"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
+                                <a n:if="$column->getSorting() === null" n:href="sort!, $column->getName(), asc" class="{$control->getAjaxClass()} sort-null"></a>
+                                <a n:if="$column->sorting === 'asc'" n:href="sort!, $column->getName(), desc" class="{$control->getAjaxClass()} sort-asc"></a>
+                                <a n:if="$column->sorting === 'desc'" n:href="sort!, null, null" class="{$control->getAjaxClass()} sort-desc"></a>
                             </span>
                             {$column->getLabel()}
                             {/block}
