@@ -1,6 +1,8 @@
 <?php
 
 namespace Gridito;
+use Nette\Utils\Strings;
+use Nette\Utils\Html;
 
 /**
  * Grid column
@@ -17,6 +19,9 @@ class Column extends \Nette\Application\UI\Control
 
 	/** @var callback */
 	private $renderer = null;
+
+    /** @var int */
+    private $maxlen = null;
 
 	/** @var bool */
 	private $sortable = false;
@@ -97,6 +102,25 @@ class Column extends \Nette\Application\UI\Control
 		$this->renderer = $cellRenderer;
 		return $this;
 	}
+
+    /**
+     * Set maximal length of cell
+     * @param $maxlen
+     * @return Column
+     */
+    public function setLength($maxlen)
+    {
+        $this->maxlen = $maxlen;
+    }
+
+    /**
+     * Get maximal length of cell
+     * @return int
+     */
+    public function getLength()
+    {
+        return $this->maxlen;
+    }
 
 
 
@@ -192,6 +216,15 @@ class Column extends \Nette\Application\UI\Control
 		echo $value->format($format);
 	}
 
+    public static function renderText($text, $maxlen)
+    {
+        if (is_null($maxlen) || Strings::length($text) < $maxlen) {
+            echo $text;
+        } else {
+            echo Html::el('span')->title($text)
+                ->setText(Strings::truncate($text, $maxlen));
+        }
+    }
 
 
 	/**
@@ -213,7 +246,7 @@ class Column extends \Nette\Application\UI\Control
 
 		// other
 		} else {
-			echo $value;
+            self::renderText($value, $this->maxlen);
 		}
 	}
 
