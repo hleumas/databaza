@@ -1,0 +1,9 @@
+log/
+!log/.htaccess
+!log/web.config
+
+temp/
+!temp/.htaccess
+!temp/web.config
+
+*.swp
