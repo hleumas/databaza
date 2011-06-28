@@ -7,3 +7,4 @@ temp/
 !temp/web.config
 
 *.swp
+.sass-cache/
