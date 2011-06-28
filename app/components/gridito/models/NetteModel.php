@@ -3,7 +3,7 @@
 namespace Gridito;
 
 use DibiFluent;
-use Nette\Database\Connection;
+use Nette\Database\Table\Selection;
 
 /**
  * DibiFluent model
@@ -13,11 +13,8 @@ use Nette\Database\Connection;
  */
 class NetteModel extends AbstractModel
 {
-	/** @var string */
-    private $_table;
-
     /** @var Connection */
-    private $_connection;
+    private $selection;
 
 
 
@@ -26,19 +23,17 @@ class NetteModel extends AbstractModel
 	 * @param Connection $connection to db
 	 * @param string     $table name
 	 */
-	public function __construct(Connection $connection, $table)
+	public function __construct(Selection $selection)
 	{
-        $this->_table      = $table;
-        $this->_connection = $connection;
+        $this->selection = $selection;
 	}
 
 
 
 	public function getItemByUniqueId($uniqueId)
 	{
-
-        return $this->_connection->table($this->_table)
-            ->select('*')->where('?=?', $this->getPrimaryKey(), $uniqueId)
+        $select = clone $this->selection;
+        return $select->where('?=?', $this->getPrimaryKey(), $uniqueId)
             ->fetch();
 	}
 
@@ -46,13 +41,14 @@ class NetteModel extends AbstractModel
 
 	public function getItems()
 	{
-        $query = $this->_connection->table($this->_table)->select('*');
+        $select = clone $this->selection;
 
 		list($sortColumn, $sortType) = $this->getSorting();
 		if ($sortColumn) {
-            $query->order("$sortColumn $sortType");
+            $select->order("$sortColumn $sortType");
 		}
-        return $query->limit($this->getLimit(), $this->getOffset())->fetchPairs($this->getPrimaryKey());
+        return $select->limit($this->getLimit(), $this->getOffset())
+            ->fetchPairs($this->getPrimaryKey());
 	}
 
 
@@ -63,7 +59,7 @@ class NetteModel extends AbstractModel
 	 */
 	protected function _count()
 	{
-		return $this->_connection->table($this->_table)->count('*');
+		return $this->selection->count();
 	}
 
 }

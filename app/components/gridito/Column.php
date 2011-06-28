@@ -12,96 +12,102 @@ use Nette\Utils\Html;
  */
 class Column extends \Nette\Application\UI\Control
 {
-	// <editor-fold defaultstate="collapsed" desc="variables">
+    // <editor-fold defaultstate="collapsed" desc="variables">
 
-	/** @var string */
-	private $label;
+    /** @var string */
+    private $label;
 
-	/** @var callback */
-	private $renderer = null;
+    /** @var callback */
+    private $renderer = null;
 
     /** @var int */
     private $maxlen = null;
 
-	/** @var bool */
-	private $sortable = false;
+    /** @var string */
+    private $type = 'string';
 
-	/** @var string */
-	private $dateTimeFormat = "j.n.Y G:i";
+    /** @var bool */
+    private $sortable = false;
 
-	/** @var string|callable */
-	private $cellClass = null;
+    /** @var string */
+    private $dateTimeFormat = "j.n.Y G:i";
 
-	// </editor-fold>
+    /** @var string|callable */
+    private $cellClass = null;
 
-	// <editor-fold defaultstate="collapsed" desc="getters & setters">
+    /** @var string */
+    private $format = null;
 
-	public function setCellClass($class)
-	{
-	    $this->cellClass = $class;
-		return $this;
-	}
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="getters & setters">
 
-
-	public function getCellClass($iterator, $row)
-	{
-		if (is_callable($this->cellClass)) {
-			return call_user_func($this->cellClass, $iterator, $row);
-		} elseif (is_string($this->cellClass)) {
-			return $this->cellClass;
-		} else {
-			return null;
-		}
-	}
+    public function setCellClass($class)
+    {
+        $this->cellClass = $class;
+        return $this;
+    }
 
 
 
-	/**
-	 * Get label
-	 * @return string
-	 */
-	public function getLabel()
-	{
-		return $this->label;
-	}
+    public function getCellClass($iterator, $row)
+    {
+        if (is_callable($this->cellClass)) {
+            return call_user_func($this->cellClass, $iterator, $row);
+        } elseif (is_string($this->cellClass)) {
+            return $this->cellClass;
+        } else {
+            return null;
+        }
+    }
 
 
 
-	/**
-	 * Set label
-	 * @param string label
-	 * @return Column
-	 */
-	public function setLabel($label)
-	{
-		$this->label = $label;
-		return $this;
-	}
+    /**
+     * Get label
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
 
 
 
-	/**
-	 * Get cell renderer
-	 * @return callback
-	 */
-	public function getRenderer()
-	{
-		return $this->renderer;
-	}
+    /**
+     * Set label
+     * @param string label
+     * @return Column
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+        return $this;
+    }
 
 
 
-	/**
-	 * Set cell renderer
-	 * @param callback cell renderer
-	 * @return Column
-	 */
-	public function setRenderer($cellRenderer)
-	{
-		$this->renderer = $cellRenderer;
-		return $this;
-	}
+    /**
+     * Get cell renderer
+     * @return callback
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+
+
+    /**
+     * Set cell renderer
+     * @param callback cell renderer
+     * @return Column
+     */
+    public function setRenderer($cellRenderer)
+    {
+        $this->renderer = $cellRenderer;
+        return $this;
+    }
 
     /**
      * Set maximal length of cell
@@ -111,6 +117,7 @@ class Column extends \Nette\Application\UI\Control
     public function setLength($maxlen)
     {
         $this->maxlen = $maxlen;
+        return $this;
     }
 
     /**
@@ -122,142 +129,209 @@ class Column extends \Nette\Application\UI\Control
         return $this->maxlen;
     }
 
+    /**
+     * Set the type of cell
+     * @param string type
+     * @return Column
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * Get the type of cell
+     * @return string type
+     */
+    public function getType($type)
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set format of the cell
+     * @param mixed format
+     * @return Column
+     */
+    public function setFormat($format)
+    {
+        $this->format = $format;
+        return $this;
+    }
+
+    /**
+     * Get the format
+     * @return mixed
+     */
+    public function getFormat()
+    {
+        return $this->format;
+    }
 
 
-	/**
-	 * Is sortable?
-	 * @return bool
-	 */
-	public function isSortable() {
-		return $this->sortable;
-	}
-
-
-
-	/**
-	 * Set sortable
-	 * @param bool sortable
-	 * @return Column
-	 */
-	public function setSortable($sortable) {
-		$this->sortable = $sortable;
-		return $this;
-	}
-
-
-
-	/**
-	 * Get sorting
-	 * @return string|null asc, desc or null
-	 */
-	public function getSorting()
-	{
-		$grid = $this->getGrid();
-		if ($grid->sortColumn === $this->getName()) {
-			return $grid->sortType;
-		} else {
-			return null;
-		}
-	}
-
-
-
-	/**
-	 * Get date/time format
-	 * @return string
-	 */
-	public function getDateTimeFormat() {
-		return $this->dateTimeFormat;
-	}
-
-
-
-	/**
-	 * Set date/time format
-	 * @param string datetime format
-	 * @return Column
-	 */
-	public function setDateTimeFormat($dateTimeFormat) {
-		$this->dateTimeFormat = $dateTimeFormat;
-		return $this;
-	}
+    /**
+     * Is sortable?
+     * @return bool
+     */
+    public function isSortable() {
+        return $this->sortable;
+    }
 
 
 
-	/**
-	 * Get grid
-	 * @return Grid
-	 */
-	public function getGrid() {
-		return $this->getParent()->getParent();
-	}
-
-	// </editor-fold>
-
-	/**
-	 * Render boolean
-	 * @param bool value
-	 */
-	public static function renderBoolean($value)
-	{
-		$icon = $value ? "check" : "closethick";
-		echo '<span class="ui-icon ui-icon-' . $icon . '"></span>';
-	}
+    /**
+     * Set sortable
+     * @param bool sortable
+     * @return Column
+     */
+    public function setSortable($sortable) {
+        $this->sortable = $sortable;
+        return $this;
+    }
 
 
 
-	/**
-	 * Render datetime
-	 * @param Datetime value
-	 * @param string datetime format
-	 */
-	public static function renderDateTime($value, $format)
-	{
-		echo $value->format($format);
-	}
+    /**
+     * Get sorting
+     * @return string|null asc, desc or null
+     */
+    public function getSorting()
+    {
+        $grid = $this->getGrid();
+        if ($grid->sortColumn === $this->getName()) {
+            return $grid->sortType;
+        } else {
+            return null;
+        }
+    }
 
+
+
+    /**
+     * Get date/time format
+     * @return string
+     */
+    public function getDateTimeFormat() {
+        return $this->dateTimeFormat;
+    }
+
+
+
+    /**
+     * Set date/time format
+     * @param string datetime format
+     * @return Column
+     */
+    public function setDateTimeFormat($dateTimeFormat) {
+        $this->dateTimeFormat = $dateTimeFormat;
+        return $this;
+    }
+
+
+
+    /**
+     * Get grid
+     * @return Grid
+     */
+    public function getGrid() {
+        return $this->getParent()->getParent();
+    }
+
+    // </editor-fold>
+
+    /**
+     * Render boolean
+     * @param bool value
+     */
+    public static function renderBoolean($value)
+    {
+        $icon = $value ? "check" : "closethick";
+        echo '<span class="ui-icon ui-icon-' . $icon . '"></span>';
+    }
+
+
+
+    /**
+     * Render datetime
+     * @param Datetime value
+     * @param string datetime format
+     */
+    public static function renderDateTime($value, $format)
+    {
+        echo $value->format($format);
+    }
+
+    /**
+     * Render the text, takes care of length
+     * @param string $text   text to render
+     * @param int    $maxlen maximum length of text
+     */
     public static function renderText($text, $maxlen)
     {
         if (is_null($maxlen) || Strings::length($text) < $maxlen) {
-            echo $text;
+            echo htmlspecialchars($text, ENT_NOQUOTES);
         } else {
             echo Html::el('span')->title($text)
                 ->setText(Strings::truncate($text, $maxlen));
         }
     }
 
+    /**
+     * Render the email address, takes care of length
+     * @param string $email  email address
+     * @param int    $maxlen maximum length of text
+     */
+    public static function renderEmail($email, $maxlen)
+    {
+        $el = Html::el('a')->href('mailto:' . $email);
+        if (is_null($maxlen) || Strings::length($email) < $maxlen) {
+            echo $el->setText($email);
+        } else {
+            echo $el->title($email)
+                ->setText(Strings::truncate($email, $maxlen));
+        }
+    }
 
-	/**
-	 * Default cell renderer
-	 * @param mixed $record
-	 * @param Column $column
-	 */
-	public function defaultCellRenderer($record, $column) {
-		$name = $column->getName();
-		$value = $record->$name;
 
-		// boolean
-		if (is_bool($value)) {
-			self::renderBoolean($value);
+    /**
+     * Default cell renderer
+     * @param mixed $record
+     * @param Column $column
+     */
+    public function defaultCellRenderer($record, $column) {
+        $name = $column->getName();
+        $value = $record->$name;
 
-		// date
-		} elseif ($value instanceof \DateTime) {
-			self::renderDateTime($value, $this->dateTimeFormat);
+        // boolean
+        if (in_array($this->type, array('bool', 'boolean')) || is_bool($value)) {
+            self::renderBoolean($value);
 
-		// other
-		} else {
+        // date
+        } elseif ($value instanceof \DateTime) {
+            self::renderDateTime($value, $this->dateTimeFormat);
+
+        // email
+        } elseif ($this->type == 'email') {
+            self::renderEmail($value, $this->maxlen);
+
+        // other
+        } else {
+            if (!is_null($this->format)) {
+                $value = Grid::formatRecordString($record, $this->format);
+            }
             self::renderText($value, $this->maxlen);
-		}
-	}
+        }
+    }
 
 
 
-	/**
-	 * Render cell
-	 * @param mixed record
-	 */
-	public function renderCell($record) {
-		call_user_func($this->renderer ?: array($this, "defaultCellRenderer"), $record, $this);
-	}
+    /**
+     * Render cell
+     * @param mixed record
+     */
+    public function renderCell($record) {
+        call_user_func($this->renderer ?: array($this, "defaultCellRenderer"), $record, $this);
+    }
 
 }
