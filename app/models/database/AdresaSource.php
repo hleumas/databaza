@@ -15,19 +15,13 @@
  */
 
 use \Nette\Database\Connection;
-class AdresaSource implements ISource
+class AdresaSource extends CommonSource
 {
-    private $_dbConnection;
-    /**
-     * Source constructor
-     *
-     * @param \Nette\Database\Connection $dbConnection
-     */
-    public function __construct($dbConnection)
-    {
-        $this->_dbConnection = $dbConnection;
-    }
 
+    protected function getTable()
+    {
+        return 'adresa';
+    }
     /**
      * Get the record by id
      *
@@ -37,8 +31,7 @@ class AdresaSource implements ISource
      */
     public function getById($id)
     {
-        return new AdresaRecord($this->_dbConnection
-            ->fetch('SELECT * FROM adresa WHERE id=?', $id));
+        return new AdresaRecord($this->whereId($id)->fetch());
     }
 
     /**
@@ -48,12 +41,11 @@ class AdresaSource implements ISource
      *
      * @return int last id
      */
-    public function insert($record)
+    protected function insertDb($record)
     {
-        $record->validate();
-        $record->normalize();
-        $this->_dbConnection->exec('INSERT INTO adresa', $record->data);
-        return $this->_dbConnection->lastInsertId();
+        $conn = $this->getConnection();
+        $conn->table($this->getTable())->insert($record->data);
+        return $conn->lastInsertId();
     }
 
     /**
@@ -61,11 +53,9 @@ class AdresaSource implements ISource
      *
      * @param IRecord $record
      */
-    public function update($record)
+    public function updateDb($record)
     {
-        $record->validate();
-        $this->_dbConnection
-             ->exec('UPDATE adresa SET ? WHERE id=?', $record->data['id']);
+        $this->whereId($record->data['id'])->update($record->data);
     }
 
     /**
@@ -74,7 +64,8 @@ class AdresaSource implements ISource
      * @param string  $id
      * @param bool    $force
      */
-    public function delete($id, $force)
+    public function delete($id, $force = false)
     {
+        $this->whereId($id)->delete();
     }
 }
