@@ -1,0 +1,50 @@
+table: 'zoznamy_riesitel_view'
+columns:
+    meno:
+        label   : Meno 
+        sortable: true
+        length  : 16
+    priezvisko:
+        label   : Priezvisko
+        sortable: true
+        length  : 16
+    mesto:
+        label   : Mesto
+        sortable: true
+        length  : 24
+    telefon:
+        label   : Telefón
+        length  : 20
+    email:
+        label   : Email
+        length  : 30
+        type    : email
+    skola_skratka:
+        label   : Škola
+        length  : 16
+        sortable: true 
+    rok_maturity:
+        label   : Maturita
+        sortable: true
+    typ_studia:
+        label   : Štúdium
+
+buttons:
+    pridaj:
+        label   : Pridaj riešiteľa
+        toolbar : true
+        window  : true
+        icon    : ui-icon-plusthick
+    detail:
+        label   : Detail
+        window  : true
+        icon    : ui-icon-search
+    edit:
+        label   : Zmeň
+        window  : true
+        icon    : ui-icon-pencil
+    delete:
+        label   : Zmaž
+        icon    : ui-icon-closethick
+        confirmationQuestion : 
+            Skutočne chcete odstrániť riešiteľa %meno% %priezvisko%?
