@@ -27,6 +27,8 @@ class AdresaRecord extends CommonRecord
         'stat' => null
     );
 
+    protected $_fields = array('id', 'organizacia', 'ulica', 'psc',
+        'mesto', 'stat');
     protected $_mandatory = array('ulica', 'psc', 'mesto', 'stat');
 
     public function normalize()

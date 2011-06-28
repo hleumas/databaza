@@ -14,7 +14,7 @@
  * @package database
  */
 
-interface IRecord
+interface IRecord extends ArrayAccess, Iterator
 {
 
     /**
@@ -28,13 +28,6 @@ interface IRecord
      * Normalize the data
      */
     public function normalize();
-
-    /**
-     * Get the data
-     *
-     * @return array
-     */
-    public function getData();
 
     /**
      * Set the data
