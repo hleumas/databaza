@@ -1,4 +1,6 @@
 table: 'zoznamy_riesitel_view'
+form:  'riesitelForm'
+data: 'getRiesitelData'
 columns:
     meno:
         label   : Meno 
@@ -46,5 +48,6 @@ buttons:
     delete:
         label   : Zmaž
         icon    : ui-icon-closethick
+        handler : deleteRiesitel
         confirmationQuestion : 
             Skutočne chcete odstrániť riešiteľa %meno% %priezvisko%?

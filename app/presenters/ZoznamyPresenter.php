@@ -13,6 +13,7 @@ use Gridito\NetteModel;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
+use Nette\Utils\Neon;
 /**
  * Zoznamy presenter.
  *
@@ -22,58 +23,131 @@ use Nette\Application\UI\Form;
 class ZoznamyPresenter extends BasePresenter
 {
 
+    private $templateDir = '/templates/Zoznamy';
 
-    public static function emailHandler($email, $maxlen)
+    public function createComponentGridRiesitelia()
     {
-        return Html::el('a', array(
-            'href' => 'mailto:' . $email,
-            'title' => $email))
-            ->setText(Strings::truncate($email, $maxlen));
+        return $this->createComponentGrid('riesitelia');
     }
-    public function createComponentGrid()
+
+    public function createComponentGridSkoly()
     {
-        $connection = $this->getContext()->getService('database');
+        return $this->createComponentGrid('skoly');
+    }
+
+    public function createComponentGrid($type)
+    {
+        /** Load the grid settings to $settings */
+        $file = APP_DIR . "{$this->templateDir}/$type.neon";
+        if (!is_file($file) || !is_readable($file)) {
+            throw new Nette\FileNotFoundException("File $file is missing or is not readable.");
+        }
+        $settings = Neon::decode(file_get_contents($file));
+
         $grid = new Grid();
-        $grid->addComponent($this->createComponentForm(), 'form');
-        $grid->setModel(new NetteModel($connection, 'zoznamy_riesitel_view'));
-        $grid->addColumn('meno', 'Meno')->setSortable(true)->setLength(16);
-        $grid->addColumn('priezvisko', 'Priezvisko')->setSortable(true)
-            ->setLength(16);
-        $grid->addColumn('mesto', 'Mesto')->setSortable(true)->setLength(24);
-        $grid->addColumn('telefon', 'Telefón')->setLength(20);
-        $grid->addColumn('email', 'Email')
-            ->setRenderer(function($row){echo ZoznamyPresenter::emailHandler($row['email'], 30);});
-        $grid->addColumn('skola_skratka', 'Škola')->setSortable(true)->setLength(16);
-        $grid->addColumn('rok_maturity', 'Maturita')->setSortable(true);
-        $grid->addColumn('typ_studia', 'Štúdium');
-        $grid->addToolbarButton('pridaj', 'Pridaj', array('icon' => 'ui-icon-plusthick'));
-        $grid->addWindowButton('detail', 'Detail', array(
-            'icon' => 'ui-icon-search',
-            'handler' => function($row) use ($grid) {
-                echo 'cakuk';
-                $grid['form']->render();}));
-        $grid->addButton('edit', 'Zmeň', array('icon' => 'ui-icon-pencil'));
-        $grid->addButton('delete', 'Zmaž', array(
-            'icon' => 'ui-icon-closethick',
-            'confirmationQuestion' => function($row) {
-                return "Skutočne zmazať riešiteľa {$row['meno']} {$row['priezvisko']}?";},
-            'handler' => function($row) use ($grid) {
-                $grid->flashMessage('Trhni si!', 'error');}));
+
+        $grid->setModel(new NetteModel($this->getContext()
+                ->getService('database')->table($settings['table'])));
+
+        /** Create form */
+        $grid->addComponent(
+            callback($this, 'createComponent' . ucfirst($settings['form']))
+            ->invoke(), $settings['form']);
+        $form = $grid[$settings['form']];
+
+        /** Add columns */
+        foreach ($settings['columns'] as $key => $column) {
+            $grid->addColumn($key, null, $column);
+        }
+
+        $but = &$settings['buttons'];
+        $values = callback($this, $settings['data']);
+        $but['delete']['handler'] = callback($this, $but['delete']['handler']);
+
+        $but['detail']['handler'] = function($row) use ($form, $values) {
+            $def= $values->invoke($row['id']);
+            $form->setDefaults($values->invoke($row['id']));
+            $form->setRenderer(new DisplayFormRenderer);
+            $form->render();
+        };
+
+        $but['edit']['handler'] = function($row) use ($form, $values) {
+            $form->setDefaults($values->invoke($row['id']));
+            $form->render();
+        };
+
+        $but['pridaj']['handler'] = function() use ($form) {
+            $form->render();
+        };
+
+        foreach ($settings['buttons'] as $key => $button) {
+            $toolbar = isset($button['toolbar']) ? $button['toolbar'] : false;
+            $window  = isset($button['window']) ? $button['window'] : false;
+            unset($button['toolbar']);
+            unset($button['window']);
+            $call  = $toolbar ? 'addToolbar' : 'add';
+            $call .= $window  ? 'WindowButton' : 'Button';
+
+            call_user_func(array($grid, $call), $key, null, $button);
+        }
+
+
         return $grid;
 
     }
 
-    public function createComponentForm()
+    public function getSkolaData($id)
+    {
+        $source = new SkolaSource($this->getContext()->database);
+        $data = $source->getById($id);
+        if (is_null($data['adresa'])) {
+            $data['adresa'] = new AdresaRecord();
+        }
+        return $data;
+    }
+    public function getRiesitelData($id)
+    {
+    }
+
+    public function deleteRiesitel($row)
+    {
+    }
+
+    public function deleteSkola($row)
+    {
+    }
+
+    public function createComponentSkolaForm()
     {
         $form = new Form;
-        $form->addText('meno', 'Meno:')
-            ->setRequired(true);
-        $form->addSubmit('posli', 'Pošli ma!');
+        $form->addGroup('Všeobecné informácie');
+        $form->addText('nazov', 'Názov:')->setRequired(true);
+        $form->addText('skratka', 'Skratka:')->setRequired(true);
+        $form->addGroup('Poskytované vzdelanie');
+        $form->addCheckbox('zakladna', 'Základné:');
+        $form->addCheckbox('stredna', 'Stredné:');
+        $form->addGroup('Adresa');
+        $form->addContainer('adresa');
+        $form['adresa']->addText('ulica', 'Ulica:')->setRequired(true);
+        $form['adresa']->addText('mesto', 'Mesto:')->setRequired(true);
+        $form['adresa']->addText('psc', 'PSČ:')->setRequired(true);
+
+        $form->addGroup('Kontaktné údaje');
+        $form->addText('email', 'Email:');
+        $form->addText('telefon', 'Telefón:');
+
+        $form->addSubmit('posli', 'Odošli');
         return $form;
     }
+
+    public function createComponentRiesitelForm()
+    {
+        $form = new Form;
+        return $form;
+    }
+
     public function renderRiesitelia()
     {
-
     }
 
 }
