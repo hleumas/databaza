@@ -5,14 +5,14 @@
         {var $first = reset($item)}
         {capture $submenu}
             <li n:foreach="$item as $subkey => $subitem">
-            <a href='{$subitem}'{ifCurrent $subitem}
+            <a href='{plink $subitem}'{ifCurrent $subitem}
             class='current'{var $current = true}{/ifCurrent}>
             {$subkey}</a></li>
         {/capture}
         <a href='{plink $first}' n:class='$current ? current'>{$key}</a>
         <ul>{!$submenu}</ul>
     {else}
-        <a href='{$item}'{ifCurrent $item}
+        <a href='{plink $item}'{ifCurrent $item}
         class='current'{/ifCurrent}>{$key}</a>
     {/if}
     </li>
