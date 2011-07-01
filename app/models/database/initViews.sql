@@ -10,3 +10,10 @@ FROM riesitel
     LEFT JOIN skola      ON riesitel.skola_id         = skola.id
     LEFT JOIN adresa     ON osoba.adresa_id           = adresa.id
     LEFT JOIN typ_studia ON riesitel.typ_studia_id    = typ_studia.id;
+
+CREATE VIEW zoznamy_skola_view AS
+SELECT skola.id, skola.nazov, skola.skratka, skola.telefon, skola.email,
+       skola.zakladna, skola.stredna, adresa.mesto
+
+FROM skola
+    LEFT JOIN adresa ON skola.adresa_id = adresa.id
