@@ -1,0 +1,50 @@
+table: 'zoznamy_skola_view'
+form:  'skolaForm'
+data: 'getSkolaData'
+columns:
+    skratka:
+        label   : Skratka
+        sortable: true
+        length  : 32
+    nazov:
+        label   : Názov
+        sortable: true
+        length  : 48
+    mesto:
+        label   : Mesto
+        sortable: true
+        length  : 24
+    telefon:
+        label   : Telefón
+        length  : 20
+    email:
+        label   : Email
+        length  : 30
+        type    : email
+    zakladna:
+        label   : ZŠ
+        type    : boolean
+    stredna:
+        label   : SŠ
+        type    : boolean
+
+buttons:
+    pridaj:
+        label   : Pridaj školu
+        toolbar : true
+        window  : true
+        icon    : ui-icon-plusthick
+    detail:
+        label   : Detail
+        window  : true
+        icon    : ui-icon-search
+    edit:
+        label   : Zmeň
+        window  : true
+        icon    : ui-icon-pencil
+    delete:
+        label   : Zmaž
+        icon    : ui-icon-closethick
+        handler : deleteSkola
+        confirmationQuestion : 
+            Skutočne chcete odstrániť školu %nazov%?
