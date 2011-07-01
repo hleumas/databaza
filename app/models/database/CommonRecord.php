@@ -24,16 +24,19 @@ abstract class CommonRecord extends Nette\Object implements IRecord
     protected $_object = array();
 
 
-    public function __construct()
+    public function __construct($data = null)
     {
         foreach ($this->_fields as $field) {
             $this->_data[$field] = null;
+        }
+        if (!is_null($data)) {
+            $this->setData($data);
         }
     }
 
     public function offsetExists($offset)
     {
-        return array_key_exists($this->_data);
+        return array_key_exists($offset, $this->_data);
     }
 
     public function offsetGet($offset)
@@ -84,7 +87,7 @@ abstract class CommonRecord extends Nette\Object implements IRecord
     public function setData($data)
     {
         foreach ($this->_object as $class => $objField) {
-            if (array_key_exists($objField, $data)) {
+            if (isset($data[$objField]) || array_key_exists($objField, $data)) {
                 if (is_null($data[$objField])) {
                     $this->_data[$objField] = null;
                 } else {
@@ -97,7 +100,7 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         }
 
         foreach ($this->_fields as $field) {
-            if (!array_key_exists($field, $data)
+            if ((!array_key_exists($field, $data) && !isset($data[$field]))
                 || is_object($this->_data[$field])) {
                 continue;
             }
