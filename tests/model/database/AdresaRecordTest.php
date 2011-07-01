@@ -55,8 +55,11 @@ class AdresaRecordTest extends PHPUnit_Framework_TestCase
     public function testSetter($set, $result)
     {
         $this->record->setData($set);
-        $a= $this->record->getData();
-        $this->assertEquals($this->record->getData(), $result);
+        $a = array();
+        foreach ($this->record as $key => $elem) {
+            $a[$key] = $elem;
+        }
+        $this->assertEquals($a, $result);
     }
 
     /**
