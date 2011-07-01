@@ -52,3 +52,7 @@ interface ISource
      */
     public function delete($id, $force);
 }
+
+class InvalidIdException extends Exception
+{
+}
