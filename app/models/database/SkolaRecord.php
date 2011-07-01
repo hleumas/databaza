@@ -18,7 +18,7 @@ use \Nette\Utils\Strings;
 class SkolaRecord extends CommonRecord
 {
 
-    protected $fields = array (
+    protected $_fields = array (
         'id',
         'nazov',
         'skratka',
@@ -29,7 +29,7 @@ class SkolaRecord extends CommonRecord
         'stredna'
     );
 
-    protected $_object = array('adresa');
+    protected $_object = array('AdresaRecord' => 'adresa');
     protected $_mandatory = array('nazov', 'skratka', 'zakladna', 'stredna', 'adresa');
 
     /**
@@ -41,7 +41,7 @@ class SkolaRecord extends CommonRecord
     {
         parent::validate();
         if (!is_null($this->_data['datum_narodenia']) 
-            && !instanceof(\Nette\DateTime) {
+            && !($this->_data['datum_narodenia'] instanceof \Nette\DateTime )) {
                 throw new InvalidDataException("datum_narodenia must be an DateTime instance");
         }
 
@@ -57,7 +57,7 @@ class SkolaRecord extends CommonRecord
             throw new InvalidDataException('Invalid phone format');
         }
 
-        if (!\Nette\Forms\Controls\TextBase::validateEmail($this->_data['email']) {
+        if (!\Nette\Forms\Controls\TextBase::validateEmail($this->_data['email'])) {
             throw new InvalidDataException('Invalid email format');
         }
 
