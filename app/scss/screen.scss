@@ -1,6 +1,10 @@
 @import "gridito";
 @import "jquery";
 
+@mixin round {-moz-border-radius: 8px; border-radius: 8px;}
+
+$formbg: lightGrey;
+
 body {
     font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
     font-size: 0.8em;
@@ -10,3 +14,53 @@ body {
 #content {
     padding: 1.5em;
 }
+
+.details {
+    .viewGroup {
+        h5 {
+            font-size: 100%;
+            color: #1294c4;
+            margin: 0px;
+            margin-bottom: 1ex;
+            padding: 0px;
+        }
+        @include round;
+        background-color: $formbg;
+        padding: 0.5em;
+        margin-top: 1ex;
+        dl {
+            margin: 0px;
+            dt {
+                clear: both;
+                float: left;
+                width: 4em;
+                font-weight: bold;
+                height: 2ex;
+                margin-bottom: 0.7ex;
+            }
+            dd {
+                height: 2ex;
+                margin-left: 6em;
+                min-width: 0.5em;
+                margin-bottom: 0.7ex;
+
+                .yes {
+                    display: block;
+                    @include ui-icon($black);
+                    @include ui-icon-check;
+                }
+                .no {
+                    display: block;
+                    @include ui-icon($black);
+                    @include ui-icon-check;
+                }
+            }
+
+            dd.na {
+                font-weight: bold;
+            }
+
+        }
+    }
+}
+

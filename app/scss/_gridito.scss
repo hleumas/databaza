@@ -9,6 +9,8 @@ $black: '222222';
 @mixin ui-icon-triangle-1-n { background-position: 0 -16px; }
 @mixin ui-icon-triangle-1-s { background-position: -64px -16px; }
 @mixin ui-icon-carat-2-n-s { background-position: -128px 0; }
+@mixin ui-icon-check { background-position: -64px -144px; }
+@mixin ui-icon-close { background-position: -80px -128px; }
 /**
  * Gridito CSS
  */
