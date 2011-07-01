@@ -31,7 +31,19 @@ class SkolaSource extends CommonSource
      */
     public function getById($id)
     {
-        return new SkolaRecord($this->whereId($id)->fetch());
+        $data = array();
+        $fetch = $this->whereId($id)->fetch();
+        if ($fetch === false) {
+            throw new InvalidIdException("Id $id was not found in database");
+        }
+        foreach ($fetch as $key => $column) {
+            $data[$key] = $column;
+        }
+        if ($data['adresa_id']) {
+            $aSource = new AdresaSource($this->getConnection());
+            $data['adresa'] = $aSource->getById($data['adresa_id']);
+        }
+        return new SkolaRecord($data);
     }
 
     /**
