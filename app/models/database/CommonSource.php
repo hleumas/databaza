@@ -36,19 +36,10 @@ abstract class CommonSource implements ISource
     protected function whereId($id)
     {
         return $this->_dbConnection->table($this->getTable())
-            ->where('id = ?', $id);
+            ->where('id', $id);
     }
 
     protected abstract function getTable();
-
-    /**
-     * Get the record by id
-     *
-     * @param string $id
-     *
-     * @return RiesitelRecord
-     */
-    public abstract function getById($id);
 
     /**
      * Insert record into db
@@ -78,12 +69,4 @@ abstract class CommonSource implements ISource
 
     protected abstract function insertDb($record);
     protected abstract function updateDb($record);
-
-    /**
-     * Delete record from the database
-     *
-     * @param string  $id
-     * @param bool    $force
-     */
-    public abstract function delete($id, $force);
 }
