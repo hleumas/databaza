@@ -1,9 +1,10 @@
-@import "gridito";
-@import "jquery";
+@import "../components/gridito/css/_gridito.scss";
 
 @mixin round {-moz-border-radius: 8px; border-radius: 8px;}
 
 $formbg: lightGrey;
+$white: 'ffffff';
+$black: '222222';
 
 body {
     font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
@@ -46,13 +47,13 @@ body {
 
                 .yes {
                     display: block;
-                    @include ui-icon($black);
-                    @include ui-icon-check;
+                    @extend .ui-icon;
+                    @extend .ui-icon-check;
                 }
                 .no {
                     display: block;
-                    @include ui-icon($black);
-                    @include ui-icon-check;
+                    @extend .ui-icon;
+                    @extend .ui-icon-check;
                 }
             }
 

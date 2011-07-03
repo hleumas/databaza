@@ -35,7 +35,13 @@ jQuery.ajaxSetup({
 	dataType: "json"
 });
 
+$("div.gridito").livequery(function () {
+$(this).gridito();
+});
+
 $("a.ajax").live("click", function (event) {
 event.preventDefault();
 $.get(this.href);
 });
+
+
