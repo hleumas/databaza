@@ -33,11 +33,15 @@
     </head>
 
 <body>
-	<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
-
-    {control menu}
-    <div id='content'>
-	{include #content}
+    <div id='page'>
+        <div id='header'>
+        <p>databáza</p>
+        </div>
+        {control menu}
+        <div id='content'>
+        <div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+        {include #content}
+        </div>
     </div>
 </body>
 </html>

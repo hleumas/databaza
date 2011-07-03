@@ -38,13 +38,16 @@ buttons:
         label   : Detail
         window  : true
         icon    : ui-icon-search
+        showText: false
     edit:
         label   : Zmeň
         window  : true
         icon    : ui-icon-pencil
+        showText: false
     delete:
         label   : Zmaž
         icon    : ui-icon-closethick
         handler : deleteSkola
+        showText: false
         confirmationQuestion : 
             Skutočne chcete odstrániť školu %nazov%?

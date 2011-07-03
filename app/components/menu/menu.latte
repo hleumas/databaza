@@ -10,7 +10,7 @@
             {$subkey}</a></li>
         {/capture}
         <a href='{plink $first}' n:class='$current ? current'>{$key}</a>
-        <ul>{!$submenu}</ul>
+        <ul n:class='$current ? current'>{!$submenu}</ul>
     {else}
         <a href='{plink $item}'{ifCurrent $item}
         class='current'{/ifCurrent}>{$key}</a>

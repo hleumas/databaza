@@ -1,20 +1,46 @@
+$white: 'ffffff';
+$black: '222222';
+$brown: #d82;
+$orange: #f6a828;
+$formbg: #eada9a;
+$page-width: 1200px;
+@mixin round {-moz-border-radius: 8px; border-radius: 8px;}
+
 @import "../components/gridito/css/_gridito.scss";
 @import "../components/menu/scss/_menu.scss";
 
-@mixin round {-moz-border-radius: 8px; border-radius: 8px;}
 
-$formbg: lightGrey;
-$white: 'ffffff';
-$black: '222222';
 
 body {
     font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
     font-size: 0.8em;
     margin: 0;
+    background-color: #765;
+    //background-image: url(../images/pozadie.png);
+}
+
+#page {
+    width: $page-width;
+    margin: 20px auto 20px auto;
 }
 
 #content {
-    padding: 1.5em;
+    width: auto;
+    margin: 0 auto 0 auto;
+    padding: 20px 1em 20px 1em;
+    background-color: #eee;
+    
+}
+
+#header {
+    width: $page-width - 280px;
+    background: orange url(../images/logo.png) 70px 10px no-repeat;
+    font-size: 80px;
+    height: 110px;
+    padding: 15px 0px 0px 280px;
+    p {
+        margin: 0px;
+    }
 }
 
 .details {
@@ -46,14 +72,14 @@ body {
                 min-width: 0.5em;
                 margin-bottom: 0.7ex;
 
-                .yes {
+                .yes, .no {
                     display: block;
                     @extend .ui-icon;
+                }
+                .yes {
                     @extend .ui-icon-check;
                 }
                 .no {
-                    display: block;
-                    @extend .ui-icon;
                     @extend .ui-icon-check;
                 }
             }

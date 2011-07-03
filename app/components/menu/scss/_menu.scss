@@ -1,0 +1,70 @@
+$first-height: 70px;
+$second-height: 50px;
+$item-height: 5/7;
+$item-separation: 30px;
+$menu-padding: 120px;
+$menu-link-color: #25f;
+$menu-active-bg: #b60;
+$menu-active-color: #ff9;
+$menu-first-bg: $orange;
+$menu-second-bg: $brown;
+
+@mixin listmetrics($height) {
+    height: $height;
+    padding: 0.5 * $height * (1-$item-height) $item-separation/2;
+    a {
+        height: 0.9 * $item-height * $height;
+        font-size: $item-height * 0.5 * $height;
+        padding: 0.1 * $item-height * $height $item-separation 0px $item-separation;
+    }
+}
+
+ul.menu, ul.menu ul {
+    width: $page-width - $menu-padding;
+    padding: 0px $menu-padding/2;
+    margin: auto;
+}
+
+ul.menu {
+    height: $second-height + $first-height;
+    background: $menu-first-bg url(../images/ui-bg_gloss-wave_35_f6a828_500x100.png) repeat-x 0px -15px;
+    position: relative;
+
+    li {
+        @include listmetrics($first-height);
+    }
+
+    li {
+        display: inline;
+        float: left;
+        list-style: none;
+ 
+        a {
+            @include round;
+            display: block;
+            color: $menu-link-color;
+            text-decoration: none;
+            font-weight: bold;
+            &:hover, &.current {
+                background-color: $menu-active-bg;
+                color: $menu-active-color;
+            }
+        }
+
+        ul {
+            display: none;
+        }
+        &:hover ul, ul.current {
+            height: $second-height;
+            display: block;
+            position: absolute;
+            left: 0px;
+            top: $first-height;
+            background-color: $menu-second-bg;
+        }
+    }
+
+    li li {
+        @include listmetrics($second-height);
+    }
+}
