@@ -18,6 +18,13 @@ use \Nette\Database\Connection;
 class SkolaSource extends CommonSource
 {
 
+    private $adresaSrc;
+    public function __construct($dbConnection)
+    {
+        parent::__construct($dbConnection);
+        $this->adresaSrc = new AdresaSource($dbConnection);
+        
+    }
     protected function getTable()
     {
         return 'skola';
@@ -40,8 +47,7 @@ class SkolaSource extends CommonSource
             $data[$key] = $column;
         }
         if ($data['adresa_id']) {
-            $aSource = new AdresaSource($this->getConnection());
-            $data['adresa'] = $aSource->getById($data['adresa_id']);
+            $data['adresa'] = $this->adresaSrc->getById($data['adresa_id']);
         }
         return new SkolaRecord($data);
     }
@@ -55,8 +61,13 @@ class SkolaSource extends CommonSource
      */
     protected function insertDb($record)
     {
+        $data = $record->getData();
+
         $conn = $this->getConnection();
-        $conn->table($this->getTable())->insert($record->data);
+        $adresa = new AdresaRecord($data['adresa']);
+        $data['adresa_id'] = $this->adresaSrc->insert($adresa);
+        unset($data['adresa']);
+        $conn->table($this->getTable())->insert($data);
         return $conn->lastInsertId();
     }
 
@@ -67,7 +78,17 @@ class SkolaSource extends CommonSource
      */
     public function updateDb($record)
     {
-        $this->whereId($record->data['id'])->update($record->data);
+        $data = $record->getData();
+        $id = $data['id'];
+
+        $adresa = new AdresaRecord($data['adresa']);
+        $adresa_row = $this->whereId($id)->select('adresa_id')->fetch();
+        $adresa['id'] = $adresa_row['adresa_id'];
+        $this->adresaSrc->update($adresa);
+
+        unset($data['adresa']);
+        $data['adresa_id'] = $adresa['id'];
+        $this->whereId($id)->update($data);
     }
 
     /**
@@ -78,6 +99,14 @@ class SkolaSource extends CommonSource
      */
     public function delete($id, $force = false)
     {
-        $this->whereId($id)->delete();
+        $adresa_row = $this->whereId($id)->select('adresa_id')->fetch();
+        try {
+            $this->whereId($id)->delete();
+        } catch (PDOException $e) {
+            $riesitel = $this->getConnection()
+                ->fetch('SELECT meno, priezvisko FROM riesitel LEFT JOIN osoba ON riesitel.osoba_id = osoba.id WHERE skola_id = ?', $id);
+            throw new DBIntegrityException("Školu navštevuje riešiteľ {$riesitel['meno']} {$riesitel['priezvisko']}.");
+        }
+        $this->adresaSrc->delete($adresa_row['adresa_id']);
     }
 }

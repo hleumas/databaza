@@ -44,7 +44,7 @@ class AdresaSource extends CommonSource
     protected function insertDb($record)
     {
         $conn = $this->getConnection();
-        $conn->table($this->getTable())->insert($record->data);
+        $conn->table($this->getTable())->insert($record);
         return $conn->lastInsertId();
     }
 
@@ -55,7 +55,7 @@ class AdresaSource extends CommonSource
      */
     public function updateDb($record)
     {
-        $this->whereId($record->data['id'])->update($record->data);
+        $this->whereId($record['id'])->update($record);
     }
 
     /**

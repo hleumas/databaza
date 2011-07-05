@@ -79,6 +79,10 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         return key($this->_data) !== null;
     }
 
+    public function getData()
+    {
+        return $this->_data;
+    }
     /**
      * Set only the data already defined by record
      *
@@ -103,6 +107,9 @@ abstract class CommonRecord extends Nette\Object implements IRecord
             if ((!array_key_exists($field, $data) && !isset($data[$field]))
                 || is_object($this->_data[$field])) {
                 continue;
+            }
+            if ($data[$field] === '') {
+                $data[$field] = null;
             }
             $this->_data[$field] = $data[$field];
         }
@@ -163,9 +170,21 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         if (is_null($phone)) {
             return true;
         }
-        if (!Strings::match($phone, '#^\s*([0-9/]\s){5,}$#')) {
+        if (!Strings::match($phone, '#^\s*[+]?\s*([0-9/]\s*){5,}$#')) {
             return false;
         }
         return true;
+    }
+
+    public static function isEmailValid($email)
+    {
+        if (is_null($email)) {
+            return true;
+        }
+        $atom = "[-a-z0-9!#$%&'*+/=?^_`{|}~]"; // RFC 5322 unquoted characters in local-part
+        $localPart = "(?:\"(?:[ !\\x23-\\x5B\\x5D-\\x7E]*|\\\\[ -~])+\"|$atom+(?:\\.$atom+)*)"; // quoted or unquoted
+        $chars = "a-z0-9\x80-\xFF"; // superset of IDN
+        $domain = "[$chars](?:[-$chars]{0,61}[$chars])"; // RFC 1034 one domain component
+        return (bool) Strings::match($email, "(^$localPart@(?:$domain?\\.)+[-$chars]{2,19}\\z)i");
     }
 }

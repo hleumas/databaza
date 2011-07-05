@@ -40,10 +40,6 @@ class SkolaRecord extends CommonRecord
     public function validate()
     {
         parent::validate();
-        if (!is_null($this->_data['datum_narodenia']) 
-            && !($this->_data['datum_narodenia'] instanceof \Nette\DateTime )) {
-                throw new InvalidDataException("datum_narodenia must be an DateTime instance");
-        }
 
         if (!is_bool($this->_data['zakladna'])) {
             throw new InvalidDataException('zakladna must be boolean');
@@ -57,13 +53,10 @@ class SkolaRecord extends CommonRecord
             throw new InvalidDataException('Invalid phone format');
         }
 
-        if (!\Nette\Forms\Controls\TextBase::validateEmail($this->_data['email'])) {
+        if (!self::isEmailValid($this->_data['email'])) {
             throw new InvalidDataException('Invalid email format');
         }
 
-        if (!Strings::match($this->_data['psc'], '/^\s*([0-9]\s*){5}$/')) {
-            throw new InvalidDataException("{$this->_data['psc']} is not valid psc value");
-        }
     }
 
 }

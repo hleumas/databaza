@@ -71,7 +71,8 @@ class ZoznamyPresenter extends BasePresenter
             $form->render();
         };
 
-        $but['edit']['handler'] = function($row) use ($form, $values) {
+        $self = &$this;
+        $but['edit']['handler'] = function($row) use ($self, $form, $values) {
             $form->setDefaults($values->invoke($row['id']));
             $form->render();
         };
@@ -115,6 +116,13 @@ class ZoznamyPresenter extends BasePresenter
 
     public function deleteSkola($row)
     {
+        $source = new SkolaSource($this->getContext()->database);
+        try {
+            $source->delete($row['id']);
+            $this['gridSkoly']->flashMessage("Škola {$row['nazov']} odstránená");
+        } catch (DBIntegrityException $e) {
+            $this['gridSkoly']->flashMessage($e->getMessage(), 'error');
+        }
     }
 
     public function createComponentSkolaForm()
@@ -122,6 +130,7 @@ class ZoznamyPresenter extends BasePresenter
         $form = new Form;
         $form->setRenderer(new EditFormRenderer);
         $form->addGroup('Všeobecné informácie');
+        $form->addHidden('id');
         $form->addText('nazov', 'Názov:')->setRequired(true);
         $form->addText('skratka', 'Skratka:')->setRequired(true);
         $form->addGroup('Poskytované vzdelanie');
@@ -138,7 +147,24 @@ class ZoznamyPresenter extends BasePresenter
         $form->addText('telefon', 'Telefón:');
 
         $form->addSubmit('posli', 'Odošli');
+        $form->onSuccess[] = callback($this, 'pridajSkolu');
         return $form;
+    }
+
+    public function pridajSkolu()
+    {
+        $source = new SkolaSource($this->getContext()->database);
+        $form = $this['gridSkoly']['skolaForm'];
+        $record = new SkolaRecord($form->getValues());
+        $record['adresa']['stat'] = 'SR';
+        if (!empty($record['id'])) {
+            $source->update($record);
+            $this['gridSkoly']->flashMessage("Zmenená škola {$record['nazov']}");
+        } else {
+            $source->insert($record);
+            $this['gridSkoly']->flashMessage("Pridaná škola {$record['nazov']}");
+        }
+        $this->redirect('this');
     }
 
     public function createComponentRiesitelForm()

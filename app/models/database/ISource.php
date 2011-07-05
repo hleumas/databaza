@@ -56,3 +56,6 @@ interface ISource
 class InvalidIdException extends Exception
 {
 }
+class DBIntegrityException extends Exception
+{
+}

@@ -18,7 +18,7 @@ class EditFormRenderer implements Nette\Forms\IFormRenderer
 {
     public function render(\Nette\Forms\Form $form, $mode = null)
     {
-        $content = Html::el('form class="edit"');
+        $content = Html::el('form')->action($form->action)->method($form->method);
         foreach ($form->getGroups() as $group) {
             if (!$group->getControls() || !$group->getOption('visual')) {
                 continue;
@@ -33,6 +33,7 @@ class EditFormRenderer implements Nette\Forms\IFormRenderer
 
             foreach($group->getControls() as $control) {
                 if ($control instanceOf \Nette\Forms\Controls\HiddenField) {
+                    $el->add($control->getControl());
                     continue;
                 }
                 if ($control instanceOf \Nette\Forms\Controls\Button) {
