@@ -2,9 +2,8 @@ $white: 'ffffff';
 $black: '222222';
 $brown: #d82;
 $orange: #f6a828;
-$formbg: #eada9a;
 $page-width: 1200px;
-@mixin round {-moz-border-radius: 8px; border-radius: 8px;}
+@mixin round($radius: 8px) {-moz-border-radius: $radius; border-radius: $radius;}
 
 @import "../components/gridito/css/_gridito.scss";
 @import "../components/menu/scss/_menu.scss";
@@ -43,52 +42,6 @@ body {
     }
 }
 
-.details {
-    .viewGroup {
-        h5 {
-            font-size: 100%;
-            color: #1294c4;
-            margin: 0px;
-            margin-bottom: 1ex;
-            padding: 0px;
-        }
-        @include round;
-        background-color: $formbg;
-        padding: 0.5em;
-        margin-top: 1ex;
-        dl {
-            margin: 0px;
-            dt {
-                clear: both;
-                float: left;
-                width: 4em;
-                font-weight: bold;
-                height: 2ex;
-                margin-bottom: 0.7ex;
-            }
-            dd {
-                height: 2ex;
-                margin-left: 6em;
-                min-width: 0.5em;
-                margin-bottom: 0.7ex;
-
-                .yes, .no {
-                    display: block;
-                    @extend .ui-icon;
-                }
-                .yes {
-                    @extend .ui-icon-check;
-                }
-                .no {
-                    @extend .ui-icon-check;
-                }
-            }
-
-            dd.na {
-                font-weight: bold;
-            }
-
-        }
-    }
-}
-
+$formbg: #eada9a;
+$form-header-color: #1294c4;
+@import 'forms.scss';

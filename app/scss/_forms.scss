@@ -1,0 +1,79 @@
+.details, form {
+    .viewGroup {
+        margin-top: 1ex;
+    }
+    .viewGroup, fieldset {
+        border: none;
+        @include round;
+        background-color: $formbg;
+        padding: 1ex 0.5em 1ex 0.5em;
+        h5, legend {
+            font-weight: bold;
+            font-size: 100%;
+            color: $form-header-color;
+            margin: 0px 0px 1ex 0px;
+            padding: 0px;
+        }
+        legend {
+            padding-top: 5ex;
+        }
+        dl {
+            margin: 0px;
+            text-size: 14px;
+            dt {
+                clear: both;
+                float: left;
+                width: 4em;
+                font-weight: bold;
+                height: 24px;
+                line-height: 24px;
+            }
+            dd {
+                input[type='text'] {
+                    background: #eee;
+                    width: 270px;
+                    //border: 1px solid $orange;
+                    padding-left: 2px;
+                    border: none;
+                    @include round(4px);
+                    margin: 0px;
+                }
+                input[type='checkbox'] {
+                    height: 14px;
+                    position: absolute;
+                    top: 6px;
+                    border: none;
+                    @include round(4px);
+                    margin: 0px;
+                }
+                position: relative;
+                height: 24px;
+                line-height: 24px;
+                margin-left: 6em;
+                min-width: 10em;
+
+                .yes, .no {
+                    position: absolute;
+                    top: 4px;
+                    display: block;
+                    @extend .ui-icon;
+                }
+                .yes {
+                    @extend .ui-icon-check;
+                }
+                .no {
+                    @extend .ui-icon-closethick;
+                }
+            }
+
+            dd.na {
+                font-weight: bold;
+            }
+
+        }
+    }
+    fieldset {
+        margin-top: -2ex;
+    }
+}
+

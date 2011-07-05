@@ -120,6 +120,7 @@ class ZoznamyPresenter extends BasePresenter
     public function createComponentSkolaForm()
     {
         $form = new Form;
+        $form->setRenderer(new EditFormRenderer);
         $form->addGroup('Všeobecné informácie');
         $form->addText('nazov', 'Názov:')->setRequired(true);
         $form->addText('skratka', 'Skratka:')->setRequired(true);
@@ -143,6 +144,7 @@ class ZoznamyPresenter extends BasePresenter
     public function createComponentRiesitelForm()
     {
         $form = new Form;
+        $form->setRenderer(new EditFormRenderer);
         return $form;
     }
 
