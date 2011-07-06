@@ -23,6 +23,7 @@ Debugger::enable();
 // Load configuration from config.neon file
 $configurator = new Nette\Configurator;
 $configurator->loadConfig(__DIR__ . '/config.neon');
+setlocale(LC_ALL, 'sk_SK.utf8'); 
 
 
 // Configure application
