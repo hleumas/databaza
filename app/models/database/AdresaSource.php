@@ -31,7 +31,11 @@ class AdresaSource extends CommonSource
      */
     public function getById($id)
     {
-        return new AdresaRecord($this->whereId($id)->fetch());
+        $fetch = $this->whereId($id)->fetch();
+        if ($fetch === false) {
+            throw new InvalidIdException("Id $id was not found in database");
+        }
+        return new AdresaRecord($fetch);
     }
 
     /**
