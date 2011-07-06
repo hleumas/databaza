@@ -27,7 +27,7 @@ class NeonFormFactory extends \Nette\Object
         'hidden'      => array(),
         'checkbox'    => array('label'),
         'radiolist'   => array('label', 'items'),
-        'selectBox'   => array('label', 'items', 'size'),
+        'select'      => array('label', 'items', 'size'),
         'multiSelect' => array('label', 'items', 'size'),
         'submit'      => array('label'),
         'button'      => array('label'));
