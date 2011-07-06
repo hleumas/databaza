@@ -51,7 +51,8 @@ class EditFormRenderer implements Nette\Forms\IFormRenderer
                 if ($control->hasErrors())  {
                     $dd->class('error');
                     $errors = $control->getErrors();
-                    $dd->create('span', $control->errors[0]);
+                    $dd->create('span class="error"');
+                    $dd->create('', $control->errors[0]);
                 }
             }
             $elgroup->create('div style="{clear: both;}"');

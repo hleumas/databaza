@@ -3,6 +3,7 @@ $black: '222222';
 $brown: #d82;
 $orange: #f6a828;
 $page-width: 1200px;
+$errorbg: #fdb;
 @mixin round($radius: 8px) {-moz-border-radius: $radius; border-radius: $radius;}
 
 @import "../components/gridito/css/_gridito.scss";

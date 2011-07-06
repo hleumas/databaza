@@ -29,6 +29,14 @@
                 line-height: 24px;
             }
             dd {
+                &.error {
+                    color: red;
+                    input[type='text'] {
+                        background: $errorbg;
+                        border: #b00 1px solid;
+                        margin-right: 1em;
+                    }
+                }
                 input[type='text'] {
                     background: #eee;
                     //width: 270px;
