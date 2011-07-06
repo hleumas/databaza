@@ -120,9 +120,9 @@ class ZoznamyPresenter extends BasePresenter
         $source = new SkolaSource($this->getContext()->database);
         try {
             $source->delete($row['id']);
-            $this['gridSkoly']->flashMessage("Škola {$row['nazov']} odstránená");
+            $this['grid']->flashMessage("Škola {$row['nazov']} odstránená");
         } catch (DBIntegrityException $e) {
-            $this['gridSkoly']->flashMessage($e->getMessage(), 'error');
+            $this['grid']->flashMessage($e->getMessage(), 'error');
         }
     }
 
@@ -130,18 +130,19 @@ class ZoznamyPresenter extends BasePresenter
     public function spracujSkoly()
     {
         $source = new SkolaSource($this->getContext()->database);
-        $form = $this['gridSkoly']['skolaForm'];
+        $form = $this['grid']['form'];
         $record = new SkolaRecord($form->getValues());
         $record['adresa']['stat'] = 'SR';
         if (!empty($record['id'])) {
             $source->update($record);
-            $this['gridSkoly']->flashMessage("Zmenená škola {$record['nazov']}");
+            $this['grid']->flashMessage("Zmenená škola {$record['nazov']}");
         } else {
             $source->insert($record);
-            $this['gridSkoly']->flashMessage("Pridaná škola {$record['nazov']}");
+            $this['grid']->flashMessage("Pridaná škola {$record['nazov']}");
         }
         $this->redirect('this');
     }
+
 
     public function spracujRiesitelia()
     {

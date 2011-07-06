@@ -1,0 +1,7 @@
+{block #content}
+{if $control['grid']['form']->isSubmitted()}
+{$control['grid']['form']->render()}
+{else}
+{control grid}
+{/if}
+{/block}
