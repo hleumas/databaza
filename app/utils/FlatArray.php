@@ -18,6 +18,17 @@ use Nette\Utils\Neon;
 use Nette\Application\UI\Form;
 class FlatArray extends \Nette\Object
 {
+    public static function toArray($iterator)
+    {
+        $array = array();
+        foreach ($iterator as $key => $value) {
+            if ($value instanceOf Iterator || is_array($value)) {
+                $value = self::toArray($value);
+            }
+            $array[$key] = $value;
+        }
+        return $array;
+    }
     public static function deflate($array, $prefix='')
     {
         $deflated = array();
