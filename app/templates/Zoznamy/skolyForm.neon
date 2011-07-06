@@ -28,23 +28,22 @@ stredna:
 Adresa:
     type: group
 
-adresa:
-    type: container
-    ulica:
-        type: text
-        label: 'Ulica:'
-        cols: 24
-        required: povinná položka
-    mesto:
-        type: text
-        label: 'Mesto:'
-        cols: 24
-        required: povinná položka
-    psc:
-        type: text
-        label: 'PSČ:'
-        cols: 6
-        required: povinná položka
+adresa.ulica:
+    type: text
+    label: 'Ulica:'
+    cols: 24
+    required: povinná položka
+adresa.mesto:
+    type: text
+    label: 'Mesto:'
+    cols: 24
+    required: povinná položka
+adresa.psc:
+    type: text
+    label: 'PSČ:'
+    cols: 6
+    required: povinná položka
+
 'Kontaktné údaje':
     type: group
 'email':

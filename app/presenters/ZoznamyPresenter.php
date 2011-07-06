@@ -33,7 +33,40 @@ class ZoznamyPresenter extends BasePresenter
         }
         $form = NeonFormFactory::createForm(file_get_contents($file));
         $form->onSuccess[] = callback($this, 'spracuj' . ucfirst($type));
+        if (is_callable(array($this, "initForm" . ucfirst($type)))) {
+            call_user_func(array($this, "initForm$type"), $form);
+        }
         return $form;
+    }
+    public function initFormRiesitelia($form)
+    {
+        $db = $this->getContext()->database;
+        $studiumSrc = new TypStudiaSource($db);
+        $studia = $studiumSrc->getAll();
+        $stuSelect = array();
+        foreach ($studia as $id => $studium) {
+            $stuSelect[$id] = $studium['nazov'];
+        }
+        $form['typ_studia']->setItems($stuSelect);
+
+        $dataSkoly = $db->table('zoznamy_skola_view')
+            ->select('id, nazov, mesto, zakladna, stredna')
+            ->order('mesto ASC, nazov ASC')
+            ->fetchPairs('id');
+        $skoly = array();
+        foreach ($dataSkoly as $skola) {
+            $mesto = $skola['mesto'];
+            if (!isset($skoly[$mesto])) {
+                $skoly[$skola['mesto']] = array();
+            }
+            $nazov = Strings::truncate($skola['nazov'], 28);
+            if (strlen($skola['nazov']) > 28) {
+                $nazov = Html::el('option', $nazov)->title($skola['nazov']);
+            }
+            $skoly[$mesto][$skola['id']] = $nazov;
+        }
+        
+        $form['skola']->setItems($skoly);
     }
 
     public function createComponentGrid()
@@ -105,10 +138,21 @@ class ZoznamyPresenter extends BasePresenter
         if (is_null($data['adresa'])) {
             $data['adresa'] = new AdresaRecord();
         }
-        return $data;
+        return FlatArray::deflate($data);
     }
     public function getDataRiesitelia($id)
     {
+        $source = new RiesitelSource($this->getContext()->database);
+        $record = $source->getById($id);
+        $data = FlatArray::deflate($record);
+        foreach (array('typ_studia', 'skola') as $key) {
+            if (isset($data["$key.id"])) {
+                $data[$key] = $data["$key.id"];
+            } else {
+                unset($data[$key]);
+            }
+        }
+        return $data;
     }
 
     public function deleteRiesitelia($row)
@@ -131,7 +175,7 @@ class ZoznamyPresenter extends BasePresenter
     {
         $source = new SkolaSource($this->getContext()->database);
         $form = $this['grid']['form'];
-        $record = new SkolaRecord($form->getValues());
+        $record = new SkolaRecord(FlatArray::inflate($form->getValues()));
         $record['adresa']['stat'] = 'SR';
         if (!empty($record['id'])) {
             $source->update($record);

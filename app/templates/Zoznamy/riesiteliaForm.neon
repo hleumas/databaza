@@ -1,0 +1,94 @@
+renderer:
+    class: EditFormRenderer
+id:
+    type: hidden
+'Osobné údaje':
+    type: group
+osoba.meno:
+    type: text
+    label: 'Meno:'
+    cols: 16
+    required: povinná položka
+osoba.priezvisko:
+    type: text
+    label: 'Priezvisko:'
+    cols: 16
+    required: povinná položka
+osoba.datum_narodenia:
+    type: text
+    label: 'Dátum narodenia:'
+    cols: 10
+'Adresa domov':
+    type: group
+osoba.adresa.ulica:
+    type: text
+    label: 'Ulica:'
+    cols: 24
+    required: povinná položka
+osoba.adresa.mesto:
+    type: text
+    label: 'Mesto:'
+    cols: 24
+    required: povinná položka
+osoba.adresa.psc:
+    type: text
+    label: 'PSČ:'
+    cols: 6
+    required: povinná položka
+'Kontaktné údaje':
+    type: group
+osoba.email:
+    type: text
+    label: 'Email:'
+    cols: 24
+osoba.jabber:
+    type: text
+    label: 'Jabber:'
+    cols: 24
+osoba.telefon:
+    type: text
+    label: 'Telefón:'
+    cols: 16
+telefon_rodic:
+    type: text
+    label: 'Telefón rodiča:'
+    cols: 16
+'Štúdium':
+    type: group
+skola:
+    type: select
+    label: 'Škola:'
+typ_studia:
+    type: select
+    label: 'Typ:'
+rocnik:
+    type: text
+    label: 'Ročník'
+    cols: 2
+'Korešpondencia':
+    type: group
+koresp_kam:
+    type: select
+    label: 'Zasielať:'
+    items:
+        0: domov
+        1: do školy
+        2: inam
+koresp_adresa.ulica:
+    type: text
+    label: 'Ulica:'
+    cols: 24
+    required: povinná položka
+koresp_adresa.mesto:
+    type: text
+    label: 'Mesto:'
+    cols: 24
+    required: povinná položka
+koresp_adresa.psc:
+    type: text
+    label: 'PSČ:'
+    cols: 6
+    required: povinná položka
+odosli:
+    type: submit
+    label: Odošli
