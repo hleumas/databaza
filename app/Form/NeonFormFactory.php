@@ -67,7 +67,11 @@ class NeonFormFactory extends \Nette\Object
                     $params[] = isset($control[$param]) ? $control[$param] : null;
                 }
 
-                call_user_func_array(callback($container, 'add' . ucfirst($type)), $params);
+                $fctrl = call_user_func_array(
+                    callback($container, 'add' . ucfirst($type)), $params);
+                if (isset($control['required'])) {
+                    $fctrl->setRequired($control['required']);
+                }
             } elseif ($type == 'container') {
                 self::addControls($container->addContainer($name), $control);
             } elseif ($type == 'group') {

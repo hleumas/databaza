@@ -8,12 +8,12 @@ nazov:
     type: text
     label: 'Názov:'
     cols: 30
-    required: true
+    required: povinná položka
 skratka:
     type: text
     label: 'Skratka:'
     cols: 16
-    required: true
+    required: povinná položka
 'Poskytované vzdelanie':
     type: group
 
@@ -34,17 +34,17 @@ adresa:
         type: text
         label: 'Ulica:'
         cols: 24
-        required: true
+        required: povinná položka
     mesto:
         type: text
         label: 'Mesto:'
         cols: 24
-        requried: true
+        required: povinná položka
     psc:
         type: text
         label: 'PSČ:'
         cols: 6
-        requried: true
+        required: povinná položka
 'Kontaktné údaje':
     type: group
 'email':
