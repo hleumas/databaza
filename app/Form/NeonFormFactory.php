@@ -36,6 +36,9 @@ class NeonFormFactory extends \Nette\Object
     {
         $config = Neon::decode($neonString);
         $form = new Form();
+        if (is_null($config)) {
+            return $form;
+        }
         foreach (self::$properties as $atr) {
             if (isset($config[$atr])) {
                 $form->$atr = $config[$atr];
