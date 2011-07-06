@@ -46,8 +46,13 @@ class EditFormRenderer implements Nette\Forms\IFormRenderer
                     $label = $label->getText();
                 }
                 $el->create('dt', $label);
-                $el->create('dd')->add($control->getControl());
-                $value = $control->getValue();
+                $dd = $el->create('dd');
+                $dd->add($control->getControl());
+                if ($control->hasErrors())  {
+                    $dd->class('error');
+                    $errors = $control->getErrors();
+                    $dd->create('span', $control->errors[0]);
+                }
             }
             $elgroup->create('div style="{clear: both;}"');
         }
