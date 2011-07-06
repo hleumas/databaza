@@ -1,0 +1,60 @@
+renderer: 
+    class: EditFormRenderer
+'Všeobecné informácie':
+    type: group
+id:
+    type: hidden
+nazov:
+    type: text
+    label: 'Názov:'
+    cols: 30
+    required: true
+skratka:
+    type: text
+    label: 'Skratka:'
+    cols: 16
+    required: true
+'Poskytované vzdelanie':
+    type: group
+
+zakladna:
+    type: checkbox
+    label: 'Základné:'
+
+stredna:
+    type: checkbox
+    label: 'Stredné:'
+
+Adresa:
+    type: group
+
+adresa:
+    type: container
+    ulica:
+        type: text
+        label: 'Ulica:'
+        cols: 24
+        required: true
+    mesto:
+        type: text
+        label: 'Mesto:'
+        cols: 24
+        requried: true
+    psc:
+        type: text
+        label: 'PSČ:'
+        cols: 6
+        requried: true
+'Kontaktné údaje':
+    type: group
+'email':
+    type: text
+    label: 'Email:'
+    cols: 24
+'telefon':
+    type: text
+    label: 'Telefón:'
+    cols: 16
+'odosli':
+    type: submit
+    label: 'Odošli'

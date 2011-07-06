@@ -1,6 +1,4 @@
 table: 'zoznamy_skola_view'
-form:  'skolaForm'
-data: 'getSkolaData'
 columns:
     skratka:
         label   : Skratka
@@ -47,7 +45,6 @@ buttons:
     delete:
         label   : Zmaž
         icon    : ui-icon-closethick
-        handler : deleteSkola
         showText: false
         confirmationQuestion : 
             Skutočne chcete odstrániť školu %nazov%?

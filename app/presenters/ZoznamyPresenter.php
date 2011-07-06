@@ -25,6 +25,17 @@ class ZoznamyPresenter extends BasePresenter
 
     private $templateDir = '/templates/Zoznamy';
 
+    public function createForm($type)
+    {
+        $file = APP_DIR . "{$this->templateDir}/{$type}Form.neon";
+        if (!is_file($file) || !is_readable($file)) {
+            throw new Nette\FileNotFoundException("File $file is missing or is not readable.");
+        }
+        $form = NeonFormFactory::createForm(file_get_contents($file));
+        $form->onSuccess[] = callback($this, 'spracuj' . ucfirst($type));
+        return $form;
+    }
+
     public function createComponentGrid()
     {
         return $this->createGrid($this->getView());
@@ -38,36 +49,33 @@ class ZoznamyPresenter extends BasePresenter
         }
         $settings = Neon::decode(file_get_contents($file));
 
+        /** Create Grid and set the model */
         $grid = new Grid();
-
         $grid->setModel(new NetteModel($this->getContext()
                 ->getService('database')->table($settings['table'])));
 
         /** Create form */
-        $grid->addComponent(
-            callback($this, 'createComponent' . ucfirst($settings['form']))
-            ->invoke(), $settings['form']);
-        $form = $grid[$settings['form']];
+        $grid->addComponent($this->createForm($type), "form");
+        $form = $grid['form'];
 
         /** Add columns */
         foreach ($settings['columns'] as $key => $column) {
             $grid->addColumn($key, null, $column);
         }
 
+        /** Set button handlers */
         $but = &$settings['buttons'];
-        $values = callback($this, $settings['data']);
-        $but['delete']['handler'] = callback($this, $but['delete']['handler']);
+        $getData = callback($this, 'getData' . ucfirst($type));
+        $but['delete']['handler'] = callback($this, 'delete' . ucfirst($type));
 
-        $but['detail']['handler'] = function($row) use ($form, $values) {
-            $def= $values->invoke($row['id']);
-            $form->setDefaults($values->invoke($row['id']));
+        $but['detail']['handler'] = function($row) use ($form, $getData) {
+            $form->setDefaults($getData->invoke($row['id']));
             $form->setRenderer(new DisplayFormRenderer);
             $form->render();
         };
 
-        $self = &$this;
-        $but['edit']['handler'] = function($row) use ($self, $form, $values) {
-            $form->setDefaults($values->invoke($row['id']));
+        $but['edit']['handler'] = function($row) use ($form, $getData) {
+            $form->setDefaults($getData->invoke($row['id']));
             $form->render();
         };
 
@@ -75,13 +83,12 @@ class ZoznamyPresenter extends BasePresenter
             $form->render();
         };
 
+        /** Create buttons */
         foreach ($settings['buttons'] as $key => $button) {
-            $toolbar = isset($button['toolbar']) ? $button['toolbar'] : false;
-            $window  = isset($button['window']) ? $button['window'] : false;
+            $call  = empty($button['toolbar']) ? 'add' : 'addToolbar';
+            $call .= empty($button['window']) ? 'Button' : 'WindowButton';
             unset($button['toolbar']);
             unset($button['window']);
-            $call  = $toolbar ? 'addToolbar' : 'add';
-            $call .= $window  ? 'WindowButton' : 'Button';
 
             call_user_func(array($grid, $call), $key, null, $button);
         }
@@ -91,7 +98,7 @@ class ZoznamyPresenter extends BasePresenter
 
     }
 
-    public function getSkolaData($id)
+    public function getDataSkoly($id)
     {
         $source = new SkolaSource($this->getContext()->database);
         $data = $source->getById($id);
@@ -100,15 +107,15 @@ class ZoznamyPresenter extends BasePresenter
         }
         return $data;
     }
-    public function getRiesitelData($id)
+    public function getDataRiesitelia($id)
     {
     }
 
-    public function deleteRiesitel($row)
+    public function deleteRiesitelia($row)
     {
     }
 
-    public function deleteSkola($row)
+    public function deleteSkoly($row)
     {
         $source = new SkolaSource($this->getContext()->database);
         try {
@@ -119,33 +126,8 @@ class ZoznamyPresenter extends BasePresenter
         }
     }
 
-    public function createComponentSkolaForm()
-    {
-        $form = new Form;
-        $form->setRenderer(new EditFormRenderer);
-        $form->addGroup('Všeobecné informácie');
-        $form->addHidden('id');
-        $form->addText('nazov', 'Názov:', 36)->setRequired(true);
-        $form->addText('skratka', 'Skratka:', 16)->setRequired(true);
-        $form->addGroup('Poskytované vzdelanie');
-        $form->addCheckbox('zakladna', 'Základné:');
-        $form->addCheckbox('stredna', 'Stredné:');
-        $form->addGroup('Adresa');
-        $form->addContainer('adresa');
-        $form['adresa']->addText('ulica', 'Ulica:', 24)->setRequired(true);
-        $form['adresa']->addText('mesto', 'Mesto:', 24)->setRequired(true);
-        $form['adresa']->addText('psc', 'PSČ:', 6)->setRequired(true);
 
-        $form->addGroup('Kontaktné údaje');
-        $form->addText('email', 'Email:', 24);
-        $form->addText('telefon', 'Telefón:', 16);
-
-        $form->addSubmit('posli', 'Odošli');
-        $form->onSuccess[] = callback($this, 'pridajSkolu');
-        return $form;
-    }
-
-    public function pridajSkolu()
+    public function spracujSkoly()
     {
         $source = new SkolaSource($this->getContext()->database);
         $form = $this['gridSkoly']['skolaForm'];
@@ -161,15 +143,7 @@ class ZoznamyPresenter extends BasePresenter
         $this->redirect('this');
     }
 
-    public function createComponentRiesitelForm()
-    {
-        $form = new Form;
-        $form->setRenderer(new EditFormRenderer);
-        return $form;
-    }
-
-    public function renderRiesitelia()
+    public function spracujRiesitelia()
     {
     }
-
 }
