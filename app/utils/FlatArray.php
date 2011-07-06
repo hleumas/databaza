@@ -18,6 +18,19 @@ use Nette\Utils\Neon;
 use Nette\Application\UI\Form;
 class FlatArray extends \Nette\Object
 {
+    public static function getLeafs($array)
+    {
+        $leafs = array();
+        foreach ($array as $item) {
+            if (is_array($item) || $item instanceOf Iterator) {
+                $item = self::getLeafs($item);
+            } else {
+                $item = array($item);
+            }
+            $leafs = array_merge($leafs, $item);
+        }
+        return $leafs;
+    }
     public static function toArray($iterator)
     {
         $array = array();
