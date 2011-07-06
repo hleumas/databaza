@@ -43,9 +43,7 @@ class SkolaSource extends CommonSource
         if ($fetch === false) {
             throw new InvalidIdException("Id $id was not found in database");
         }
-        foreach ($fetch as $key => $column) {
-            $data[$key] = $column;
-        }
+        $data = FlatArray::toArray($fetch);
         if ($data['adresa_id']) {
             $data['adresa'] = $this->adresaSrc->getById($data['adresa_id']);
         }
