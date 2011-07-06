@@ -25,17 +25,11 @@ class ZoznamyPresenter extends BasePresenter
 
     private $templateDir = '/templates/Zoznamy';
 
-    public function createComponentGridRiesitelia()
+    public function createComponentGrid()
     {
-        return $this->createComponentGrid('riesitelia');
+        return $this->createGrid($this->getView());
     }
-
-    public function createComponentGridSkoly()
-    {
-        return $this->createComponentGrid('skoly');
-    }
-
-    public function createComponentGrid($type)
+    public function createGrid($type)
     {
         /** Load the grid settings to $settings */
         $file = APP_DIR . "{$this->templateDir}/$type.neon";
@@ -131,20 +125,20 @@ class ZoznamyPresenter extends BasePresenter
         $form->setRenderer(new EditFormRenderer);
         $form->addGroup('Všeobecné informácie');
         $form->addHidden('id');
-        $form->addText('nazov', 'Názov:')->setRequired(true);
-        $form->addText('skratka', 'Skratka:')->setRequired(true);
+        $form->addText('nazov', 'Názov:', 36)->setRequired(true);
+        $form->addText('skratka', 'Skratka:', 16)->setRequired(true);
         $form->addGroup('Poskytované vzdelanie');
         $form->addCheckbox('zakladna', 'Základné:');
         $form->addCheckbox('stredna', 'Stredné:');
         $form->addGroup('Adresa');
         $form->addContainer('adresa');
-        $form['adresa']->addText('ulica', 'Ulica:')->setRequired(true);
-        $form['adresa']->addText('mesto', 'Mesto:')->setRequired(true);
-        $form['adresa']->addText('psc', 'PSČ:')->setRequired(true);
+        $form['adresa']->addText('ulica', 'Ulica:', 24)->setRequired(true);
+        $form['adresa']->addText('mesto', 'Mesto:', 24)->setRequired(true);
+        $form['adresa']->addText('psc', 'PSČ:', 6)->setRequired(true);
 
         $form->addGroup('Kontaktné údaje');
-        $form->addText('email', 'Email:');
-        $form->addText('telefon', 'Telefón:');
+        $form->addText('email', 'Email:', 24);
+        $form->addText('telefon', 'Telefón:', 16);
 
         $form->addSubmit('posli', 'Odošli');
         $form->onSuccess[] = callback($this, 'pridajSkolu');
