@@ -49,9 +49,24 @@ class DisplayFormRenderer implements Nette\Forms\IFormRenderer
                         $el->create('dd')->create('span class="no"');
                     }
 
+                } elseif ($control instanceOf \Nette\Forms\Controls\SelectBox) {
+                    $items = FlatArray::getLeafs($control->getItems());
+                    if (!isset($items[$value])) {
+                        $el->create('dd class="na"', 'n/a');
+                        continue;
+                    }
+                    $value = $items[$value];
+                    if (!is_string($value)) {
+                        $text  = $value->getText();
+                        $title = $value->getTitle();
+                        if (strlen($title) > strlen($text)) {
+                            $value = $title;
+                        }
+                    }
+                    $el->create('dd', $value);
                 } else {
-                    if (!empty($value)) {
-                        $el->create('dd', $control->getValue());
+                    if ($value !== '') {
+                        $el->create('dd', $value);
                     } else {
                         $el->create('dd class="na"', 'n/a');
                     }
