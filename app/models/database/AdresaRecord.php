@@ -18,15 +18,6 @@ use \Nette\Utils\Strings;
 class AdresaRecord extends CommonRecord
 {
 
-    protected $_data = array(
-        'id' => null,
-        'organizacia' => null,
-        'ulica' => null,
-        'psc' => null,
-        'mesto' => null,
-        'stat' => null
-    );
-
     protected $_fields = array('id', 'organizacia', 'ulica', 'psc',
         'mesto', 'stat');
     protected $_mandatory = array('ulica', 'psc', 'mesto', 'stat');
