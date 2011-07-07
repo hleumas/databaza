@@ -7,7 +7,7 @@ id:
 nazov:
     type: text
     label: 'Názov:'
-    cols: 30
+    cols: 44
     required: povinná položka
 skratka:
     type: text

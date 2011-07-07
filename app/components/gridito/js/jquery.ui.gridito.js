@@ -22,7 +22,7 @@ $.widget("ui.gridito", {
 					win.load(this.href, function () {
 						win.dialog({
 							modal: true,
-                            width: 400
+                            width: 470
 						});
 						win.find("input:first").focus();
 					});
