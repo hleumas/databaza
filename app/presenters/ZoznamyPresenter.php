@@ -33,8 +33,8 @@ class ZoznamyPresenter extends BasePresenter
         }
         $form = NeonFormFactory::createForm(file_get_contents($file));
         $form->onSuccess[] = callback($this, 'spracuj' . ucfirst($type));
-        if (is_callable(array($this, "initForm" . ucfirst($type)))) {
-            call_user_func(array($this, "initForm$type"), $form);
+        if (method_exists($this, "initForm" . ucfirst($type))) {
+            call_user_func(array($this, "initForm" . ucfirst($type)), $form);
         }
         return $form;
     }
