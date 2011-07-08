@@ -29,15 +29,31 @@ class RiesitelSource extends CommonSource
     public function __construct($dbConnection)
     {
         parent::__construct($dbConnection);
-        $this->adresaSrc = new AdresaSource($dbConnection);
-        $this->skolaSrc  = new skolaSource($dbConnection);
-        $this->osobaSrc  = new OsobaSource($dbConnection);
-        $this->studiaSrc = new TypStudiaSource($dbConnection);
+        $this->setTable('riesitel');
     }
 
-    protected function getTable()
+    public function setAdresaSource($src)
     {
-        return 'riesitel';
+        $this->adresaSrc = $src;
+        $this->addPropertySource('koresp_adresa', $src);
+    }
+
+    public function setOsobaSource($src)
+    {
+        $this->osobaSrc = $src;
+        $this->addPropertySource('osoba', $src);
+    }
+
+    public function setSkolaSource($src)
+    {
+        $this->skolaSrc = $src;
+        $this->addPropertySource('skola', $src);
+    }
+
+    public function settypStudiaSource($src)
+    {
+        $this->studiaSrc = $src;
+        $this->addPropertySource('typ_studia', $src);
     }
 
     /**
@@ -49,23 +65,8 @@ class RiesitelSource extends CommonSource
      */
     public function getById($id)
     {
-        $data = array();
-        $fetch = $this->whereId($id)->fetch();
-        if ($fetch === false) {
-            throw new InvalidIdException("Id $id was not found in database");
-        }
-        $data = FlatArray::toArray($fetch);
-
-        foreach (array(
-            'osoba' => $this->osobaSrc,
-            'skola' => $this->skolaSrc,
-            'koresp_adresa' => $this->adresaSrc,
-            'typ_studia' => $this->studiaSrc) as $property => $source) {
-            if ($data["{$property}_id"]) {
-                $data[$property] = $source->getById($data["{$property}_id"]);
-            }
-        }
-
+        $data = parent::getById($id);
+        $data['datum'] = new \Nette\DateTime();
         return new RiesitelRecord($data);
     }
 
@@ -76,6 +77,10 @@ class RiesitelSource extends CommonSource
      */
     public function insertDb($record)
     {
+        $record['typ_studia'] = $record['typ_studia']['id'];
+        unset($record['rocnik']);
+        unset($record['datum']);
+        parent::insertDb($record);
     }
 
     /**
@@ -85,6 +90,10 @@ class RiesitelSource extends CommonSource
      */
     public function updateDb($record)
     {
+        $record['typ_studia'] = $record['typ_studia']['id'];
+        unset($record['rocnik']);
+        unset($record['datum']);
+        parent::updateDb($record);
     }
 
     /**
@@ -93,7 +102,14 @@ class RiesitelSource extends CommonSource
      * @param string  $id
      * @param bool    $force
      */
-    public function delete($id, $force)
+    public function delete($id, $force = false)
     {
+        $idValues = $this->whereId($id)
+            ->select('koresp_adresa_id, osoba_id')
+            ->fetch();
+        $this->whereId($id)->delete();
+        $this->adresaSrc->delete($idValues['koresp_adresa_id']);
+        $this->osobaSrc->delete($idValues['osoba_id']);
     }
+
 }
