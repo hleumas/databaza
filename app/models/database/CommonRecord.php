@@ -46,7 +46,11 @@ abstract class CommonRecord extends Nette\Object implements IRecord
 
     public function offsetSet($offset, $data)
     {
-        $this->_data[$offset] = $data;
+        if (method_exists($this, 'set' . ucfirst($offset))) {
+            call_user_func(array($this, 'set' . ucfirst($offset)), $data);
+        } else {
+            $this->_data[$offset] = $data;
+        }
     }
 
     public function offsetUnset($offset)
@@ -92,26 +96,26 @@ abstract class CommonRecord extends Nette\Object implements IRecord
     {
         foreach ($this->_object as $class => $objField) {
             if (isset($data[$objField]) || array_key_exists($objField, $data)) {
-                if (is_null($data[$objField])) {
-                    $this->_data[$objField] = null;
+                if (is_scalar($data[$objField]) || is_null($data[$objField])) {
+                    $this[$objField] = $data[$objField];
                 } else {
-                    if (is_null($this->_data[$objField])) {
-                        $this->_data[$objField] = new $class();
+                    if (is_null($this[$objField])) {
+                        $this[$objField] = new $class();
                     }
-                    $this->_data[$objField]->setData($data[$objField]);
+                    $this[$objField]->setData($data[$objField]);
                 }
             }
         }
 
         foreach ($this->_fields as $field) {
             if ((!array_key_exists($field, $data) && !isset($data[$field]))
-                || is_object($this->_data[$field])) {
+                || is_object($this[$field])) {
                 continue;
             }
             if ($data[$field] === '') {
                 $data[$field] = null;
             }
-            $this->_data[$field] = $data[$field];
+            $this[$field] = $data[$field];
         }
     }
 
