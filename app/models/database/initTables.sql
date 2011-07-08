@@ -53,7 +53,7 @@ CREATE TABLE riesitel (
     rok_maturity SMALLINT NOT NULL,
     typ_studia_id INT NOT NULL,
     telefon_rodic VARCHAR(255),
-    koresp_adresa_id INT NOT NULL,
+    koresp_adresa_id INT,
     koresp_kam TINYINT NOT NULL,
     PRIMARY KEY (id),
     INDEX(osoba_id),
