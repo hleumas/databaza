@@ -40,16 +40,15 @@ class ZoznamyPresenter extends BasePresenter
     }
     public function initFormRiesitelia($form)
     {
-        $db = $this->getContext()->database;
-        $studiumSrc = new TypStudiaSource($db);
-        $studia = $studiumSrc->getAll();
+        $studia = $this->context->sources->typStudiaSource->getAll();
         $stuSelect = array();
         foreach ($studia as $id => $studium) {
             $stuSelect[$id] = $studium['nazov'];
         }
         $form['typ_studia']->setItems($stuSelect);
 
-        $dataSkoly = $db->table('zoznamy_skola_view')
+        $dataSkoly = $this->context->database
+            ->table('zoznamy_skola_view')
             ->select('id, nazov, mesto, zakladna, stredna')
             ->order('mesto ASC, nazov ASC')
             ->fetchPairs('id');
@@ -61,7 +60,9 @@ class ZoznamyPresenter extends BasePresenter
             }
             $nazov = Strings::truncate($skola['nazov'], 28);
             if (strlen($skola['nazov']) > 28) {
-                $nazov = Html::el('option', $nazov)->title($skola['nazov']);
+                $nazov = Html::el('option', $nazov)
+                    ->title($skola['nazov'])
+                    ->value($skola['id']);
             }
             $skoly[$mesto][$skola['id']] = $nazov;
         }
@@ -120,8 +121,7 @@ class ZoznamyPresenter extends BasePresenter
 
     public function getDataSkoly($id)
     {
-        $source = new SkolaSource($this->getContext()->database);
-        $data = $source->getById($id);
+        $data = $this->context->sources->SkolaSource->getById($id);
         if (is_null($data['adresa'])) {
             $data['adresa'] = new AdresaRecord();
         }
@@ -129,7 +129,7 @@ class ZoznamyPresenter extends BasePresenter
     }
     public function getDataRiesitelia($id)
     {
-        $source = new RiesitelSource($this->getContext()->database);
+        $source = $this->context->sources->riesitelSource;
         $record = $source->getById($id);
         $data = FlatArray::deflate($record);
         foreach (array('typ_studia', 'skola') as $key) {
@@ -144,13 +144,18 @@ class ZoznamyPresenter extends BasePresenter
 
     public function deleteRiesitelia($row)
     {
+        try {
+            $this->context->sources->riesitelSource->delete($row['id']);
+            $this['grid']->flashMessage("Riešiteľ {$row['meno']} {$row['priezvisko']} odstránený");
+        } catch (DBIntegrityException $e) {
+            $this['grid']->flashMessage($e->getMessage(), 'error');
+        }
     }
 
     public function deleteSkoly($row)
     {
-        $source = new SkolaSource($this->getContext()->database);
         try {
-            $source->delete($row['id']);
+            $this->context->sources->skolaSource->delete($row['id']);
             $this['grid']->flashMessage("Škola {$row['nazov']} odstránená");
         } catch (DBIntegrityException $e) {
             $this['grid']->flashMessage($e->getMessage(), 'error');
@@ -160,15 +165,14 @@ class ZoznamyPresenter extends BasePresenter
 
     public function spracujSkoly()
     {
-        $source = new SkolaSource($this->getContext()->database);
         $form = $this['grid']['form'];
         $record = new SkolaRecord(FlatArray::inflate($form->getValues()));
         $record['adresa']['stat'] = 'SR';
         if (!empty($record['id'])) {
-            $source->update($record);
+            $this->context->sources->skolaSource->update($record);
             $this['grid']->flashMessage("Zmenená škola {$record['nazov']}");
         } else {
-            $source->insert($record);
+            $this->context->sources->skolaSource->insert($record);
             $this['grid']->flashMessage("Pridaná škola {$record['nazov']}");
         }
         $this->redirect('this');
@@ -177,5 +181,29 @@ class ZoznamyPresenter extends BasePresenter
 
     public function spracujRiesitelia()
     {
+        $sources = $this->context->sources;
+        $form = $this['grid']['form'];
+        $record = new RiesitelRecord(FlatArray::inflate($form->values));
+        if ($record['koresp_kam'] != RiesitelRecord::KORESP_ELSE) {
+            $record['koresp_adresa'] = null;
+        } else {
+            $record['koresp_adresa']['stat'] = 'SR';
+        }
+        $record['osoba']['adresa']['stat'] = 'SR';
+        $record['osoba']['datum_narodenia'] = new \Nette\DateTime($record['osoba']['datum_narodenia']);
+        $record['typ_studia'] = $sources->typStudiaSource->getById($record['typ_studia']);
+        $record['datum'] = new \Nette\DateTime();
+
+        $osoba = $record['osoba'];
+        if (!empty($record['id'])) {
+            $sources->riesitelSource->update($record);
+            $this['grid']->flashMessage("Zmenený riešiteľ {$osoba['meno']} {$osoba['priezvisko']}");
+        } else {
+            $sources->riesitelSource->insert($record);
+            $this['grid']->flashMessage("Pridaný riešiteľ {$osoba['meno']} {$osoba['priezvisko']}");
+        }
+
+        $this->redirect('this');
+            
     }
 }
