@@ -19,6 +19,9 @@ class TypStudiaSource extends \Nette\Object
 {
     private $_dbConnection;
     const TABLE = 'typ_studia';
+
+    private $cachedAll = false;
+    private $cache = array();
     /**
      * Source constructor
      *
@@ -38,23 +41,28 @@ class TypStudiaSource extends \Nette\Object
      */
     public function getById($id)
     {
-        $fetch = $this->_dbConnection
-            ->table(self::TABLE)
-            ->where('id', $id)
-            ->fetch();
-        if ($fetch === false) {
-            throw new InvalidIdException("Id $id was not found in database");
+        if (!isset($this->cache[$id])) {
+            $fetch = $this->_dbConnection
+                ->table(self::TABLE)
+                ->where('id', $id)
+                ->fetch();
+            if ($fetch === false) {
+                throw new InvalidIdException("Id $id was not found in database");
+            }
+            $this->cache[$id] = FlatArray::toArray($fetch);
         }
-        return FlatArray::toArray($fetch);
+        return $this->cache[$id];
     }
 
     public function getAll()
     {
-        $pairs = $this->_dbConnection
-            ->table(self::TABLE)
-            ->fetchPairs('id');
-        return FlatArray::toArray($pairs);
+        if (!$this->cachedAll) {
+            $pairs = $this->_dbConnection
+                ->table(self::TABLE)
+                ->fetchPairs('id');
+            $this->cache = FlatArray::toArray($pairs);
+            $this->cachedAll = true;
+        }
+        return $this->cache;
     }
-
-
 }
