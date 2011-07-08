@@ -1,9 +1,9 @@
 renderer:
     class: EditFormRenderer
-id:
-    type: hidden
 'Osobné údaje':
     type: group
+id:
+    type: hidden
 osoba.meno:
     type: text
     label: 'Meno:'
@@ -78,17 +78,14 @@ koresp_adresa.ulica:
     type: text
     label: 'Ulica:'
     cols: 24
-    required: povinná položka
 koresp_adresa.mesto:
     type: text
     label: 'Mesto:'
     cols: 24
-    required: povinná položka
 koresp_adresa.psc:
     type: text
     label: 'PSČ:'
     cols: 6
-    required: povinná položka
 odosli:
     type: submit
     label: Odošli
