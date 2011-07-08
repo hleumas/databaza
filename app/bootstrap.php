@@ -25,6 +25,13 @@ $configurator = new Nette\Configurator;
 $configurator->loadConfig(__DIR__ . '/config.neon');
 setlocale(LC_ALL, 'sk_SK.utf8'); 
 
+$configurator->container->addService('sources', function($cont) {
+    $s = new SourceContainer();
+    $s->params['database'] = $cont->database;
+    return $s;
+});
+ 
+
 
 // Configure application
 $application = $configurator->container->application;
