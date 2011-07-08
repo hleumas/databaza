@@ -27,7 +27,7 @@ class NeonFormFactory extends \Nette\Object
         'hidden'      => array(),
         'checkbox'    => array('label'),
         'radiolist'   => array('label', 'items'),
-        'select'      => array('label', 'items', 'size'),
+        'select'      => array('label', 'items', 'size', 'setPrompt' => 'prompt'),
         'multiSelect' => array('label', 'items', 'size'),
         'submit'      => array('label'),
         'button'      => array('label'));
@@ -63,12 +63,20 @@ class NeonFormFactory extends \Nette\Object
             $type = $control['type'];
             if (isset(self::$controls[$type])) {
                 $params = array($name);
-                foreach (self::$controls[$type] as $param) {
-                    $params[] = isset($control[$param]) ? $control[$param] : null;
+                $setters = array();
+                foreach (self::$controls[$type] as $key => $param) {
+                    if (is_numeric($key)) {
+                        $params[] = isset($control[$param]) ? $control[$param] : null;
+                    } elseif (isset($control[$param])) {
+                        $setters[$key] = $control[$param];
+                    }
                 }
 
                 $fctrl = call_user_func_array(
                     callback($container, 'add' . ucfirst($type)), $params);
+                foreach ($setters as $method => $value) {
+                    call_user_func(array($fctrl, $method), $value);
+                }
                 if (isset($control['required'])) {
                     $fctrl->setRequired($control['required']);
                 }
