@@ -46,6 +46,7 @@ class ZoznamyPresenter extends BasePresenter
             $stuSelect[$id] = $studium['nazov'];
         }
         $form['typ_studia']->setItems($stuSelect);
+        $form['typ_studia']->setPrompt('Zvoľte typ štúdia');
 
         $dataSkoly = $this->context->database
             ->table('zoznamy_skola_view')
@@ -68,6 +69,7 @@ class ZoznamyPresenter extends BasePresenter
         }
         
         $form['skola']->setItems($skoly);
+        $form['skola']->setPrompt('Zvoľte školu');
     }
 
     public function createComponentGrid()
