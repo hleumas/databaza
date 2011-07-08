@@ -53,7 +53,7 @@ class OsobaRecord extends CommonRecord
             throw new InvalidDataException('Invalid phone format');
         }
 
-        if (!\Nette\Forms\Controls\TextBase::validateEmail($this->_data['email'])) {
+        if (!self::isEmailValid($this->_data['email'])) {
             throw new InvalidDataException('Invalid email format');
         }
     }
