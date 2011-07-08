@@ -50,7 +50,7 @@ class ZoznamyPresenter extends BasePresenter
 
         $dataSkoly = $this->context->database
             ->table('zoznamy_skola_view')
-            ->select('id, nazov, mesto, zakladna, stredna')
+            ->select('id, nazov, mesto')
             ->order('mesto ASC, nazov ASC')
             ->fetchPairs('id');
         $skoly = array();
