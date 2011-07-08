@@ -22,7 +22,7 @@ class FlatArray extends \Nette\Object
     {
         $leafs = array();
         foreach ($array as $item) {
-            if (is_array($item) || $item instanceOf Iterator) {
+            if (is_array($item) || $item instanceOf Traversable) {
                 $item = self::getLeafs($item);
             } else {
                 $item = array($item);
@@ -35,7 +35,7 @@ class FlatArray extends \Nette\Object
     {
         $array = array();
         foreach ($iterator as $key => $value) {
-            if ($value instanceOf Iterator || is_array($value)) {
+            if ($value instanceOf Traversable || is_array($value)) {
                 $value = self::toArray($value);
             }
             $array[$key] = $value;
@@ -46,7 +46,7 @@ class FlatArray extends \Nette\Object
     {
         $deflated = array();
         foreach ($array as $key => $elem) {
-            if ($elem instanceOf Iterator || is_array($elem)) {
+            if ($elem instanceOf Traversable || is_array($elem)) {
                 $deflated = array_merge($deflated, self::deflate($elem, "$prefix$key."));
             } else {
                 $deflated["$prefix$key"] = $elem;
