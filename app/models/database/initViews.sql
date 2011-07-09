@@ -1,5 +1,5 @@
 USE netteDBdevel;
-CREATE VIEW zoznamy_riesitel_view AS
+CREATE OR REPLACE VIEW zoznamy_riesitel_view AS
 SELECT riesitel.id, osoba.meno, osoba.priezvisko, osoba.datum_narodenia,
        osoba.email, osoba.telefon, osoba.jabber, riesitel.telefon_rodic,
        riesitel.koresp_kam, riesitel.rok_maturity, skola.skratka skola_skratka,
@@ -11,7 +11,7 @@ FROM riesitel
     LEFT JOIN adresa     ON osoba.adresa_id           = adresa.id
     LEFT JOIN typ_studia ON riesitel.typ_studia_id    = typ_studia.id;
 
-CREATE VIEW zoznamy_skola_view AS
+CREATE OR REPLACE VIEW zoznamy_skola_view AS
 SELECT skola.id, skola.nazov, skola.skratka, skola.telefon, skola.email,
        skola.zakladna, skola.stredna, adresa.mesto
 
