@@ -21,13 +21,13 @@ class FlatArray extends \Nette\Object
     public static function getLeafs($array)
     {
         $leafs = array();
-        foreach ($array as $item) {
+        foreach ($array as $key => $item) {
             if (is_array($item) || $item instanceOf Traversable) {
                 $item = self::getLeafs($item);
             } else {
-                $item = array($item);
+                $item = array($key => $item);
             }
-            $leafs = array_merge($leafs, $item);
+            $leafs += $item;
         }
         return $leafs;
     }
