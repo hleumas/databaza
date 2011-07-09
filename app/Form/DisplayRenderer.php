@@ -57,11 +57,7 @@ class DisplayFormRenderer implements Nette\Forms\IFormRenderer
                     }
                     $value = $items[$value];
                     if (!is_string($value)) {
-                        $text  = $value->getText();
-                        $title = $value->getTitle();
-                        if (strlen($title) > strlen($text)) {
-                            $value = $title;
-                        }
+                        $value = $value->getTitle();
                     }
                     $el->create('dd', $value);
                 } else {
