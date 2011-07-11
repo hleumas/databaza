@@ -191,4 +191,15 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         $domain = "[$chars](?:[-$chars]{0,61}[$chars])"; // RFC 1034 one domain component
         return (bool) Strings::match($email, "(^$localPart@(?:$domain?\\.)+[-$chars]{2,19}\\z)i");
     }
+
+    public static function isYearValid($year)
+    {
+        if (is_null($year)) {
+            return true;
+        }
+        if (!Strings::match($year, '#^\s*(1\s*9|2\s*0)(\s*[0-9]){2}\s*$#')) {
+            return false;
+        }
+        return true;
+    }
 }

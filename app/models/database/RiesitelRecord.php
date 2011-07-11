@@ -122,6 +122,10 @@ class RiesitelRecord extends CommonRecord
             throw new InvalidDataException('Invalid telefon_rodic format');
         }
 
+        if (!self::isYearValid($data['rok_maturity'])) {
+            throw new InvalidDataException("{$data['rok_maturity']} is not valid year");
+        }
+
         if (!is_numeric($data['koresp_kam'])
             || $data['koresp_kam'] < 0
             || $data['koresp_kam'] > 2) {
