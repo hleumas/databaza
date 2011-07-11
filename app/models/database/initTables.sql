@@ -78,17 +78,16 @@ CREATE TABLE IF NOT EXISTS semester (
     rok SMALLINT NOT NULL,
     cast SMALLINT NOT NULL,
     kategoria_id INT NOT NULL,
-    aktualna_seria_id INT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (aktualna_seria_id) REFERENCES seria(id)
+    PRIMARY KEY (id)
 ) ENGINE INNODB;
 
 CREATE TABLE IF NOT EXISTS kategoria (
     id INT NOT NULL AUTO_INCREMENT,
     nazov VARCHAR(16),
-    aktualny_semester_id INT,
+    pocet_casti INT NOT NULL,
+    aktualna_seria_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (aktualny_semester_id) REFERENCES semester(id)
+    FOREIGN KEY (aktualna_seria_id) REFERENCES seria(id)
 ) ENGINE INNODB;
 
 ALTER TABLE seria

@@ -28,6 +28,7 @@ setlocale(LC_ALL, 'sk_SK.utf8');
 $configurator->container->addService('sources', function($cont) {
     $s = new SourceContainer();
     $s->params['database'] = $cont->database;
+    $s->params['kategoria_id'] = $cont->params['kategoria_id'];
     return $s;
 });
  

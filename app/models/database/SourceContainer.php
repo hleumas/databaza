@@ -49,4 +49,29 @@ class SourceContainer extends \Nette\DI\Container
         $src->setSkolaSource($this->skolaSource);
         return $src;
     }
+
+    public function createServiceSemesterSource()
+    {
+        return new SemesterSource($this->params['database'], $this->kategoria);
+    }
+    public function createServiceSeriaSource()
+    {
+        $src = new SeriaSource($this->params['database']);
+        $src->setKategoria($this->kategoria);
+        return $src;
+    }
+
+    public function createServiceKategoria()
+    {
+        $fetch = $this->params['database']
+            ->table('kategoria')
+            ->where('id', $this->params['kategoria_id'])
+            ->fetch();
+        $kategoria = new StdClass();
+        $kategoria->id = $fetch['id'];
+        $kategoria->nazov = $fetch['nazov'];
+        $kategoria->pocet_casti = $fetch['pocet_casti'];
+        $kategoria->aktualna_seria_id = $fetch['aktualna_seria_id'];
+        return $kategoria;
+    }
 }

@@ -11,6 +11,8 @@ common:
         # zlib.output_compression: yes
         default_charset: "UTF-8"
 
+    kategoria_id: 1
+
     services:
         authenticator: 
             class: UsersModel
