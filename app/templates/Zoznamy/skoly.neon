@@ -46,5 +46,6 @@ buttons:
         label   : Zmaž
         icon    : ui-icon-closethick
         showText: false
+        ajax    : true
         confirmationQuestion : 
             Skutočne chcete odstrániť školu %nazov%?
