@@ -1,0 +1,14 @@
+renderer: 
+    class: EditFormRenderer
+'Všeobecné informácie':
+    type: group
+id:
+    type: hidden
+termin:
+    type: text
+    label: 'Termín odoslania:'
+    cols: 10
+    required: povinná položka
+'odosli':
+    type: submit
+    label: 'Odošli'

@@ -1,0 +1,30 @@
+columns:
+    cislo:
+        label   : Č.
+        length  : 2
+    termin:
+        label   : Termín
+        length  : 10
+
+buttons:
+    pridaj:
+        label   : Pridaj sériu
+        toolbar : true
+        window  : true
+        icon    : ui-icon-plusthick
+    detail:
+        label   : Detail
+        window  : true
+        icon    : ui-icon-search
+        showText: false
+    edit:
+        label   : Zmeň
+        window  : true
+        icon    : ui-icon-pencil
+        showText: false
+    delete:
+        label   : Zmaž
+        icon    : ui-icon-closethick
+        showText: false
+        confirmationQuestion : 
+            Skutočne chcete odstrániť %cislo%. sériu?

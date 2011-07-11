@@ -24,6 +24,24 @@ class ZoznamyPresenter extends BasePresenter
 {
 
     private $templateDir = '/templates/Zoznamy';
+    private $semesterId = null;
+
+    public function getSemesterId()
+    {
+        if (is_null($this->semesterId)) {
+            $semester = $this->getParam('semester', false);
+            if ($semester === false) {
+                $seria = $this->context->sources->seriaSource->getAktualna();
+                if ($seria === false) {
+                    $semester = $this->context->sources->SemesterSource->getLastId();
+                } else {
+                    $semester = $seria['semester'];
+                }
+            }
+            $this->semesterId = $semester;
+        }
+        return $this->semesterId;
+    }
 
     public function createForm($type)
     {
@@ -76,6 +94,21 @@ class ZoznamyPresenter extends BasePresenter
     {
         return $this->createGrid($this->getView());
     }
+    public function getGridSource($type)
+    {
+        switch ($type) {
+        case 'riesitelia':
+            return $this->context->database->table('zoznamy_riesitel_view');
+        case 'skoly':
+            return $this->context->database->table('zoznamy_skola_view');
+        case 'serie':
+            return $this->context->database
+                ->table('seria')
+                ->where('semester_id', $this->getSemesterId())
+                ->order('cislo DESC');
+        }
+
+    }
     public function createGrid($type)
     {
         /** Load the grid settings to $settings */
@@ -85,7 +118,7 @@ class ZoznamyPresenter extends BasePresenter
         }
 
         $grid = NeonGriditoFactory::createGrid(
-            $this->context->database,
+            $this->getGridSource($type),
             file_get_contents($file));
 
         /** Create form */
@@ -129,6 +162,12 @@ class ZoznamyPresenter extends BasePresenter
         }
         return FlatArray::deflate($data);
     }
+
+    public function getDataSerie($id)
+    {
+        $data = $this->context->sources->SeriaSource->getById($id);
+        return $data;
+    }
     public function getDataRiesitelia($id)
     {
         $source = $this->context->sources->riesitelSource;
@@ -164,6 +203,17 @@ class ZoznamyPresenter extends BasePresenter
         }
     }
 
+    public function deleteSerie($row)
+    {
+        try {
+            $this->context->sources->seriaSource->delete($row['id']);
+            $this['grid']->flashMessage('Séria odstránená');
+        } catch (DBIntegrityException $e) {
+            $this['grid']->flashMessage($e->getMessage(), 'error');
+        }
+    }
+
+
 
     public function spracujSkoly()
     {
@@ -176,6 +226,23 @@ class ZoznamyPresenter extends BasePresenter
         } else {
             $this->context->sources->skolaSource->insert($record);
             $this['grid']->flashMessage("Pridaná škola {$record['nazov']}");
+        }
+        $this->redirect('this');
+    }
+
+    public function spracujSerie()
+    {
+        $form = $this['grid']['form'];
+        $data = $form->getValues();
+        $data['termin'] = new \Nette\DateTime($data['termin']);
+        $data['semester'] = $this->getSemesterId();
+        $record = new SeriaRecord($data);
+        if (!empty($record['id'])) {
+            $this->context->sources->seriaSource->update($record);
+            $this['grid']->flashMessage("Zmenená séria");
+        } else {
+            $this->context->sources->seriaSource->insert($record);
+            $this['grid']->flashMessage("Pridaná séria");
         }
         $this->redirect('this');
     }
@@ -208,4 +275,20 @@ class ZoznamyPresenter extends BasePresenter
         $this->redirect('this');
             
     }
+
+    public function createComponentSemesterSelect()
+    {
+        $form = new Form();
+        $form->setMethod('get');
+        $semestre = $this->context->sources->semesterSource->getAll();
+        $items = array();
+        $cast = array(1 => 'leto', 2 => 'zima');
+        foreach ($semestre as $id => $semester) {
+            $items[$id] = "{$semester['rok']} {$cast[$semester['cast']]}";
+        }
+        $form->addSelect('semester', 'Semester:', $items);
+        $form->addSubmit('nacitaj', 'Načítaj');
+        return $form;
+    }
+
 }
