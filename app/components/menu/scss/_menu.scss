@@ -10,7 +10,7 @@ $menu-first-bg: $orange;
 $menu-second-bg: $brown;
 
 @mixin listmetrics($height) {
-    height: $height;
+    height: $item-height  * $height;
     padding: 0.5 * $height * (1-$item-height) $item-separation/2;
     a {
         height: 0.9 * $item-height * $height;
