@@ -46,7 +46,7 @@ $application->onStartup[] = function() use ($application) {
 
 	$router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
 
-	$router[] = new Route('<presenter>/<action>[/<id>]', 'Zoznamy:riesitelia');
+	$router[] = new Route('<presenter>/<action>[/<id>]', 'Skoly:default');
 };
 
 

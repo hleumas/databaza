@@ -1,7 +1,7 @@
 Zoznamy:
-    Riešitelia: 'Zoznamy:riesitelia'
-    Školy:      'Zoznamy:skoly'
-    Série:      'Zoznamy:serie'
+    Riešitelia: 'Riesitelia:default'
+    Školy:      'Skoly:default'
+    Série:      'Serie:default'
 Aktuálna séria:
     'Riešitelia': Smolenka:smola
     'Príklady': Smolenka:smola
