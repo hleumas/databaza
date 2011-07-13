@@ -42,7 +42,16 @@ body {
         margin: 0px;
     }
 }
-
+#ajax-spinner {
+    position:fixed;
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    background: white url('../images/ajax-loader.gif') no-repeat 50% 50%;
+    padding: 32px;
+    font-size: 0;
+    border: 2px solid #ccc;
+}
 $formbg: #eada9a;
 $form-header-color: #1294c4;
 @import 'forms.scss';
