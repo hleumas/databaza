@@ -1,4 +1,8 @@
 {block #content}
 {control semesterSelect}
+{if $control->submitted}
+{control form}
+{else}
 {control grid}
+{/if}
 {/block}

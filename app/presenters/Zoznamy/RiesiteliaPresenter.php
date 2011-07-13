@@ -23,9 +23,9 @@ use Nette\Utils\Neon;
 class RiesiteliaPresenter extends ZoznamyPresenter
 {
 
-    public function createForm()
+    public function createComponentForm()
     {
-        $form = parent::createForm();
+        $form = parent::createComponentForm();
         $studia = $this->context->sources->typStudiaSource->getAll();
         $stuSelect = array();
         foreach ($studia as $id => $studium) {
@@ -91,7 +91,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     public function onSubmit()
     {
         $sources = $this->context->sources;
-        $form = $this['grid']['form'];
+        $form = $this['form'];
         $record = new RiesitelRecord(FlatArray::inflate($form->values));
         if ($record['koresp_kam'] != RiesitelRecord::KORESP_ELSE) {
             $record['koresp_adresa'] = null;

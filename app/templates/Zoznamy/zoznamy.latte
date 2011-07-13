@@ -1,6 +1,6 @@
 {block #content}
-{if $control['grid']['form']->isSubmitted()}
-{$control['grid']['form']->render()}
+{if $control->submitted}
+{control form}
 {else}
 {control grid}
 {/if}

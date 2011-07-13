@@ -25,6 +25,7 @@ abstract class ZoznamyPresenter extends BasePresenter
 
     private $templateDir = '/templates/Zoznamy';
     private $semesterId = null;
+    public  $submitted = false;
 
     public abstract function onSubmit();
     public abstract function delete($row);
@@ -53,7 +54,11 @@ abstract class ZoznamyPresenter extends BasePresenter
         return APP_DIR . "$this->templateDir/{$name}Form.neon";
     }
 
-    public function createForm()
+    public function setSubmitted()
+    {
+        $this->submitted = true;
+    }
+    public function createComponentForm()
     {
         $file = $this->formatFormFiles();
         if (!is_file($file) || !is_readable($file)) {
@@ -61,6 +66,7 @@ abstract class ZoznamyPresenter extends BasePresenter
         }
         $form = NeonFormFactory::createForm(file_get_contents($file));
         $form->onSuccess[] = callback($this, 'onSubmit');
+        $form->onSubmit[] = callback($this, 'setSubmitted');
         return $form;
     }
 
@@ -76,35 +82,35 @@ abstract class ZoznamyPresenter extends BasePresenter
             $this->getGridSource(),
             file_get_contents($file));
 
-        /** Create form */
-        $grid->addComponent($this->createForm(), "form");
-
         return $this->setGridHandlers($grid);
     }
 
     public function setGridHandlers($grid)
     {
         /** Set button handlers */
-        $form    = $grid['form'];
+        $getForm = callback($this, 'getComponent');
         $getData = callback($this, 'getData');
         $grid['actions']->getComponent('delete')->handler =
             callback($this, 'delete');
 
         $grid['actions']->getComponent('detail')->handler = 
-            function($row) use ($form, $getData) {
+            function($row) use ($getForm, $getData) {
+            $form = $getForm('form');
             $form->setDefaults($getData->invoke($row['id']));
             $form->setRenderer(new DisplayFormRenderer);
             $form->render();
         };
 
         $grid['actions']->getComponent('edit')->handler =
-            function($row) use ($form, $getData) {
+            function($row) use ($getForm, $getData) {
+            $form = $getForm('form');
             $form->setDefaults($getData->invoke($row['id']));
             $form->render();
         };
 
         $grid['toolbar']->getComponent('pridaj')->handler =
-            function() use ($form) {
+            function() use ($getForm) {
+            $form = $getForm('form');
             $form->render();
         };
         return $grid;

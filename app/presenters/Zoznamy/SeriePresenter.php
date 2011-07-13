@@ -87,7 +87,7 @@ class SeriePresenter extends ZoznamyPresenter
 
     public function onSubmit()
     {
-        $form = $this['grid']['form'];
+        $form = $this['form'];
         $data = $form->getValues();
         $data['termin'] = new \Nette\DateTime($data['termin']);
         $data['semester'] = $this->getSemesterId();

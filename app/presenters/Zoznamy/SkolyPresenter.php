@@ -49,7 +49,7 @@ class SkolyPresenter extends ZoznamyPresenter
 
     public function onSubmit()
     {
-        $form = $this['grid']['form'];
+        $form = $this['form'];
         $record = new SkolaRecord(FlatArray::inflate($form->getValues()));
         $record['adresa']['stat'] = 'SR';
         if (!empty($record['id'])) {
