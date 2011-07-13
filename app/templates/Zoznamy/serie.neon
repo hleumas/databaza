@@ -12,6 +12,10 @@ buttons:
         toolbar : true
         window  : true
         icon    : ui-icon-plusthick
+    aktualna:
+        label   : Aktuálna
+        check   : true
+        ajax    : true
     detail:
         label   : Detail
         window  : true

@@ -37,9 +37,11 @@ class NeonGriditoFactory extends \Nette\Object
         /** Create buttons */
         foreach ($settings['buttons'] as $key => $button) {
             $call  = empty($button['toolbar']) ? 'add' : 'addToolbar';
-            $call .= empty($button['window']) ? 'Button' : 'WindowButton';
+            $call .= empty($button['window']) ? ''     : 'Window';
+            $call .= empty($button['check']) ? 'Button': 'CheckButton';
             unset($button['toolbar']);
             unset($button['window']);
+            unset($button['check']);
 
             call_user_func(array($grid, $call), $key, null, $button);
         }

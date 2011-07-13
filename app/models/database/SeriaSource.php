@@ -65,11 +65,11 @@ class SeriaSource extends CommonSource
         }
         $this->kategoria->aktualna_seria_id = $id;
         $set = array(
-            'id' => $this->kategoria->id,
             'aktualna_seria_id' => $this->kategoria->aktualna_seria_id
         );
         $this->getConnection()
             ->table('kategoria')
+            ->where('id', $this->kategoria->id)
             ->update($set);
     }
 

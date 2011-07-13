@@ -51,6 +51,21 @@ class SeriePresenter extends ZoznamyPresenter
 
     public function setGridHandlers($grid)
     {
+        $aktualna = &$this->context->sources->kategoria->aktualna_seria_id;
+        $source = $this->context->sources;
+        $seriaSource = $this->context->sources->seriaSource;
+        $grid['actions']->getComponent('aktualna')->SetChecked(
+            function($row) use (&$aktualna) {
+                return ($row['id'] == $aktualna);
+            })->setEnabled(
+            function($row) use (&$aktualna) {
+                return ($row['id'] != $aktualna);
+            }
+            )->setHandler(
+                function($row) use ($seriaSource) {
+                    $seriaSource->setAktualna($row['id']);
+                }
+            );
         return parent::setGridHandlers($grid);
     }
 
