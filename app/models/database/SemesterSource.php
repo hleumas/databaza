@@ -74,12 +74,10 @@ class SemesterSource extends \Nette\Object
 
         $record = array(
             'rok' => $fetch['rok'],
-            'cast' => $fetch['cast'],
+            'cast' => $fetch['cast'] + 1,
             'kategoria_id' => $this->kategoria->id
         );
-        $rok  = $fetch['rok'];
-        $cast = $fetch['cast'];
-        if ($this->kategoria->pocet_casti == $fetch['cast']) {
+        if ($this->kategoria->pocet_casti < $record['cast']) {
            $record['rok']++;
            $record['cast'] = 1;
         }
