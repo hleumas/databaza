@@ -24,6 +24,8 @@ class SeriePresenter extends ZoznamyPresenter
 {
 
     private $semesterId = null;
+    /** @persistent */
+    public $semester;
     public function getSemesterId()
     {
         if (is_null($this->semesterId)) {
@@ -69,6 +71,12 @@ class SeriePresenter extends ZoznamyPresenter
         return parent::setGridHandlers($grid);
     }
 
+    public function createComponentForm()
+    {
+        $form = parent::createComponentForm();
+        $form['aktualna']->setValue(true);
+        return $form;
+    }
     public function getData($id)
     {
         $data = $this->context->sources->SeriaSource->getById($id);
@@ -87,10 +95,14 @@ class SeriePresenter extends ZoznamyPresenter
 
     public function onSubmit()
     {
+        $semesterSource = $this->context->sources->semesterSource;
         $form = $this['form'];
         $data = $form->getValues();
         $data['termin'] = new \Nette\DateTime($data['termin']);
         $data['semester'] = $this->getSemesterId();
+        if ($data['semester'] == $semesterSource->getLastId()) {
+            $semesterSource->insertNew();
+        }
         $record = new SeriaRecord($data);
         if (!empty($record['id'])) {
             $this->context->sources->seriaSource->update($record);
@@ -112,7 +124,8 @@ class SeriePresenter extends ZoznamyPresenter
         foreach ($semestre as $id => $semester) {
             $items[$id] = "{$semester['rok']} {$cast[$semester['cast']]}";
         }
-        $form->addSelect('semester', 'Semester:', $items);
+        $form->addSelect('semester', 'Semester:', $items)
+            ->setValue($this->getSemesterId());
         $form->addSubmit('nacitaj', 'Načítaj');
         return $form;
     }

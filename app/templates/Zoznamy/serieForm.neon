@@ -9,6 +9,9 @@ termin:
     label: 'Termín odoslania:'
     cols: 10
     required: povinná položka
+aktualna:
+    type: checkbox
+    label: 'Je aktuálna:'
 'odosli':
     type: submit
     label: 'Odošli'
