@@ -56,6 +56,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
         
         $form['skola']->setItems($skoly);
         $form['skola']->setPrompt('Zvoľte školu');
+        return $form;
     }
 
     public function getGridSource()
