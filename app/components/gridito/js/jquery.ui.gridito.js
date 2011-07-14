@@ -21,7 +21,8 @@ $.widget("ui.gridito", {
 					win.attr("title", $(this).attr("data-gridito-window-title"));
 					win.load(this.href, function () {
 						win.dialog({
-							modal: true
+							modal: true,
+                            width: 500
 						});
 						win.find("input:first").focus();
 					});
