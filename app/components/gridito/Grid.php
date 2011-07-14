@@ -51,6 +51,9 @@ class Grid extends \Nette\Application\UI\Control
 	/** @var string|callable */
 	private $rowClass = null;
 
+    /** @var callable */
+    private $editHandler = null;
+
 	// </editor-fold>
 
 	// <editor-fold defaultstate="collapsed" desc="constructor">
@@ -259,6 +262,35 @@ class Grid extends \Nette\Application\UI\Control
 			$this->invalidateControl();
 		}
 	}
+
+    /**
+     * Set edit handler
+     * @param callback handler
+     * @return Grid
+     */
+    public function setEditHandler($callback)
+    {
+        $this->editHandler = $callback;
+        return $this;
+    }
+
+    /**
+     * Handle edit
+     */
+    public function handleEdit()
+    {
+        if ($this->presenter->isAjax()) {
+            $post = \Nette\Environment::getHttpRequest()->getPost();
+            foreach ($post as $column => $value) {
+                if ($column == 'id' || 
+                    $this['columns']->getComponent($column)->isEditable()) {
+                    continue;
+                }
+                throw new \Nette\Application\ForbiddenRequestException("Column $column is not editable");
+            }
+            call_user_func($this->editHandler, $post);
+        }
+    }
 
 
 
