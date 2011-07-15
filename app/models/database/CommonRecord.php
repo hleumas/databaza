@@ -213,4 +213,12 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         }
         return true;
     }
+    public static function normalizeInteger($integer)
+    {
+        if (!is_null($integer)) {
+            return (int)$integer;
+        }
+        return null;
+    }
+
 }
