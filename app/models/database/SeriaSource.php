@@ -42,13 +42,23 @@ class SeriaSource extends CommonSource
         return new SeriaRecord($seria);
     }
 
-    public function getAll($semesterId)
+    public function getAll($semesterId = null)
     {
-        $fetch = $this->getConnection()
-            ->table($this->getTable())
-            ->where('semester_id', $semesterId)
-            ->order('cislo DESC')
-            ->fetchPairs('id');
+        if (is_null($semesterId)) {
+            $fetch = $this->getConnection()
+                ->table($this->getTable())
+                ->select('seria.*')
+                ->where('seria.semester_id = semester.id')
+                ->where('semester.kategoria_id', $this->kategoria->id)
+                ->order('cislo DESC')
+                ->fetchPairs('id');
+        } else {
+            $fetch = $this->getConnection()
+                ->table($this->getTable())
+                ->where('semester_id', $semesterId)
+                ->order('cislo DESC')
+                ->fetchPairs('id');
+        }
         $result = array();
         foreach ($fetch as $id => $seria) {
             $result[$id] = new SeriaRecord($seria);
