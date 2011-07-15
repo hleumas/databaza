@@ -62,6 +62,9 @@ ul.menu {
             top: $first-height;
             background-color: $menu-second-bg;
         }
+        &:hover ul {
+            z-index: 1;
+        }
     }
 
     li li {
