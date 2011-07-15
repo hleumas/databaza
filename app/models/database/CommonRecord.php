@@ -202,4 +202,15 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         }
         return true;
     }
+
+    public static function isIntegerValid($integer)
+    {
+        if (is_null($integer)) {
+            return true;
+        }
+        if (!Strings::match($integer, '#^\s*([0-9]\s*)*$#')) {
+            return false;
+        }
+        return true;
+    }
 }
