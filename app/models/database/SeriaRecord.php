@@ -14,23 +14,13 @@
  * @package database
  */
 
-use \Nette\Utils\Strings;
 class SeriaRecord extends CommonRecord
 {
-
-    protected $_fields = array('id', 'cislo', 'termin', 'semester', 'aktualna');
-    protected $_mandatory = array('termin');
-
-    /**
-     * Check the validity of data
-     *
-     * @throws InvalidDataException
-     */
-    public function validate()
-    {
-        parent::validate();
-        if (!($this->data['termin'] instanceOf \Nette\DateTime)) {
-            throw new InvalidDataException("{$this->data['termin']} must be instance of \Nette\DateTime");
-        }
-    }
+    protected $_fields = array(
+        'id' => array(false, 'custom'),
+        'cislo' => array(false, 'integer'),
+        'termin' => array(true, 'date'),
+        'semester' => array(false, 'custom'),
+        'aktualna' => array(false, 'bool')
+    );
 }

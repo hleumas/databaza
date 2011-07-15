@@ -22,21 +22,17 @@ class RiesitelRecord extends CommonRecord
     const KORESP_SKOLA = 1;
     const KORESP_ELSE  = 2;
     protected $_fields = array(
-        'id',
-        'osoba',
-        'skola',
-        'rok_maturity',
-        'rocnik',
-        'datum',
-        'typ_studia',
-        'telefon_rodic',
-        'koresp_kam',
-        'koresp_adresa'
+        'id'            => array(false, 'custom'),
+        'osoba'         => array(true, 'object', 'OsobaRecord'),
+        'skola'         => array(true, 'object', 'SkolaRecord'),
+        'rok_maturity'  => array(true, 'year'),
+        'rocnik'        => array(false, 'integer'),
+        'datum'         => array(false, 'date'),
+        'typ_studia'    => array(true, 'custom'),
+        'telefon_rodic' => array(false, 'phone'),
+        'koresp_kam'    => array(true, 'custom'),
+        'koresp_adresa' => array(false, 'object', 'AdresaRecord')
     );
-
-    protected $_object = array('osobaRecord' => 'osoba', 'SkolaRecord' => 'skola', 'AdresaRecord' => 'koresp_adresa');
-    protected $_mandatory = array('osoba', 'skola', 'rok_maturity', 'typ_studia', 'koresp_kam');
-
 
     public function updateRocnik()
     {
@@ -112,18 +108,9 @@ class RiesitelRecord extends CommonRecord
     {
         parent::validate();
         $data = $this->_data;
-        if (!is_numeric($data['rok_maturity'])
-            || $data['rok_maturity'] < 1980
+        if ($data['rok_maturity'] < 1980
             || $data['rok_maturity'] > 2030) {
             throw new InvalidDataException("{$data['rok_maturity']} is not valid rok_maturity");
-        }
-
-        if (!self::isPhoneValid($data['telefon_rodic'])) {
-            throw new InvalidDataException('Invalid telefon_rodic format');
-        }
-
-        if (!self::isYearValid($data['rok_maturity'])) {
-            throw new InvalidDataException("{$data['rok_maturity']} is not valid year");
         }
 
         if (!is_numeric($data['koresp_kam'])

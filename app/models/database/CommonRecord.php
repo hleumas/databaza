@@ -20,13 +20,11 @@ abstract class CommonRecord extends Nette\Object implements IRecord
 
     protected $_data = array();
     protected $_fields = array();
-    protected $_mandatory = array();
-    protected $_object = array();
 
 
     public function __construct($data = null)
     {
-        foreach ($this->_fields as $field) {
+        foreach ($this->_fields as $field => $type) {
             $this->_data[$field] = null;
         }
         if (!is_null($data)) {
@@ -87,6 +85,7 @@ abstract class CommonRecord extends Nette\Object implements IRecord
     {
         return $this->_data;
     }
+
     /**
      * Set only the data already defined by record
      *
@@ -94,30 +93,30 @@ abstract class CommonRecord extends Nette\Object implements IRecord
      */
     public function setData($data)
     {
-        foreach ($this->_object as $class => $objField) {
-            if (isset($data[$objField]) || array_key_exists($objField, $data)) {
-                if (is_scalar($data[$objField]) || is_null($data[$objField])) {
-                    $this[$objField] = $data[$objField];
-                } else {
-                    if (is_null($this[$objField])) {
-                        $this[$objField] = new $class();
-                    }
-                    $this[$objField]->setData($data[$objField]);
-                }
-            }
-        }
-
-        foreach ($this->_fields as $field) {
-            if ((!array_key_exists($field, $data) && !isset($data[$field]))
-                || is_object($this[$field])) {
+        foreach ($this->_fields as $field => $type) {
+            if (!isset($data[$field]) && !array_key_exists($field, $data)) {
                 continue;
             }
-            if ($data[$field] === '') {
-                $data[$field] = null;
+            if ($type[1] == 'object') {
+                $this->setObjField($field, $data[$field], $type[2]);
+            } else {
+                $this[$field] = $data[$field] === '' ? null : $data[$field];
             }
-            $this[$field] = $data[$field];
         }
     }
+
+    private function setObjField($field, $value, $class)
+    {
+        if (is_scalar($value) || is_null($value)) {
+            $this[$field] = $value;
+            return;
+        }
+        if (is_null($this[$field])) {
+            $this[$field] = new $class();
+        }
+        $this[$field]->setData($value);
+    }
+
 
     /**
      * Basic normalization based on trimming all values
@@ -125,16 +124,27 @@ abstract class CommonRecord extends Nette\Object implements IRecord
     public function normalize()
     {
         foreach ($this->_data as $key => $elem) {
+            $type = $this->_fields[$key];
+            if ($type[1] == 'object') {
+                if ($elem instanceOf IRecord) {
+                    $elem->normalize();
+                }
+                continue;
+            }
+            $callback = array('self', 'normalize' . ucfirst($type[1]));
+            if (is_string($elem)) {
+                $elem = Strings::trim($elem);
+            }
+            if ($elem === '') {
+                $elem = null;
+            }
             if (is_null($elem)) {
                 continue;
             }
-            if ($elem instanceOf IRecord) {
-                $elem->normalize();
-                continue;
+            if (method_exists(get_class(), $callback[1])) {
+                $elem = call_user_func($callback, $elem);
             }
-            if (is_string($elem)) {
-                $this->_data[$key] = Strings::trim($elem);
-            }
+            $this->_data[$key] = $elem;
         }
     }
 
@@ -146,18 +156,32 @@ abstract class CommonRecord extends Nette\Object implements IRecord
      */
     public function validate()
     {
-        foreach ($this->_mandatory as $key) {
-            if (is_null($this->_data[$key]) ||
-                (is_string($this->_data[$key]) && 
-                Strings::trim($this->_data[$key]) == '')) {
-                    throw new InvalidDataException("The $key value in "
-                        . get_class($this) . " must not be empty");
+        foreach ($this->_fields as $field => $type) {
+            if (is_null($this->_data[$field]) 
+                || (is_string($this->_data[$field])
+                && Strings::trim($this->_data[$field]) === '')
+                ) {
+                if ($type[0]) {
+                    throw new InvalidDataException("The $field value in "
+                        . get_class($this) . ' must not be empty');
+                } else {
+                    continue;
+                }
             }
-        }
 
-        foreach ($this->_data as $elem) {
-            if ($elem instanceOf IRecord) {
-                $elem->validate();
+            $elem = $this[$field];
+            if ($type[1] == 'object') {
+                if ($this[$field] instanceOf IRecord) {
+                    $elem->validate();
+                } else {
+                    continue;
+                }
+            }
+            $callback = array('self', 'is' . ucfirst($type[1]) . 'Valid');
+            if (method_exists(get_class(), $callback[1])) {
+                if (!call_user_func($callback, $elem)) {
+                    throw new InvalidDataException("$elem is not valid $field value");
+                }
             }
         }
     }
@@ -171,20 +195,11 @@ abstract class CommonRecord extends Nette\Object implements IRecord
     }
     public static function isPhoneValid($phone)
     {
-        if (is_null($phone)) {
-            return true;
-        }
-        if (!Strings::match($phone, '#^\s*[+]?\s*([0-9/]\s*){5,}$#')) {
-            return false;
-        }
-        return true;
+        return Strings::match($phone, '#^\s*[+]?\s*([0-9/]\s*){5,}$#');
     }
 
     public static function isEmailValid($email)
     {
-        if (is_null($email)) {
-            return true;
-        }
         $atom = "[-a-z0-9!#$%&'*+/=?^_`{|}~]"; // RFC 5322 unquoted characters in local-part
         $localPart = "(?:\"(?:[ !\\x23-\\x5B\\x5D-\\x7E]*|\\\\[ -~])+\"|$atom+(?:\\.$atom+)*)"; // quoted or unquoted
         $chars = "a-z0-9\x80-\xFF"; // superset of IDN
@@ -194,31 +209,36 @@ abstract class CommonRecord extends Nette\Object implements IRecord
 
     public static function isYearValid($year)
     {
-        if (is_null($year)) {
-            return true;
-        }
-        if (!Strings::match($year, '#^\s*(1\s*9|2\s*0)(\s*[0-9]){2}\s*$#')) {
-            return false;
-        }
-        return true;
+        return Strings::match($year, '#^\s*(1\s*9|2\s*0)(\s*[0-9]){2}\s*$#');
+    }
+
+    public static function normalizeYear($year)
+    {
+        return (int)$year;
     }
 
     public static function isIntegerValid($integer)
     {
-        if (is_null($integer)) {
-            return true;
-        }
-        if (!Strings::match($integer, '#^\s*([0-9]\s*)*$#')) {
-            return false;
-        }
-        return true;
+        return Strings::match($integer, '#^\s*([0-9]\s*)*$#');
     }
     public static function normalizeInteger($integer)
     {
-        if (!is_null($integer)) {
-            return (int)$integer;
-        }
-        return null;
+        return (int)$integer;
+    }
+
+    public static function isPscValid($psc)
+    {
+        return Strings::match($psc, '/^\s*([0-9]\s*){5}$/');
+    }
+
+    public static function normalizePsc($psc)
+    {
+        return Strings::replace($psc, '/\s*/');
+    }
+
+    public static function validateDate($date)
+    {
+        return $date instanceOf \Nette\DateTime;
     }
 
 }
