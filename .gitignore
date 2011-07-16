@@ -1,3 +1,4 @@
+app/config.neon
 log/
 !log/.htaccess
 !log/web.config
