@@ -1,0 +1,26 @@
+renderer: 
+    class: EditFormRenderer
+'Všeobecné informácie':
+    type: group
+id:
+    type: hidden
+nazov:
+    type: text
+    label: 'Názov:'
+    cols: 32
+    required: povinná položka
+opravovatel:
+    type: text
+    label: 'Opravuje:'
+    cols: 32
+vzorakovac:
+    type: text
+    label: 'Vzorák píše:'
+    cols : 32
+poznamka:
+    type: text
+    label: 'Poznámka:'
+    cols: 32
+'odosli':
+    type: submit
+    label: 'Odošli'

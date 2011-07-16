@@ -1,0 +1,38 @@
+columns:
+    cislo:
+        label   : Č.
+        length  : 2
+    nazov:
+        label   : Názov
+        length  : 32
+    opravovatel:
+        label  : Opravuje
+    vzorakovac:
+        label : Vzorák
+    poznamka:
+        label: Poznámka
+
+
+buttons:
+    pridaj:
+        label   : Pridaj príklad
+        toolbar : true
+        window  : true
+        icon    : ui-icon-plusthick
+    detail:
+        label   : Detail
+        window  : true
+        icon    : ui-icon-search
+        showText: false
+    edit:
+        label   : Zmeň
+        window  : true
+        icon    : ui-icon-pencil
+        showText: false
+    delete:
+        label   : Zmaž
+        icon    : ui-icon-closethick
+        showText: false
+        ajax    : true
+        confirmationQuestion : 
+            Skutočne chcete odstrániť %cislo%. príklad?
