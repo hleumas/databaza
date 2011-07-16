@@ -98,15 +98,15 @@ ALTER TABLE semester
 CREATE TABLE IF NOT EXISTS priklad (
     id INT NOT NULL AUTO_INCREMENT,
     nazov VARCHAR(64) NOT NULL,
-    opravovatel VARCHAR(64) NOT NULL,
-    vzorakovac VARCHAR(64) NOT NULL,
-    poznamka VARCHAR(128) NOT NULL,
+    opravovatel VARCHAR(64),
+    vzorakovac VARCHAR(64), 
+    poznamka VARCHAR(128),
     cislo INT NOT NULL,
     body SMALLINT NOT NULL,
     seria_id INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (seria_id) REFERENCES seria(id)
-);
+) ENGINE INNODB;
 
 CREATE TABLE IF NOT EXISTS riesitel_priklady (
     id INT NOT NULL AUTO_INCREMENT,
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS riesitel_priklady (
     PRIMARY KEY (id),
     FOREIGN KEY (priklad_id) REFERENCES priklad(id),
     FOREIGN KEY (riesitel_id) REFERENCES riesitel(id)
-); 
+) ENGINE INNODB; 
 
 CREATE TABLE IF NOT EXISTS riesitel_seria_bonusy (
     id INT NOT NULL AUTO_INCREMENT,
@@ -127,4 +127,4 @@ CREATE TABLE IF NOT EXISTS riesitel_seria_bonusy (
     PRIMARY KEY (id),
     FOREIGN KEY (riesitel_id) REFERENCES riesitel(id),
     FOREIGN KEY (seria_id) REFERENCES seria(id)
-);
+) ENGINE INNODB;
