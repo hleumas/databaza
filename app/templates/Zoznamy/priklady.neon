@@ -5,12 +5,16 @@ columns:
     nazov:
         label   : Názov
         length  : 32
+        editable: true
     opravovatel:
-        label  : Opravuje
+        label   : Opravuje
+        editable: true
     vzorakovac:
-        label : Vzorák
+        label   : Vzorák
+        editable: true
     poznamka:
-        label: Poznámka
+        label   : Poznámka
+        editable: true
 
 
 buttons:

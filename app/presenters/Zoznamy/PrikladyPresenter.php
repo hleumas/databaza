@@ -45,7 +45,26 @@ class PrikladyPresenter extends ZoznamyPresenter
 
     public function setGridHandlers($grid)
     {
+        $grid->setEditHandler(callback($this, 'handleEdit'));
         return parent::setGridHandlers($grid);
+    }
+
+    public function handleEdit($post)
+    {
+        $grid = $this['grid'];
+        $data = $this->context->sources->prikladSource->getById($post['id']);
+        foreach ($post as $column => $value) {
+            $data[$column] = $value;
+        }
+        try {
+            $cislo = $data['cislo'];
+            $this->context->sources->prikladSource->update($data);
+            $grid->flashMessage("Upravený príklad číslo $cislo {$data['nazov']}");
+            $grid->invalidateControl('flashes');
+        } catch (InvalidDataException $e) {
+            $grid->flashMessage("Názov nesmie byť prázdny", 'error');
+            $grid->invalidateControl();
+        }
     }
 
     public function createComponentForm()
