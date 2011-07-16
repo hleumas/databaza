@@ -61,6 +61,13 @@ class SourceContainer extends \Nette\DI\Container
         return $src;
     }
 
+    public function createServicePrikladSource()
+    {
+        $src = new PrikladSource($this->params['database']);
+        $src->setSeriaSource($this->seriaSource);
+        return $src;
+    }
+
     public function createServiceKategoria()
     {
         $fetch = $this->params['database']
