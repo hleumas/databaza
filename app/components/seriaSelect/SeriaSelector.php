@@ -67,13 +67,18 @@ class SeriaSelector extends Control
                 
         return $form;
     }
-    public function getSelected($selected)
+    private function getSelected($selected)
     {
         $serie = $this->seriaSource->getAll();
         if (isset($serie[$selected])) {
             return $selected; 
         }
         return $this->kategoria->aktualna_seria_id;
+    }
+
+    public function getSeria()
+    {
+        return $this->selected;
     }
 
     /** 
