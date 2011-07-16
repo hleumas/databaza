@@ -62,7 +62,7 @@ class SeriaSource extends CommonSource
         $result = array();
         foreach ($fetch as $id => $seria) {
             $result[$id] = new SeriaRecord($seria);
-            $result[$id]['semester'] = $semesterId;
+            $result[$id]['semester'] = $seria['semester_id'];
             $result[$id]['aktualna'] = ($id == $this->kategoria->aktualna_seria_id);
         }
         return $result;
