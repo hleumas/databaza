@@ -56,6 +56,42 @@ class PrikladSource extends CommonSource
         return $result;
     }
 
+    public function raiseNumber($id)
+    {
+        $priklad = $this->getById($id);
+        $last = $this->getLastNumber($priklad['seria']);
+        if ($priklad['cislo'] == $last) {
+            throw new InvalidIdException("Priklad with id $id has biggest possible number");
+        }
+
+        $this->swapNumbers($priklad['cislo'], $priklad['cislo'] + 1, $id);
+
+    }
+
+    private function swapNumbers($old, $new, $id)
+    {
+        $this->getConnection()
+            ->exec(
+                "UPDATE priklad SET priklad.cislo=? WHERE priklad.cislo=?",
+                $old, $new);
+        $this->getConnection()
+            ->exec(
+                "UPDATE priklad SET priklad.cislo=? WHERE priklad.id=?",
+                $new,
+                $id
+            );
+    }
+
+    public function lowerNumber($id)
+    {
+        $priklad = $this->getById($id);
+        if ($priklad['cislo'] == 1) {
+            throw new InvalidIdException("Priklad with id $id has lowest possible number");
+        }
+
+        $this->swapNumbers($priklad['cislo'], $priklad['cislo'] - 1, $id);
+    }
+
     public function getLastNumber($seriaId)
     {
         $fetch = $this->getConnection()
