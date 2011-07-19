@@ -23,6 +23,16 @@ buttons:
         toolbar : true
         window  : true
         icon    : ui-icon-plusthick
+    up:
+        label   : Zníž číslo
+        ajax    : true
+        showText: false
+        icon    : ui-icon-arrowthick-1-n
+    down:
+        label   : Zvýš číslo
+        ajax    : true
+        showText: false
+        icon    : ui-icon-arrowthick-1-s
     detail:
         label   : Detail
         window  : true

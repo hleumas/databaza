@@ -46,6 +46,20 @@ class PrikladyPresenter extends ZoznamyPresenter
     public function setGridHandlers($grid)
     {
         $grid->setEditHandler(callback($this, 'handleEdit'));
+        $prikladSource = $this->context->sources->prikladSource;
+        $grid['actions']->getComponent('up')->setHandler(
+            function($row) use ($prikladSource) {
+                $prikladSource->lowerNumber($row['id']);
+            }
+        )->setEnabled(function($row) {return $row['cislo'] > 1;});
+        $grid['actions']->getComponent('down')->setHandler(
+            function($row) use ($prikladSource) {
+                $prikladSource->raiseNumber($row['id']);
+            }
+        )->setEnabled(
+            function($row) use($prikladSource) {
+                return $row['cislo'] < $prikladSource->getLastNumber($row['seria_id']);
+            });
         return parent::setGridHandlers($grid);
     }
 
