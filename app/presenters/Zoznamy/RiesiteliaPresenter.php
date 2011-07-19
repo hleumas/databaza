@@ -45,17 +45,19 @@ class RiesiteliaPresenter extends ZoznamyPresenter
             if (!isset($skoly[$mesto])) {
                 $skoly[$skola['mesto']] = array();
             }
-            $nazov = Strings::truncate($skola['nazov'], 28);
+            $nazov = $skola['nazov'];
+            /*$nazov = Strings::truncate($skola['nazov'], 28);
             if (strlen($skola['nazov']) > 28) {
                 $nazov = Html::el('option', $nazov)
                     ->title($skola['nazov'])
                     ->value($skola['id']);
-            }
+            }*/
             $skoly[$mesto][$skola['id']] = $nazov;
         }
         
         $form['skola']->setItems($skoly);
         $form['skola']->setPrompt('Zvoľte školu');
+        $form['skola']->getControlPrototype()->class[] = 'chosen';
         return $form;
     }
 
