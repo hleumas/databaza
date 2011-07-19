@@ -1,3 +1,4 @@
+junk/
 app/config.neon
 log/
 !log/.htaccess
