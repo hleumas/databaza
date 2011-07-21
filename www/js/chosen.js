@@ -24,6 +24,9 @@ $.extend({
             } else if (elemBottom > c.height()) {
                 container.scrollTop(elemBottom - c.height() + c.scrollTop());
             }
+        },
+        escapeHTML: function(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
 });
 
@@ -35,7 +38,7 @@ $.chosen.prototype.parseOptions = function(select) {
         emptyLabel = '';
 
     var parseOption = function(data, elem) {
-        var opt = {label: elem.text(), value: elem.val()};
+        var opt = {label: elem.text(), value: elem.val(), html: elem.html()};
         if (opt.value !== emptyValue) {
             opt.normalized = $.removeDiacritics(opt.label).toLowerCase();
             data.push(opt);
@@ -53,6 +56,7 @@ $.chosen.prototype.parseOptions = function(select) {
                      ? '' + (options.length - 1) : selected;
         } else {
             var group = {label: elem.attr('label'), value: new Array()};
+            group.html = $.escapeHTML(group.label);
             var i = options.push(group) - 1;
             elem.children('option').each(function() {
                 selected = parseOption(options[i].value, $(this))
@@ -111,41 +115,33 @@ $.chosen.prototype.show = function(index, show) {
 };
 
 
-$.chosen.prototype.createOption = function(id, label, group) {
-    var li = $('<li></li>');
-    var choose = this;
-    li.text(label);
-    li.attr('id', id);
-    if (group) {
-        li.addClass('group-result');
-    } else {
-        li.addClass('active-result');
-        li.mouseenter(function (e) {choose.highlight($(this));});
-        li.click(function(e) {choose.selectElem($(this)); choose.rollIn();});
-    }
-    return li;
+$.chosen.prototype.createOption = function(id, html, classes) {
+    return '<li id="' + id + '" class="' + classes + '">' + html + '</li>';
 };
 $.chosen.prototype.createOptions = function(prefix) {
-    var ul = $("<ul class='chzn-results'></ul>");
+    var ul_content = Array();
     for (var i in this.options) {
         var elem = this.options[i];
         if ($.isArray(elem.value)) {
-            var li = this.createOption(prefix + '_' + i, elem.label, true);
-            ul.append(li);
+            ul_content.push(this.createOption(prefix + '_' + i, elem.html, 'group-result'));
             for (var j in elem.value) {
-                var li = this.createOption(prefix + '_' + i + '_' + j, elem.value[j].label, false);
-                li.addClass('group-option');
-                ul.append(li);
+                ul_content.push(this.createOption(prefix + '_' + i + '_' + j, elem.value[j].html, 'active-result group-option'));
             }
         } else {
-            var li = this.createOption(prefix + '_' + i, elem.label, false);
-            ul.append(li);
+            ul_content.push(this.createOption(prefix + '_' + i, elem.html, 'active-result'));
         }
     }
+    var ul = $("<ul class='chzn-results'>" + ul_content.join('') + '</ul>');
     var noMatch = $('<li class="no-results"></li>');
     noMatch.text(this.noMatch);
     this.noMatch = noMatch;
     this.noMatch.hide();
+
+    var choose = this;
+    var lis = $('li.active-result');
+    lis.mouseenter(function (e) {choose.highlight($(this));});
+    lis.click(function(e) {choose.selectElem($(this)); choose.rollIn();});
+
     ul.append(this.noMatch);
     return ul;
 };
