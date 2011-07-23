@@ -141,7 +141,7 @@ $.chosen.prototype.createOptions = function(prefix) {
     this.noMatch.hide();
 
     var choose = this;
-    var lis = $('li.active-result');
+    var lis = ul.find('li.active-result');
     lis.mouseenter(function () {choose.highlight($(this));});
     lis.click(function() {choose.selectElem($(this)); choose.rollIn();});
 
