@@ -20,9 +20,9 @@ $.extend({
                 elemTop    = element.position().top,
                 elemBottom = elemTop + element.outerHeight(); 
             if (elemTop < 0) {
-                container.scrollTop(elemTop+c.scrollTop());
+                c.scrollTop(elemTop+c.scrollTop());
             } else if (elemBottom > c.height()) {
-                container.scrollTop(elemBottom - c.height() + c.scrollTop());
+                c.scrollTop(elemBottom - c.height() + c.scrollTop());
             }
         },
         escapeHTML: function(s) {
@@ -31,31 +31,31 @@ $.extend({
 });
 
 $.chosen.prototype.parseOptions = function(select) {
-    var options    = Array(),
+    var options    = [],
         selected   = null,
         value      = select.val(),
         emptyValue = select.attr('data-nette-empty-value'),
         emptyLabel = '';
 
-    var parseOption = function(data, elem) {
+    function parseOption(data, elem) {
         var opt = {label: elem.text(), value: elem.val(), html: elem.html()};
         if (opt.value !== emptyValue) {
-            opt.normalized = $.removeDiacritics(opt.label).toLowerCase();
+            opt.normalized = stripAccent(opt.label).toLowerCase();
             data.push(opt);
             return (opt.value === value);
         } else {
             emptyLabel = opt.label;
             return false;
         }
-    };
+    }
 
     select.children('option, optgroup').each(function() {
         var elem = $(this);
         if (elem.is('option')) {
             selected = parseOption(options, elem)
-                     ? '' + (options.length - 1) : selected;
+                     ? (options.length - 1).toString() : selected;
         } else {
-            var group = {label: elem.attr('label'), value: new Array()};
+            var group = {label: elem.attr('label'), value: []};
             group.html = $.escapeHTML(group.label);
             var i = options.push(group) - 1;
             elem.children('option').each(function() {
@@ -74,18 +74,19 @@ $.chosen.prototype.parseOptions = function(select) {
 };
 
 $.chosen.prototype.filter = function(string) {
-    string = $.removeDiacritics(string).toLowerCase();
-    for (var i in this.options) {
+    var i, j, visible, found;
+    string = stripAccent(string).toLowerCase();
+    for (i = 0; i < this.options.length; i++) {
         if (this.options[i].normalized === undefined) {
-            var visible = false;
-            for (var j in this.options[i].value) {
-                found = (this.options[i].value[j].normalized.indexOf(string) != -1);
+            visible = false;
+            for (j = 0; j < this.options[i].value.length; j++) {
+                found = (this.options[i].value[j].normalized.indexOf(string) !== -1);
                 visible = visible || found;
                 this.show(i+'_'+j, found);
             }
             this.show(i, visible);
         } else {
-            this.show(i, (this.options[i].normalized.indexOf(string) != -1));
+            this.show(i, (this.options[i].normalized.indexOf(string) !== -1));
         }
     }
     var noMatch = false;
@@ -119,12 +120,14 @@ $.chosen.prototype.createOption = function(id, html, classes) {
     return '<li id="' + id + '" class="' + classes + '">' + html + '</li>';
 };
 $.chosen.prototype.createOptions = function(prefix) {
-    var ul_content = Array();
-    for (var i in this.options) {
+    var ul_content = [],
+        i = 0,
+        j = 0;
+    for (i = 0; i < this.options.length; i++) {
         var elem = this.options[i];
         if ($.isArray(elem.value)) {
             ul_content.push(this.createOption(prefix + '_' + i, elem.html, 'group-result'));
-            for (var j in elem.value) {
+            for (j = 0; j < elem.value.length; j++) {
                 ul_content.push(this.createOption(prefix + '_' + i + '_' + j, elem.value[j].html, 'active-result group-option'));
             }
         } else {
@@ -139,8 +142,8 @@ $.chosen.prototype.createOptions = function(prefix) {
 
     var choose = this;
     var lis = $('li.active-result');
-    lis.mouseenter(function (e) {choose.highlight($(this));});
-    lis.click(function(e) {choose.selectElem($(this)); choose.rollIn();});
+    lis.mouseenter(function () {choose.highlight($(this));});
+    lis.click(function() {choose.selectElem($(this)); choose.rollIn();});
 
     ul.append(this.noMatch);
     return ul;
@@ -157,7 +160,7 @@ $.chosen.prototype.createControl = function(prefix, name) {
     this.roller = $('<a class="chzn-single"></a>')
                 .append(this.current)
                 .append($('<div><b></b></div>'))
-                .click(function(e) {
+                .click(function() {
         if (choose.isRolled()) {
             choose.rollIn();
         } else {
@@ -201,7 +204,7 @@ $.chosen.prototype.createControl = function(prefix, name) {
             }
             e.preventDefault();
         } else if (e.keyCode === 27) {
-            choose.rollIn()
+            choose.rollIn();
             e.preventDefault();
             e.stopImmediatePropagation();
         } else if (e.keyCode === 13) {
@@ -262,12 +265,13 @@ $.chosen.prototype.setValue = function(value) {
 };
 
 $.chosen.prototype.select = function(id) {
+    var index, elem;
     try {
         if (id === null || id === undefined) {
             throw 'empty';
         }
         index = id.split('_', 2);
-        var elem = this.options[index[0]];
+        elem = this.options[index[0]];
         if (index.length >= 2) {
             elem = elem.value[index[1]];
         }
@@ -288,5 +292,5 @@ $.chosen.prototype.selectElem = function(elem) {
 };
 
 $(function() {
-$('select.chosen').livequery(function(){a = new $.chosen($(this));});
+$('select.chosen').livequery(function(){new $.chosen($(this))});
 });
