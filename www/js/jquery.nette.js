@@ -39,6 +39,13 @@ $("div.gridito").livequery(function () {
 $(this).gridito();
 });
 
+$('input.date').livequery(function() {
+    $.createPicker($(this));
+});
+
+
+
+
 $("a.ajax").live("click", function (event) {
 event.preventDefault();
 $.get(this.href);

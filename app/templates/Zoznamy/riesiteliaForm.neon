@@ -15,7 +15,7 @@ osoba.priezvisko:
     cols: 16
     required: povinná položka
 osoba.datum_narodenia:
-    type: text
+    type: datePicker
     label: 'Dátum narodenia:'
     cols: 10
 'Adresa domov':

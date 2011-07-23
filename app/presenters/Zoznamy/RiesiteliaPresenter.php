@@ -101,7 +101,6 @@ class RiesiteliaPresenter extends ZoznamyPresenter
             $record['koresp_adresa']['stat'] = 'SR';
         }
         $record['osoba']['adresa']['stat'] = 'SR';
-        $record['osoba']['datum_narodenia'] = new \Nette\DateTime($record['osoba']['datum_narodenia']);
         $record['typ_studia'] = $sources->typStudiaSource->getById($record['typ_studia']);
         $record['datum'] = new \Nette\DateTime();
 

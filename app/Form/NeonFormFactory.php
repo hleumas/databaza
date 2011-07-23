@@ -21,6 +21,7 @@ class NeonFormFactory extends \Nette\Object
     private static $properties = array('method', 'action');
     private static $controls   = array(
         'text'        => array('label', 'cols', 'maxLength'),
+        'datePicker'  => array('label'),
         'password'    => array('label', 'cols', 'maxLength'),
         'textArea'    => array('label', 'cols', 'rows'),
         'upload'      => array('label'),

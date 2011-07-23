@@ -49,6 +49,9 @@ $application->onStartup[] = function() use ($application) {
 	$router[] = new Route('<presenter>/<action>[/<id>]', 'Skoly:default');
 };
 
+Nette\Forms\Container::extensionMethod('addDatePicker', function ($container, $name, $label = NULL) {
+    return $container[$name] = new Forms\Controls\DatePicker($label);
+});
 
 // Run the application!
 if (!$configurator->container->params['consoleMode']) {
