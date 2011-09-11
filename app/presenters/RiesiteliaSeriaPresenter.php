@@ -56,7 +56,7 @@ class RiesiteliaSeriaPresenter extends BasePresenter
                 return $row->$i < 0 ? '*' : $row->$i;});
         }
         $grid->addColumn('meskanie', 'Meškanie')->setEditable(true);
-        $grid->addColumn('obalky', 'Obálky')->setType('bool');
+        $grid->addColumn('obalky', 'Obálky')->setType('bool')->setEditable(true);
         $grid->addColumn('bonus', 'Bonus')->setEditable(true);
         $this->setGridHandlers($grid);
         return $grid;
@@ -100,6 +100,7 @@ class RiesiteliaSeriaPresenter extends BasePresenter
             } else if ($key === 'obalky') {
                 $value = $value === '' ? 0 : $value;
                 $source->updateObalky($riesitel, $seria, $value);
+                $grid->invalidateControl();
             } else if ($key === 'bonus') {
                 $value = $value === '' ? 0 : $value;
                 if (!is_numeric($value)) {

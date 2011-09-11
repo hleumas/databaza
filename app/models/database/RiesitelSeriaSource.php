@@ -121,7 +121,7 @@ SQL;
         $this->updateColumnValue($riesitel, $seria, 'bonus', $bonus);
     }
 
-    public function updateObalky($riesitel, $seria, $bonus)
+    public function updateObalky($riesitel, $seria, $obalky)
     {
         $this->updateColumnValue($riesitel, $seria, 'obalky', $obalky);
     }
