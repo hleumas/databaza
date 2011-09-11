@@ -217,9 +217,16 @@ abstract class CommonRecord extends Nette\Object implements IRecord
         return (int)$year;
     }
 
-    public static function isIntegerValid($integer)
+    public static function isIntegerValid($integer, $min = null, $max = null)
     {
-        return Strings::match($integer, '#^\s*([0-9]\s*)*$#');
+        if (Strings::match($integer, '#^\s*$#')) {
+            return true;
+        }
+        if (is_int($integer) || Strings::match($integer, '#^\s*[+-]?([0-9]\s*)*$#')) {
+            return (is_null($min) || $integer >= $min)
+                && (is_null($max) || $integer <= $max);
+        }
+        return false;
     }
     public static function normalizeInteger($integer)
     {
