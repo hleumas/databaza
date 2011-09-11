@@ -113,17 +113,20 @@ CREATE TABLE IF NOT EXISTS riesitel_priklady (
     priklad_id INT NOT NULL,
     riesitel_id INT NOT NULL,
     body SMALLINT,
+    submit TINYINT NOT NULL,
     PRIMARY KEY (id),
+    UNIQUE KEY (riesitel_id, priklad_id),
     FOREIGN KEY (priklad_id) REFERENCES priklad(id),
     FOREIGN KEY (riesitel_id) REFERENCES riesitel(id)
 ) ENGINE INNODB; 
 
-CREATE TABLE IF NOT EXISTS riesitel_seria_bonusy (
+CREATE TABLE IF NOT EXISTS riesitel_seria (
     id INT NOT NULL AUTO_INCREMENT,
     riesitel_id INT NOT NULL,
     seria_id INT NOT NULL,
-    body SMALLINT NOT NULL,
-    kod SMALLINT,
+    bonus FLOAT NOT NULL,
+    meskanie SMALLINT NOT NULL,
+    obalky TINYINT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (riesitel_id) REFERENCES riesitel(id),
     FOREIGN KEY (seria_id) REFERENCES seria(id)
