@@ -108,7 +108,18 @@ class SeriePresenter extends ZoznamyPresenter
             $this->context->sources->seriaSource->update($record);
             $this['grid']->flashMessage("Zmenená séria");
         } else {
-            $this->context->sources->seriaSource->insert($record);
+            $seriaId = $this->context->sources->seriaSource->insert($record);
+            $i = 1;
+            foreach (explode(',', $this->context->sources->kategoria->kody) as $kod) {
+                $priklad = new PrikladRecord;
+                $priklad['seria'] = $seriaId;
+                $priklad['cislo'] = $i;
+                $priklad['kod']   = $kod;
+                $priklad['body']  = '9';
+                $priklad['nazov'] = $kod . ' Pomenuj!';
+                $this->context->sources->prikladSource->insert($priklad);
+                $i++;
+            }
             $this['grid']->flashMessage("Pridaná séria");
         }
         $this->redirect('this');

@@ -58,6 +58,14 @@ SQL;
             ->count('*');
     }
 
+    public function getKody()
+    {
+        return $this->database->fetchAll(
+            'SELECT priklad.cislo, priklad.kod FROM priklad '
+          . 'WHERE priklad.seria_id = ? ORDER BY priklad.cislo',
+            $this->seriaID);
+    }
+
     private function getRiesitelia($riesitelId = null)
     {
         list($where, $id) = $this->getRiesitelWhere($riesitelId);

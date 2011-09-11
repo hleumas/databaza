@@ -42,18 +42,19 @@ class RiesiteliaSeriaPresenter extends BasePresenter
         $model = new RiesiteliaSeriaModel($this->context->database,
             $this['seriaSelector']->seria);
         $prikladyCount = $model->getPrikladyCount();
+        $kody = $model->getKody();
         $grid->setModel($model);
         $grid->addColumn('meno', 'Meno');
         $grid->addColumn('priezvisko', 'Priezvisko');
         $grid->addColumn('skola_skratka', 'Škola');
         $grid->addColumn('rok_maturity', 'Maturita');
 
-        for ($i = 1; $i <= $prikladyCount; $i++) {
-            $grid->addColumn($i, "$i")
+        foreach ($kody as $priklad) {
+            $grid->addColumn($priklad['cislo'], "{$priklad['kod']}")
                 ->setEditable(true)
-                ->setRenderer(function($row) use ($i) {
-                if (!isset($row->$i)) {return '';}
-                return $row->$i < 0 ? '*' : $row->$i;});
+                ->setRenderer(function($row) use ($priklad) {
+                if (!isset($row->$priklad['cislo'])) {return '';}
+                return $row->$priklad['cislo'] < 0 ? '*' : $row->$priklad['cislo'];});
         }
         $grid->addColumn('meskanie', 'Meškanie')->setEditable(true);
         $grid->addColumn('obalky', 'Obálky')->setType('bool')->setEditable(true);

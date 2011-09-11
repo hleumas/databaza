@@ -64,22 +64,21 @@ class PrikladSource extends CommonSource
             throw new InvalidIdException("Priklad with id $id has biggest possible number");
         }
 
-        $this->swapNumbers($priklad['cislo'], $priklad['cislo'] + 1, $id);
+        $this->swapNumbers($priklad['cislo'], $priklad['cislo'] + 1, $priklad['seria']);
 
     }
 
-    private function swapNumbers($old, $new, $id)
+    private function swapNumbers($old, $new, $seriaId)
     {
-        $this->getConnection()
-            ->exec(
-                "UPDATE priklad SET priklad.cislo=? WHERE priklad.cislo=?",
-                $old, $new);
-        $this->getConnection()
-            ->exec(
-                "UPDATE priklad SET priklad.cislo=? WHERE priklad.id=?",
-                $new,
-                $id
-            );
+        $kody = $this->getConnection()->fetchAll(
+            'SELECT priklad.id, priklad.cislo, priklad.kod FROM priklad '
+          . 'WHERE seria_id = ? AND cislo IN (?, ?)',
+            $seriaId, $old, $new);
+        for ($i = 0; $i < 2; $i++) {
+            $this->getConnection()->exec(
+                "UPDATE priklad SET priklad.cislo=?, priklad.kod=? WHERE priklad.id=?",
+                $kody[$i]['cislo'], $kody[$i]['kod'], $kody[($i + 1) % 2]['id']);
+        }
     }
 
     public function lowerNumber($id)
@@ -89,7 +88,7 @@ class PrikladSource extends CommonSource
             throw new InvalidIdException("Priklad with id $id has lowest possible number");
         }
 
-        $this->swapNumbers($priklad['cislo'], $priklad['cislo'] - 1, $id);
+        $this->swapNumbers($priklad['cislo'], $priklad['cislo'] - 1, $priklad['seria']);
     }
 
     public function getLastNumber($seriaId)

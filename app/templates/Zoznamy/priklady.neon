@@ -1,7 +1,7 @@
 columns:
-    cislo:
+    kod:
         label   : Č.
-        length  : 2
+        length  : 4
     nazov:
         label   : Názov
         length  : 32
@@ -18,11 +18,11 @@ columns:
 
 
 buttons:
-    pridaj:
-        label   : Pridaj príklad
-        toolbar : true
-        window  : true
-        icon    : ui-icon-plusthick
+#    pridaj:
+#        label   : Pridaj príklad
+#        toolbar : true
+#        window  : true
+#        icon    : ui-icon-plusthick
     up:
         label   : Zníž číslo
         ajax    : true
@@ -43,10 +43,13 @@ buttons:
         window  : true
         icon    : ui-icon-pencil
         showText: false
-    delete:
-        label   : Zmaž
-        icon    : ui-icon-closethick
-        showText: false
-        ajax    : true
-        confirmationQuestion : 
-            Skutočne chcete odstrániť %cislo%. príklad?
+    oboduj:
+        label   : Oboduj
+        showText: true
+#    delete:
+#        label   : Zmaž
+#        icon    : ui-icon-closethick
+#        showText: false
+#        ajax    : true
+#        confirmationQuestion : 
+#            Skutočne chcete odstrániť %cislo%. príklad?

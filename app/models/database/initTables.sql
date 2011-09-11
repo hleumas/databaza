@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS kategoria (
     id INT NOT NULL AUTO_INCREMENT,
     nazov VARCHAR(16),
     pocet_casti INT NOT NULL,
+    kody VARCHAR(64) NOT NULL,
     aktualna_seria_id INT,
     PRIMARY KEY (id),
     FOREIGN KEY (aktualna_seria_id) REFERENCES seria(id)
@@ -98,6 +99,7 @@ ALTER TABLE semester
 CREATE TABLE IF NOT EXISTS priklad (
     id INT NOT NULL AUTO_INCREMENT,
     nazov VARCHAR(64) NOT NULL,
+    kod VARCHAR(8),
     opravovatel VARCHAR(64),
     vzorakovac VARCHAR(64), 
     poznamka VARCHAR(128),

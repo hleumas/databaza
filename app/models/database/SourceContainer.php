@@ -85,6 +85,7 @@ class SourceContainer extends \Nette\DI\Container
         $kategoria->nazov = $fetch['nazov'];
         $kategoria->pocet_casti = $fetch['pocet_casti'];
         $kategoria->aktualna_seria_id = $fetch['aktualna_seria_id'];
+        $kategoria->kody = $fetch['kody'];
         return $kategoria;
     }
 }

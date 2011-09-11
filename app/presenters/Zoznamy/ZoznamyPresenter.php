@@ -90,29 +90,42 @@ abstract class ZoznamyPresenter extends BasePresenter
         /** Set button handlers */
         $getForm = callback($this, 'getComponent');
         $getData = callback($this, 'getData');
-        $grid['actions']->getComponent('delete')->handler =
-            callback($this, 'delete');
 
-        $grid['actions']->getComponent('detail')->handler = 
-            function($row) use ($getForm, $getData) {
-            $form = $getForm('form');
-            $form->setDefaults($getData->invoke($row['id']));
-            $form->setRenderer(new DisplayFormRenderer);
-            $form->render();
-        };
+        foreach (array('delete', 'detail', 'edit') as $action) {
+            $actions[$action] = $grid['actions']->getComponent($action, false);
+        }
+        $actions['pridaj'] = $grid['toolbar']->getComponent('pridaj', false);
 
-        $grid['actions']->getComponent('edit')->handler =
-            function($row) use ($getForm, $getData) {
-            $form = $getForm('form');
-            $form->setDefaults($getData->invoke($row['id']));
-            $form->render();
-        };
+        if (!is_null($actions['delete'])) {
+            $actions['delete']->handler = callback($this, 'delete');
+        }
 
-        $grid['toolbar']->getComponent('pridaj')->handler =
-            function() use ($getForm) {
-            $form = $getForm('form');
-            $form->render();
-        };
+        if (!is_null($actions['detail'])) {
+            $actions['detail']->handler = 
+                function($row) use ($getForm, $getData) {
+                $form = $getForm('form');
+                $form->setDefaults($getData->invoke($row['id']));
+                $form->setRenderer(new DisplayFormRenderer);
+                $form->render();
+            };
+        }
+
+        if (!is_null($actions['edit'])) {
+            $actions['edit']->handler =
+                function($row) use ($getForm, $getData) {
+                $form = $getForm('form');
+                $form->setDefaults($getData->invoke($row['id']));
+                $form->render();
+            };
+        }
+
+        if (!is_null($actions['pridaj']))  {
+            $actions['pridaj']->handler =
+                function() use ($getForm) {
+                $form = $getForm('form');
+                $form->render();
+            };
+        }
         return $grid;
     }
 }

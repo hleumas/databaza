@@ -19,6 +19,7 @@ class PrikladRecord extends CommonRecord
     protected $_fields = array(
         'id'          => array(false, 'custom'),
         'cislo'       => array(false, 'custom'),
+        'kod'         => array(false, 'custom'),
         'seria'       => array(true, 'custom'),
         'nazov'       => array(true, 'custom'),
         'body'        => array(true, 'integer'),
