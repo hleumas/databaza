@@ -68,6 +68,12 @@ class SourceContainer extends \Nette\DI\Container
         return $src;
     }
 
+    public function createServiceRiesitelSeriaSource()
+    {
+        return new RiesitelSeriaSource($this->params['database']);
+    }
+
+
     public function createServiceKategoria()
     {
         $fetch = $this->params['database']
