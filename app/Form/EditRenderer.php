@@ -42,10 +42,7 @@ class EditFormRenderer implements Nette\Forms\IFormRenderer
                     continue;
                 }
                 $label = $control->getLabel();
-                if (!is_string($label)) {
-                    $label = $label->getText();
-                }
-                $el->create('dt', $label);
+                $el->create('dt')->add($label);
                 $dd = $el->create('dd');
                 $dd->add($control->getControl());
                 if ($control->hasErrors())  {
