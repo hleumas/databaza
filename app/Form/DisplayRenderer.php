@@ -61,6 +61,9 @@ class DisplayFormRenderer implements Nette\Forms\IFormRenderer
                     }
                     $el->create('dd', $value);
                 } else {
+                    if ($value instanceOf \Nette\DateTime) {
+                        $value = $value->format('j.n.Y');
+                    }
                     if ($value !== '') {
                         $el->create('dd', $value);
                     } else {
