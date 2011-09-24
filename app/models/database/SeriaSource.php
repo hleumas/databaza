@@ -138,9 +138,30 @@ SQL
 
     public function delete($id, $force=false)
     {
+        if ($this->kategoria->aktualna_seria_id == $id) {
+            throw new DBIntegrityException("Nemožno vymazať aktuálnu sériu! Nastavte inú sériu ako aktuálnu a mazanie zopakujte.");
+        }
+        $sql = <<<SQL
+DELETE priklad.*
+FROM seria LEFT JOIN priklad
+ON seria.id = priklad.seria_id
+WHERE seria.id = ?
+SQL;
+        $connection = $this->getConnection();
         $seria = $this->getById($id);
-        parent::delete($id, $force);
-        $this->updateCisla($seria['semester']);
+        try {
+            $connection->beginTransaction();
+            $connection->exec($sql, $id);
+            $connection->exec(
+                'DELETE FROM seria WHERE id = ?',
+                $id
+            );
+            $connection->commit();
+            $this->updateCisla($seria['semester']);
+        } catch (PDOException $e) {
+            $connection->rollBack();
+            throw $e;
+        }
     }
 
 }
