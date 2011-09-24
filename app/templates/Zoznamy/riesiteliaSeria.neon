@@ -1,0 +1,32 @@
+columns:
+    meno:
+        label: Meno
+        length: 32
+    priezvisko:
+        label: Priezvisko
+        length: 32
+    skola_skratka:
+        label: Škola
+        length: 32
+    rok_maturity:
+        label: Maturita
+        length: 4
+
+buttons:
+    pridaj:
+        label   : Odobálkuj riešiteľa
+        toolbar : true
+        window  : true
+        icon    : ui-icon-plusthick
+    edit:
+        label   : Zmeň
+        window  : true
+        icon    : ui-icon-pencil
+        showText: false
+    delete:
+        label   : Zruš
+        icon    : ui-icon-closethick
+        showText: false
+        ajax    : true
+        confirmationQuestion :
+            Skutočne chcete zrušiť obálkovanie riešiteľa %meno% %priezvisko%?

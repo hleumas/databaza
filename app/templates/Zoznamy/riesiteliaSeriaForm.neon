@@ -1,0 +1,13 @@
+renderer:
+    class: EditFormRenderer
+'Riešiteľ':
+    type: group
+riesitel:
+    type: select
+    label: Riešiteľ
+meskanie:
+    type: text
+    label: 'Meškanie'
+    cols: 3
+'Príklady':
+    type: group
