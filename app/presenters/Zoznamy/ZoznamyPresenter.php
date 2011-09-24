@@ -9,7 +9,6 @@
 
 
 use Gridito\Grid;
-use Gridito\NetteModel;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
@@ -30,7 +29,6 @@ abstract class ZoznamyPresenter extends BasePresenter
     public abstract function onSubmit();
     public abstract function delete($row);
     public abstract function getData($id);
-    public abstract function getGridSource();
 
     public function formatTemplateFiles()
     {
@@ -70,6 +68,8 @@ abstract class ZoznamyPresenter extends BasePresenter
         return $form;
     }
 
+    public abstract function createGridModel();
+
     public function createComponentGrid()
     {
         /** Check the existence of file */
@@ -79,7 +79,7 @@ abstract class ZoznamyPresenter extends BasePresenter
         }
 
         $grid = NeonGriditoFactory::createGrid(
-            $this->getGridSource(),
+            $this->createGridModel(),
             file_get_contents($file));
 
         return $this->setGridHandlers($grid);

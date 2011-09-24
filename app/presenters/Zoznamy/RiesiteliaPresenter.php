@@ -9,11 +9,11 @@
 
 
 use Gridito\Grid;
-use Gridito\NetteModel;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
 use Nette\Utils\Neon;
+use Gridito\NetteModel;
 /**
  * Zoznamy presenter.
  *
@@ -61,9 +61,10 @@ class RiesiteliaPresenter extends ZoznamyPresenter
         return $form;
     }
 
-    public function getGridSource()
+    public function createGridModel()
     {
-        return $this->context->database->table('zoznamy_riesitel_view');
+        return new NetteModel(
+            $this->context->database->table('zoznamy_riesitel_view'));
     }
     public function getData($id)
     {
@@ -94,6 +95,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     {
         $sources = $this->context->sources;
         $form = $this['form'];
+        $values = FlatArray::inflate($form->values);
         $record = new RiesitelRecord(FlatArray::inflate($form->values));
         if ($record['koresp_kam'] != RiesitelRecord::KORESP_ELSE) {
             $record['koresp_adresa'] = null;

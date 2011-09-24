@@ -43,12 +43,13 @@ class SeriePresenter extends ZoznamyPresenter
         return $this->semesterId;
     }
 
-    public function getGridSource()
+    public function createGridModel()
     {
-        return $this->context->database
+        return new NetteModel(
+            $this->context->database
             ->table('seria')
             ->where('semester_id', $this->getSemesterId())
-            ->order('cislo DESC');
+            ->order('cislo DESC'));
     }
 
     public function setGridHandlers($grid)

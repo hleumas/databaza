@@ -23,9 +23,10 @@ use Nette\Utils\Neon;
 class SkolyPresenter extends ZoznamyPresenter
 {
 
-    public function getGridSource()
+    public function createGridModel()
     {
-        return $this->context->database->table('zoznamy_skola_view');
+        return new NetteModel(
+            $this->context->database->table('zoznamy_skola_view'));
     }
 
     public function getData($id)

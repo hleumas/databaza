@@ -35,12 +35,13 @@ class PrikladyPresenter extends ZoznamyPresenter
             $sources->semesterSource,
             $sources->kategoria);
     }
-    public function getGridSource()
+    public function createGridModel()
     {
-        return $this->context->database
+        return new NetteModel(
+            $this->context->database
             ->table('priklad')
             ->where('seria_id', $this['seriaSelector']->seria)
-            ->order('cislo');
+            ->order('cislo'));
     }
 
     public function setGridHandlers($grid)
