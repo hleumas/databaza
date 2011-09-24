@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * Databaza FKS
@@ -70,7 +71,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     {
         $source = $this->context->sources->riesitelSource;
         $record = $source->getById($id);
-        $data = FlatArray::deflate($record);
+        $data = \FlatArray::deflate($record);
         foreach (array('typ_studia', 'skola') as $key) {
             if (isset($data["$key.id"])) {
                 $data[$key] = $data["$key.id"];
@@ -94,8 +95,8 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     public function onSubmit()
     {
         $sources = $this->context->sources;
-        $record = new RiesitelRecord(FlatArray::inflate($this['form']->values));
-        if ($record['koresp_kam'] != RiesitelRecord::KORESP_ELSE) {
+        $record = new \RiesitelRecord(\FlatArray::inflate($this['form']->values));
+        if ($record['koresp_kam'] != \RiesitelRecord::KORESP_ELSE) {
             $record['koresp_adresa'] = null;
         } else {
             $record['koresp_adresa']['stat'] = 'SR';

@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * Databaza FKS
@@ -104,7 +105,7 @@ class SeriePresenter extends ZoznamyPresenter
         if ($data['semester'] == $semesterSource->getLastId()) {
             $semesterSource->insertNew();
         }
-        $record = new SeriaRecord($data);
+        $record = new \SeriaRecord($data);
         if (!empty($record['id'])) {
             $this->context->sources->seriaSource->update($record);
             $this['grid']->flashMessage("Zmenená séria");
@@ -112,7 +113,7 @@ class SeriePresenter extends ZoznamyPresenter
             $seriaId = $this->context->sources->seriaSource->insert($record);
             $i = 1;
             foreach (explode(',', $this->context->sources->kategoria->kody) as $kod) {
-                $priklad = new PrikladRecord;
+                $priklad = new \PrikladRecord;
                 $priklad['seria'] = $seriaId;
                 $priklad['cislo'] = $i;
                 $priklad['kod']   = $kod;

@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * My Application
@@ -14,11 +15,11 @@
  * @author     John Doe
  * @package    MyApplication
  */
-abstract class BasePresenter extends Nette\Application\UI\Presenter
+abstract class BasePresenter extends \Nette\Application\UI\Presenter
 {
     public function createComponentMenu()
     {
-        return new Menu(APP_DIR . '/templates/menu.neon', 'menu');
+        return new \Menu(APP_DIR . '/AdminModule/templates/menu.neon', 'menu');
     }
 
 }

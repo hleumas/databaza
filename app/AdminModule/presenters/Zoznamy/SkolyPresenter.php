@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * Databaza FKS
@@ -33,9 +34,9 @@ class SkolyPresenter extends ZoznamyPresenter
     {
         $data = $this->context->sources->SkolaSource->getById($id);
         if (is_null($data['adresa'])) {
-            $data['adresa'] = new AdresaRecord();
+            $data['adresa'] = new \AdresaRecord();
         }
-        return FlatArray::deflate($data);
+        return \FlatArray::deflate($data);
     }
 
     public function delete($row)
@@ -51,7 +52,7 @@ class SkolyPresenter extends ZoznamyPresenter
     public function onSubmit()
     {
         $form = $this['form'];
-        $record = new SkolaRecord(FlatArray::inflate($form->getValues()));
+        $record = new \SkolaRecord(\FlatArray::inflate($form->getValues()));
         $record['adresa']['stat'] = 'SR';
         if (!empty($record['id'])) {
             $this->context->sources->skolaSource->update($record);

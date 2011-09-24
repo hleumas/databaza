@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * Databaza FKS
@@ -22,7 +23,7 @@ use Nette\Utils\Neon;
 abstract class ZoznamyPresenter extends BasePresenter
 {
 
-    private $templateDir = '/templates/Zoznamy';
+    private $templateDir = '/AdminModule/templates/Zoznamy';
     private $semesterId = null;
     public  $submitted = false;
 
@@ -30,26 +31,31 @@ abstract class ZoznamyPresenter extends BasePresenter
     public abstract function delete($row);
     public abstract function getData($id);
 
+    public function getPresenterName()
+    {
+        list($module, $presenter) = explode(':', $this->name);
+        return lcfirst($presenter);
+    }
     public function formatTemplateFiles()
     {
-        $name = lcfirst($this->name);
-        return array(APP_DIR . "$this->templateDir/$name.latte");
+        $presenter = $this->presenterName;
+        return array(APP_DIR . "$this->templateDir/$presenter.latte");
     }
 
     public function formatLayoutTemplateFiles()
     {
-        return array(APP_DIR . "/templates/@layout.latte");
+        return array(APP_DIR . "/AdminModule/templates/@layout.latte");
     }
     public function formatGridFiles()
     {
-        $name = lcfirst($this->name);
-        return APP_DIR . "$this->templateDir/$name.neon";
+        $presenter = $this->presenterName;
+        return APP_DIR . "$this->templateDir/$presenter.neon";
     }
 
     public function formatFormFiles()
     {
-        $name = lcfirst($this->name);
-        return APP_DIR . "$this->templateDir/{$name}Form.neon";
+        $presenter = $this->presenterName;
+        return APP_DIR . "$this->templateDir/{$presenter}Form.neon";
     }
 
     public function setSubmitted()
@@ -60,9 +66,9 @@ abstract class ZoznamyPresenter extends BasePresenter
     {
         $file = $this->formatFormFiles();
         if (!is_file($file) || !is_readable($file)) {
-            throw new Nette\FileNotFoundException("File $file is missing or is not readable.");
+            throw new \Nette\FileNotFoundException("File $file is missing or is not readable.");
         }
-        $form = NeonFormFactory::createForm(file_get_contents($file));
+        $form = \NeonFormFactory::createForm(file_get_contents($file));
         $form->onSuccess[] = callback($this, 'onSubmit');
         $form->onSubmit[] = callback($this, 'setSubmitted');
         return $form;
@@ -75,10 +81,10 @@ abstract class ZoznamyPresenter extends BasePresenter
         /** Check the existence of file */
         $file = $this->formatGridFiles();
         if (!is_file($file) || !is_readable($file)) {
-            throw new Nette\FileNotFoundException("File $file is missing or is not readable.");
+            throw new \Nette\FileNotFoundException("File $file is missing or is not readable.");
         }
 
-        $grid = NeonGriditoFactory::createGrid(
+        $grid = \NeonGriditoFactory::createGrid(
             $this->createGridModel(),
             file_get_contents($file));
 
@@ -105,7 +111,7 @@ abstract class ZoznamyPresenter extends BasePresenter
                 function($row) use ($getForm, $getData) {
                 $form = $getForm('form');
                 $form->setDefaults($getData->invoke($row['id']));
-                $form->setRenderer(new DisplayFormRenderer);
+                $form->setRenderer(new \DisplayFormRenderer);
                 $form->render();
             };
         }

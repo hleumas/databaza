@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * Databaza FKS
@@ -28,7 +29,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
     public function createComponentSeriaSelector()
     {
         $sources = $this->context->sources;
-        return new SeriaSelector(
+        return new \SeriaSelector(
             $this->seria,
             $sources->seriaSource,
             $sources->semesterSource,
@@ -37,7 +38,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
 
     public function createGridModel()
     {
-        return new RiesiteliaSeriaModel(
+        return new \RiesiteliaSeriaModel(
             $this->context->database,
             $this['seriaSelector']->seria
         );
@@ -81,7 +82,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
                     $source->deletePriklad($riesitel, $seria, $key);
                     $grid->flashMessage("Príklad číslo $key bol riešiteľovi odstránený");
                 } else {
-                    $value = RiesitelSeriaRecord::isIntegerValid($value) ? $value : null;
+                    $value = \RiesitelSeriaRecord::isIntegerValid($value) ? $value : null;
                     $source->setPriklad($riesitel, $seria, $key, $value);
                     $grid->flashMessage("Riešiteľovi boli zmenené body za príklad číslo $key");
                     if (is_null($value)) {
@@ -90,7 +91,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
                 }
             } else if ($key === 'meskanie') {
                 $value = $value === '' ? 0 : $value;
-                if (!RiesitelSeriaRecord::isIntegerValid($value, 0)) {
+                if (!\RiesitelSeriaRecord::isIntegerValid($value, 0)) {
                     $grid->flashMessage('Nekorektná hodnota pre meškanie');
                     $grid->invalidateControl();
                 } else {
@@ -170,8 +171,8 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
     public function onSubmit()
     {
         $riesitelSource = $this->context->sources->riesitelSeriaSource;
-        $data = FlatArray::inflate($this['form']->getValues());
-        $record = new RiesitelSeriaRecord($data);
+        $data = \FlatArray::inflate($this['form']->getValues());
+        $record = new \RiesitelSeriaRecord($data);
         foreach ($data['priklad'] as $key => $priklad) {
             if ($priklad) {
                 $record[$key] = null;

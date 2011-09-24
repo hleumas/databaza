@@ -1,4 +1,5 @@
 <?php
+namespace AdminModule;
 
 /**
  * Databaza FKS
@@ -29,7 +30,7 @@ class PrikladyPresenter extends ZoznamyPresenter
     public function createComponentSeriaSelector()
     {
         $sources = $this->context->sources;
-        return new SeriaSelector(
+        return new \SeriaSelector(
             $this->seria,
             $sources->seriaSource,
             $sources->semesterSource,
@@ -110,7 +111,7 @@ class PrikladyPresenter extends ZoznamyPresenter
         $data = $form->getValues();
         $data['seria'] = $this['seriaSelector']->seria;
         $data['body'] = 9;
-        $record = new PrikladRecord($data);
+        $record = new \PrikladRecord($data);
         if (!empty($record['id'])) {
             $this->context->sources->prikladSource->update($record);
             $this['grid']->flashMessage("Zmenený príklad");
