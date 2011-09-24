@@ -9,5 +9,11 @@ meskanie:
     type: text
     label: 'Meškanie'
     cols: 3
+bonus:
+    type: text
+    label: Bonus
+    cols: 3
+seria:
+    type: hidden
 'Príklady':
     type: group
