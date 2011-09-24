@@ -121,13 +121,41 @@ SQL;
         $this->updateColumnValue($riesitel, $seria, 'bonus', $bonus);
     }
 
+    private function setPriklady($record)
+    {
+        /** Priklady have numeric keys */
+        foreach ($record as $key => $value) {
+            if (is_numeric($key)) {
+                $this->setPriklad($record['riesitel'], $record['seria'], $key, $value);
+            }
+        }
+    }
+
+    private function getInsertData($record)
+    {
+        return array(
+                'riesitel_id' => $record['riesitel'],
+                'seria_id' => $record['seria'],
+                'meskanie' => $record['meskanie'],
+                'bonus' => $record['bonus']
+            );
+    }
     public function insert($record)
     {
-
+        $this->dbConnection->exec(
+            'INSERT INTO riesitel_seria',
+            $this->getInsertData($record)
+        );
+        $this->setPriklady($record);
     }
 
     public function update($record)
     {
+        $this->dbConnection->exec(
+            'UPDATE riesitel_seria SET ? WHERE riesitel_id=? AND seria_id=?',
+            $this->getInsertData($record)
+        );
+        $this->setPriklady($record);
     }
 
     /**
@@ -140,13 +168,13 @@ SQL;
     {
         $sql = <<<SQL
 DELETE riesitel_priklady.*, riesitel_seria.*
-FROM riesitel_priklady LEFT JOIN priklad
+FROM riesitel_seria LEFT JOIN priklad
+ON riesitel_seria.seria_id = priklad.seria_id
+LEFT JOIN riesitel_priklady
 ON riesitel_priklady.priklad_id = priklad.id
-LEFT JOIN riesitel_seria
-ON riesitel_seria.riesitel_id = riesitel_priklady.riesitel_id
-AND riesitel_priklady.seria_id = priklad.seria_id
-WHERE priklad.seria_id = ?
-AND riesitel_priklady.riesitel_id = ?
+AND riesitel_seria.riesitel_id = riesitel_priklady.riesitel_id
+WHERE riesitel_seria.seria_id = ?
+AND riesitel_seria.riesitel_id = ?
 SQL;
         $this->dbConnection->exec($sql, $seria, $riesitel);
     }
