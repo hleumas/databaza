@@ -21,13 +21,13 @@ use Gridito\NetteModel;
 class NeonGriditoFactory extends \Nette\Object
 {
 
-    public static function createGrid($selection, $neonString)
+    public static function createGrid($model, $neonString)
     {
         $settings = Neon::decode($neonString);
 
         /** Create Grid and set the model */
         $grid = new Grid();
-        $grid->setModel(new NetteModel($selection));
+        $grid->setModel($model);
 
         /** Add columns */
         foreach ($settings['columns'] as $key => $column) {
