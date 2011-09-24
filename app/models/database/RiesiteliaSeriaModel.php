@@ -23,15 +23,13 @@ class RiesiteliaSeriaModel extends Gridito\AbstractModel
 	{
         $this->seriaID = $seriaID;
         $this->database = $database;
-        //\Nette\Diagnostics\Debugger::dump($this->getPriklady());
-        //\Nette\Diagnostics\Debugger::dump($this->getRiesitelia());
 	}
 
     private function getRiesitelWhere($riesitelId = null)
     {
         return is_null($riesitelId)
             ? array('riesitel_seria.seria_id = ?', $this->seriaID)
-            : array('riesitel.id = ?', $riesitelId);
+            : array('riesitel_seria.riesitel_id = ?', $riesitelId);
     }
 
     private function getPriklady($riesitelId = null)
@@ -93,11 +91,12 @@ SQL;
 
 	public function getItemByUniqueId($uniqueId)
 	{
-        return $this->buildRows(
+        $rows = $this->buildRows(
             $this->getRiesitelia($uniqueId),
             $this->getPriklady($uniqueId),
             $this->getPrikladyCount()
         );
+        return reset($rows);
 	}
 
 	public function getItems()
