@@ -21,7 +21,6 @@ class RiesitelSeriaRecord extends CommonRecord
         'seria'       => array(true, 'custom'),
         'meskanie'    => array(true, 'custom'),
         'bonus'       => array(true, 'custom'),
-        'obalky'      => array(true, 'integer'),
     );
 
     public function validate()

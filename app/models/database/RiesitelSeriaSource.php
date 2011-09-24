@@ -39,7 +39,7 @@ class RiesitelSeriaSource
     public function getById($riesitel, $seria)
     {
         $fetch = $this->dbConnection
-             ->select('meskanie, obalky, bonus')
+             ->select('meskanie, bonus')
              ->table('riesitel_seria')
              ->where('riesitel_id', $riesitel)
              ->where('seria_id', $seria)
@@ -121,14 +121,9 @@ SQL;
         $this->updateColumnValue($riesitel, $seria, 'bonus', $bonus);
     }
 
-    public function updateObalky($riesitel, $seria, $obalky)
-    {
-        $this->updateColumnValue($riesitel, $seria, 'obalky', $obalky);
-    }
-
-
     public function insert($record)
     {
+
     }
 
     public function update($record)

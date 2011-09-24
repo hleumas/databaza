@@ -56,7 +56,6 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
                 return $row->$priklad['cislo'] < 0 ? '*' : $row->$priklad['cislo'];});
         }
         $grid->addColumn('meskanie', 'Meškanie')->setEditable(true);
-       // $grid->addColumn('obalky', 'Obálky')->setType('bool')->setEditable(true);
         $grid->addColumn('bonus', 'Bonus')->setEditable(true);
         return $grid;
     }
@@ -98,10 +97,6 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
                     $source->updateMeskanie($riesitel, $seria, $value);
                     $grid->flashMessage('Riešiteľovi bolo upravené meškanie');
                 }
-            } else if ($key === 'obalky') {
-                $value = $value === '' ? 0 : $value;
-                $source->updateObalky($riesitel, $seria, $value);
-                $grid->invalidateControl();
             } else if ($key === 'bonus') {
                 $value = $value === '' ? 0 : $value;
                 if (!is_numeric($value)) {
