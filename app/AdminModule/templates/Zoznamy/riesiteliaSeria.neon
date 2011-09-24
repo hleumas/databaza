@@ -18,11 +18,11 @@ buttons:
         toolbar : true
         window  : true
         icon    : ui-icon-plusthick
-    edit:
-        label   : Zmeň
-        window  : true
-        icon    : ui-icon-pencil
-        showText: false
+#    edit:
+#        label   : Zmeň
+#        window  : true
+#        icon    : ui-icon-pencil
+#        showText: false
     delete:
         label   : Zruš
         icon    : ui-icon-closethick

@@ -44,9 +44,9 @@ $application->errorPresenter = 'Error';
 $application->onStartup[] = function() use ($application) {
 	$router = $application->getRouter();
 
-	$router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
+	$router[] = new Route('index.php', 'Admin:Riesitelia:default', Route::ONE_WAY);
 
-	$router[] = new Route('<presenter>/<action>[/<id>]', 'Skoly:default');
+	$router[] = new Route('<presenter>/<action>[/<id>]', 'Admin:Riesitelia:default');
 };
 
 Nette\Forms\Container::extensionMethod('addDatePicker', function ($container, $name, $label = NULL) {
