@@ -129,15 +129,19 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
         $form['riesitel']->setItems($riesitelia);
         $form['riesitel']->setPrompt('Zvoľte riešiteľa');
         $form['riesitel']->getControlPrototype()->class[] = 'chosen';
+        $form['meskanie']->defaultValue = 0;
+        $form['bonus']->defaultValue = 0;
+        $form['seria']->value = $this['seriaSelector']->seria;
 
         $dataPriklady = $this->context->database
             ->table('priklad')
-            ->select('id, kod, nazov')
+            ->select('id, cislo, kod, nazov')
             ->where('seria_id', $this['seriaSelector']->seria)
             ->order('cislo ASC')
             ->fetchPairs('id');
+
         foreach ($dataPriklady as $priklad) {
-            $form->addCheckBox("priklad.{$priklad['id']}", "{$priklad['kod']}");
+            $form->addCheckBox("priklad.{$priklad['cislo']}", "{$priklad['kod']}");
         }
         $form->addSubmit('odosli', 'Odobálkuj');
 
@@ -154,33 +158,28 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
 
     public function delete($row)
     {
-        /*
         try {
-            $this->context->sources->prikladSource->delete($row['id']);
-            $this['grid']->flashMessage('Príklad odstránený');
+            $this->context->sources->riesitelSeriaSource->delete($row->id, $this['seriaSelector']->seria);
+            $this['grid']->flashMessage("Zrušené odobálkovanie riešiteľa {$row['meno']} {$row['priezvisko']}");
         } catch (DBIntegrityException $e) {
             $this['grid']->flashMessage($e->getMessage(), 'error');
         }
-         */
+        $this['grid']->invalidateControl();
     }
 
     public function onSubmit()
     {
-/*
-        $prikladSource = $this->context->sources->prikladSource;
-        $form = $this['form'];
-        $data = $form->getValues();
-        $data['seria'] = $this['seriaSelector']->seria;
-        $data['body'] = 9;
-        $record = new PrikladRecord($data);
-        if (!empty($record['id'])) {
-            $this->context->sources->prikladSource->update($record);
-            $this['grid']->flashMessage("Zmenený príklad");
-        } else {
-            $this->context->sources->prikladSource->insert($record);
-            $this['grid']->flashMessage("Pridaný príklad");
+        $riesitelSource = $this->context->sources->riesitelSeriaSource;
+        $data = FlatArray::inflate($this['form']->getValues());
+        $record = new RiesitelSeriaRecord($data);
+        foreach ($data['priklad'] as $key => $priklad) {
+            if ($priklad) {
+                $record[$key] = null;
+            }
         }
+
+        $this->context->sources->riesitelSeriaSource->insert($record);
+        $this['grid']->flashMessage('Odobálkovaný riešiteľ');
         $this->redirect('this');
- */
     }
 }
