@@ -108,8 +108,8 @@ class RiesitelSource extends CommonSource
             ->select('koresp_adresa_id, osoba_id')
             ->fetch();
         $this->whereId($id)->delete();
-        $this->adresaSrc->delete($idValues['koresp_adresa_id']);
         $this->osobaSrc->delete($idValues['osoba_id']);
+        $this->adresaSrc->delete($idValues['koresp_adresa_id']);
     }
 
 }
