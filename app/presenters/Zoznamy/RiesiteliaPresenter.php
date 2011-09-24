@@ -94,9 +94,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     public function onSubmit()
     {
         $sources = $this->context->sources;
-        $form = $this['form'];
-        $values = FlatArray::inflate($form->values);
-        $record = new RiesitelRecord(FlatArray::inflate($form->values));
+        $record = new RiesitelRecord(FlatArray::inflate($this['form']->values));
         if ($record['koresp_kam'] != RiesitelRecord::KORESP_ELSE) {
             $record['koresp_adresa'] = null;
         } else {
