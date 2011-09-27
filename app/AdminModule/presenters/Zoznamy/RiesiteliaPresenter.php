@@ -26,39 +26,14 @@ class RiesiteliaPresenter extends ZoznamyPresenter
 
     public function createComponentForm()
     {
-        $form = parent::createComponentForm();
-        $studia = $this->context->sources->typStudiaSource->getAll();
-        $stuSelect = array();
-        foreach ($studia as $id => $studium) {
-            $stuSelect[$id] = $studium['nazov'];
-        }
-        $form['typ_studia']->setItems($stuSelect);
-        $form['typ_studia']->setPrompt('Zvoľte typ štúdia');
-
-        $dataSkoly = $this->context->database
-            ->table('zoznamy_skola_view')
-            ->select('id, nazov, mesto')
-            ->order('mesto ASC, nazov ASC')
-            ->fetchPairs('id');
-        $skoly = array();
-        foreach ($dataSkoly as $skola) {
-            $mesto = $skola['mesto'];
-            if (!isset($skoly[$mesto])) {
-                $skoly[$skola['mesto']] = array();
-            }
-            $nazov = $skola['nazov'];
-            /*$nazov = Strings::truncate($skola['nazov'], 28);
-            if (strlen($skola['nazov']) > 28) {
-                $nazov = Html::el('option', $nazov)
-                    ->title($skola['nazov'])
-                    ->value($skola['id']);
-            }*/
-            $skoly[$mesto][$skola['id']] = $nazov;
-        }
-        
-        $form['skola']->setItems($skoly);
-        $form['skola']->setPrompt('Zvoľte školu');
-        $form['skola']->getControlPrototype()->class[] = 'chosen';
+        $sources = $this->context->sources;
+        $form = new \RiesitelForm(
+            $sources->SkolaSource->getAll(),
+            $sources->typStudiaSource->getAll()
+        );
+        $form->addSubmit('odosli', 'Odošli');
+        $form->onSuccess[] = callback($this, 'onSubmit');
+        $form->onSubmit[] = callback($this, 'setSubmitted');
         return $form;
     }
 

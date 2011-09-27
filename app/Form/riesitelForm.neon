@@ -8,12 +8,12 @@ osoba.meno:
     type: text
     label: 'Meno:'
     cols: 16
-    required: povinná položka
+    required: Vyplň meno
 osoba.priezvisko:
     type: text
     label: 'Priezvisko:'
     cols: 16
-    required: povinná položka
+    required: Vyplň priezvisko
 osoba.datum_narodenia:
     type: datePicker
     label: 'Dátum narodenia:'
@@ -24,17 +24,17 @@ osoba.adresa.ulica:
     type: text
     label: 'Ulica:'
     cols: 24
-    required: povinná položka
+    required: Vyplň adresu
 osoba.adresa.mesto:
     type: text
     label: 'Mesto:'
     cols: 24
-    required: povinná položka
+    required: Vyplň adresu
 osoba.adresa.psc:
     type: text
     label: 'PSČ:'
     cols: 6
-    required: povinná položka
+    required: Vyplň PSČ
 'Kontaktné údaje':
     type: group
 osoba.email:
@@ -58,13 +58,16 @@ telefon_rodic:
 skola:
     type: select
     label: 'Škola:'
+    required: 'Zvoľ školu'
 typ_studia:
     type: select
     label: 'Typ:'
+    required: 'Zvoľ typ štúdia'
 rocnik:
     type: text
     label: 'Ročník'
     cols: 2
+    required: 'Zadaj číslo svojho ročníka'
 'Korešpondencia':
     type: group
 koresp_kam:
@@ -86,6 +89,3 @@ koresp_adresa.psc:
     type: text
     label: 'PSČ:'
     cols: 6
-odosli:
-    type: submit
-    label: Odošli
