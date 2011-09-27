@@ -116,11 +116,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
     public function createComponentForm()
     {
         $form = parent::createComponentForm();
-        $dataRiesitelia = $this->context->database
-            ->table('zoznamy_riesitel_view')
-            ->select('id, meno, priezvisko')
-            ->order('priezvisko ASC, meno ASC')
-            ->fetchPairs('id');
+        $dataRiesitelia = $this->context->sources->riesitelSource->getAll();
         $riesitelia = array();
         foreach ($dataRiesitelia as $riesitel) {
             $riesitelia[$riesitel['id']] =

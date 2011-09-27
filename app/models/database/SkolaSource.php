@@ -44,6 +44,15 @@ class SkolaSource extends CommonSource
         return new SkolaRecord(parent::getById($id));
     }
 
+    public function getAll()
+    {
+        return $this->getConnection()
+            ->table('zoznamy_skola_view')
+            ->select('id, nazov, mesto')
+            ->order('mesto ASC, nazov ASC')
+            ->fetchPairs('id');
+    }
+
 
     /**
      * Delete record from the database

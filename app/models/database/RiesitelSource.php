@@ -69,6 +69,14 @@ class RiesitelSource extends CommonSource
         $data['datum'] = new \Nette\DateTime();
         return new RiesitelRecord($data);
     }
+    public function getAll()
+    {
+        return $this->getConnection()
+            ->table('zoznamy_riesitel_view')
+            ->select('id, meno, priezvisko')
+            ->order('priezvisko ASC, meno ASC')
+            ->fetchPairs('id');
+    }
 
     /**
      * Insert record into db
@@ -80,7 +88,7 @@ class RiesitelSource extends CommonSource
         $record['typ_studia'] = $record['typ_studia']['id'];
         unset($record['rocnik']);
         unset($record['datum']);
-        parent::insertDb($record);
+        return parent::insertDb($record);
     }
 
     /**
@@ -93,7 +101,7 @@ class RiesitelSource extends CommonSource
         $record['typ_studia'] = $record['typ_studia']['id'];
         unset($record['rocnik']);
         unset($record['datum']);
-        parent::updateDb($record);
+        return parent::updateDb($record);
     }
 
     /**
