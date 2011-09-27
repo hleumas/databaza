@@ -31,13 +31,15 @@
             dd {
                 &.error {
                     color: red;
-                    input[type='text'] {
+                    input[type='text'], input[type='email'],
+                    input[type='number'], input[type='password'] {
                         background: $errorbg;
                         border: #b00 1px solid;
                         margin-right: 1em;
                     }
                 }
-                input[type='text'], input[type='date'] {
+                input[type='text'], input[type='password'],
+                input[type='number'], input[type='email'], input[type='date'] {
                     background: #eee;
                     //width: 270px;
                     //border: 1px solid $orange;
@@ -57,7 +59,8 @@
                 position: relative;
                 height: 24px;
                 line-height: 24px;
-                margin-left: 6em;
+                //margin-left: 6em;
+                padding-left: 6em;
                 min-width: 10em;
 
                 .yes, .no {
