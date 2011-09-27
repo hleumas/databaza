@@ -33,10 +33,10 @@ class NeonFormFactory extends \Nette\Object
         'submit'      => array('label'),
         'button'      => array('label'));
 
-    public static function createForm($neonString)
+    public static function createForm($neonString, $form=null)
     {
         $config = Neon::decode($neonString);
-        $form = new Form();
+        $form = is_null($form) ? new Form() : $form;
         if (is_null($config)) {
             return $form;
         }
