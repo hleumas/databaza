@@ -31,6 +31,10 @@ $configurator->container->addService('sources', function($cont) {
     $s->params['kategoria_id'] = $cont->params['kategoria_id'];
     return $s;
 });
+
+$configurator->container->addService('authenticator', function($cont) {
+    return new \Authenticator($cont->database);
+});
  
 
 
