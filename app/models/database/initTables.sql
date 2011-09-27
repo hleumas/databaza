@@ -133,3 +133,14 @@ CREATE TABLE IF NOT EXISTS riesitel_seria (
     FOREIGN KEY (riesitel_id) REFERENCES riesitel(id),
     FOREIGN KEY (seria_id) REFERENCES seria(id)
 ) ENGINE INNODB;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL,
+    login VARCHAR(64) NOT NULL,
+    salt VARCHAR(32) NOT NULL,
+    password VARCHAR(64) NOT NULL,
+    active TINYINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES riesitel(id),
+    UNIQUE KEY (login) 
+) ENGINE INNODB;
