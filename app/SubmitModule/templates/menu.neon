@@ -1,4 +1,5 @@
-Moje údaje: 'Udaje:default'
+Moje údaje: 
+    'O mne': 'Udaje:osobne'
+    'Zmena hesla': 'Udaje:heslo'
 Nahraj: 'Priklady:nahraj'
 Opravené: 'Prikaldy:opravene'
-Odhlásiť: 'Sign:out'
