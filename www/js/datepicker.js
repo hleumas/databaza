@@ -22,6 +22,8 @@ $.extend({
         el.datepicker({
             minDate: minDate,
             maxDate: maxDate,
+            changeYear: true,
+            yearRange: '-30:+2',
         });
         el.val($.datepicker.formatDate(el.datepicker("option", "dateFormat"), date));
     }});
