@@ -28,6 +28,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     {
         $sources = $this->context->sources;
         $form = new \RiesitelForm(
+            'form',
             $sources->SkolaSource->getAll(),
             $sources->typStudiaSource->getAll()
         );

@@ -37,13 +37,19 @@ class EditFormRenderer implements Nette\Forms\IFormRenderer
                     continue;
                 }
                 if ($control instanceOf \Nette\Forms\Controls\Button) {
-                    $el->create('dt');
-                    $el->create('dd')->add($control->getControl());
+                    $el->create('dt')
+                        ->id($control->htmlId . '-dt');
+                    $el->create('dd')
+                        ->id($control->htmlId . '-dd')
+                        ->add($control->getControl());
                     continue;
                 }
                 $label = $control->getLabel();
-                $el->create('dt')->add($label);
-                $dd = $el->create('dd');
+                $el->create('dt')
+                    ->id($control->htmlId . '-dt')
+                    ->add($label);
+                $dd = $el->create('dd')
+                    ->id($control->htmlId . '-dd');
                 $dd->add($control->getControl());
                 if ($control->hasErrors())  {
                     $dd->class('error');

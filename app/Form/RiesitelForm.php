@@ -21,9 +21,11 @@ class RiesitelForm extends Form
 {
 
     private $_definitionFile = '/Form/riesitelForm.neon';
+    private $_name;
 
-    public function __construct($skoly, $studia)
+    public function __construct($name, $skoly, $studia)
     {
+        $this->_name = $name;
         parent::__construct();
         $file = APP_DIR . $this->_definitionFile;
         if (!is_file($file) || !is_readable($file)) {
@@ -69,6 +71,14 @@ class RiesitelForm extends Form
                 array(1, 10)
             );
 
+        $prefix = $this->getPrefix();
+        $this['koresp_kam']->addCondition(FORM::EQUAL, '2')
+            ->toggle("$prefix-koresp_adresa.ulica-dt")
+            ->toggle("$prefix-koresp_adresa.ulica-dd")
+            ->toggle("$prefix-koresp_adresa.mesto-dt")
+            ->toggle("$prefix-koresp_adresa.mesto-dd")
+            ->toggle("$prefix-koresp_adresa.psc-dt")
+            ->toggle("$prefix-koresp_adresa.psc-dd");
         $this['koresp_adresa.ulica']
             ->addConditionOn($this['koresp_kam'], FORM::EQUAL, '2')
             ->addRule(FORM::FILLED, 'Vyplň korešpondenčnú adresu');
@@ -81,6 +91,7 @@ class RiesitelForm extends Form
             ->addConditionOn($this['koresp_kam'], FORM::EQUAL, '2')
             ->addRule(FORM::FILLED, 'Vyplň PSČ');
 
+
         $this['koresp_adresa.psc']
             ->addCondition(Form::FILLED)
             ->addRule(
@@ -91,6 +102,10 @@ class RiesitelForm extends Form
 
     }
 
+    private function getPrefix()
+    {
+        return 'frm' . $this->_name;
+    }
     private function getSkoly($dataSkoly)
     {
         $skoly = array();
