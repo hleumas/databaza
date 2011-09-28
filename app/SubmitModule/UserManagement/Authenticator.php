@@ -121,7 +121,7 @@ class Authenticator extends Object implements IAuthenticator
     private function setActivation($login, $value)
     {
         $this->_dbConnection->exec(
-            'UPDATE users SET ? WHERE id=?',
+            'UPDATE users SET ? WHERE login=?',
             array('active' => $value),
             $login);
     }
@@ -141,6 +141,8 @@ class Authenticator extends Object implements IAuthenticator
     {
         if ($this->getActivationHash($login) === $hash) {
             $this->activateAccount($login);
+        } else {
+            throw new AuthenticationException('Neplatný aktivačný kód');
         }
     }
 

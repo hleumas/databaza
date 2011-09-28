@@ -8,6 +8,7 @@ namespace SubmitModule;
  */
 
 use Nette\Application\UI\Form;
+use Nette\Mail\Message;
 
 
 /**
@@ -150,25 +151,67 @@ class UdajePresenter extends BasePresenter
         return $record;
     }
 
+    private function sendRegistrationEmail($riesitel, $activationLink)
+    {
+        $celeMeno = $riesitel['osoba']['meno'] . ' '
+                  . $riesitel['osoba']['priezvisko'];
+        $mail = new Message;
+        $mail->setFrom('otazky@fks.sk')
+            ->addTo($riesitel['osoba']['email'], $celeMeno)
+            ->setSubject('Dokončenie registrácie na FKS Submite')
+            ->setBody(<<<MESSAGE
+Milá/ý $celeMeno,
+gratulujeme k úspešnému vytvoreniu si konta na FKS submite!
+
+Pre aktivovanie si konta prosím navštív nasledovný link:
+$activationLink
+
+V prípade akýchkoľvek problémov nás kontaktuj na emailovej adrese otazky@fks.sk. 
+Veľa šťastia pri riešení prajú
+
+Vedúci FKS
+MESSAGE
+        )->send();
+    }
     public function onLoginSubmit()
     {
         $form = $this['loginForm'];
+        $source = $this->context->sources->riesitelSource;
         $registrateData = $this->context->session->getSection('registrateData');
         $authenticator = $this->context->authenticator;
         $data = $form->values;
+        $riesitelID = $registrateData['riesitelID'];
         if (!$authenticator->loginExists($data['login'])) {
-            if ($registrateData['riesitelID'] == -1) {
-                $registrateData['riesitelID'] = $this->context->sources
-                    ->riesitelSource->insert($registrateData['riesitel']);
+            if ($riesitelID == -1) {
+                $riesitel = $registrateData['riesitel'];
+                $riesitelID = $source->insert($riesitel);
             }
             $authenticator->createAccount(
-                $registrateData['riesitelID'],
+                $riesitelID,
                 array($data['login'], $data['password']),
                 0 /* Do not activate the account */
             );
-            $this->redirect('Sign:in');
+
+            /** Ugly hack, because insert changes riesitel */
+            $riesitel = $source->getById($riesitelID);
+            $this->sendRegistrationEmail(
+                $riesitel,
+                $this->link('//Udaje:activate',
+                $data['login'],
+                $authenticator->getActivationHash($data['login'])));
+            $this->redirect('registrationSuccess');
         } else {
             $form['login']->addError('Tento login je už obsadený');
+        }
+    }
+
+    public function actionActivate($login, $activationCode)
+    {
+        try {
+            $this->context->authenticator->activateByHash($login, $activationCode);
+            $this->redirect('activationSuccess');
+        } catch (AuthenticationException $e) {
+            $this->redirect('activationError');
         }
     }
 
