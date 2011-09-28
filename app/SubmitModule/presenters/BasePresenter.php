@@ -30,7 +30,7 @@ abstract class BasePresenter extends \Nette\Application\UI\Presenter
         }
         $menuItems = Neon::decode($data);
         if ($this->user->isLoggedIn()) {
-            $menuItems['Odhlásiť'] = 'Sign:out';
+            $menuItems['Odhlásiť ' . $this->user->identity->data['login']] = 'Sign:out';
         } else {
             $menuItems['Prihlásiť'] = 'Sign:in';
         }
