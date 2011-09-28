@@ -49,21 +49,30 @@ class Authenticator extends Object implements IAuthenticator
         return $account;
     }
 
-    public function authenticate(array $credentials)
+    public function verifyCredentials(array $credentials)
     {
         list($login, $password) = $credentials;
         $account = $this->getAccountByLogin($login);
-
-        if ($this->hash($account->salt, $password) !== $account->password) {
-            throw new AuthenticationException('Nesprávne heslo');
+        if ($this->hash($account->salt, $password) === $account->password) {
+            return true;
+        } else {
+            return false;
         }
 
+    }
+    public function authenticate(array $credentials)
+    {
+        list($login, $password) = $credentials;
+        if (!$this->verifyCredentials($credentials)) {
+            throw new AuthenticationException('Nesprávne heslo');
+        }
+        $account = $this->getAccountByLogin($login);
         if ($account->active !== '1') {
             throw new AuthenticationException(
                 'Konto doposiaľ nebolo aktivované. Ak ste neobdržali'
               . ' aktivačný email, obráťte sa na nás na otazky@fks.sk');
         }
-        return new Identity($account->id);
+        return new Identity($account->id, null, array('login' => $login));
     }
 
     public function passwd(array $credentials)
@@ -102,27 +111,46 @@ class Authenticator extends Object implements IAuthenticator
         $this->_dbConnection->exec('INSERT INTO users ?', $account);
     }
 
-    public function deleteAccount($id)
+    public function deleteAccount($login)
     {
         $this->_dbConnection->exec(
-            'DELETE FROM users WHERE id=?',
-            $id);
+            'DELETE FROM users WHERE login=?',
+            $login);
     }
 
-    private function setActivation($id, $value)
+    private function setActivation($login, $value)
     {
         $this->_dbConnection->exec(
             'UPDATE users SET ? WHERE id=?',
             array('active' => $value),
-            $id);
+            $login);
     }
-    public function activateAccount($id)
+
+    public function getActivationHash($login)
     {
-        $this->setActivation('1');
+        $account = $this->getAccountByLogin($login);
+        return sha1(
+            $account['id']
+          . $account['login']
+          . $account['salt']
+          . $account['password']);
+
     }
-    public function deactivateAccount($id)
+
+    public function activateByHash($login, $hash)
     {
-        $this->setActivation('0');
+        if ($this->getActivationHash($login) === $hash) {
+            $this->activateAccount($login);
+        }
+    }
+
+    public function activateAccount($login)
+    {
+        $this->setActivation($login, '1');
+    }
+    public function deactivateAccount($login)
+    {
+        $this->setActivation($login, '0');
     }
 
 
