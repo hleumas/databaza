@@ -23,6 +23,7 @@ class UdajePresenter extends BasePresenter
     {
         $sources = $this->context->sources;
         $form = new \RiesitelForm(
+            'udajeForm',
             $sources->skolaSource->getAll(),
             $sources->typStudiaSource->getAll()
         );
@@ -45,6 +46,23 @@ class UdajePresenter extends BasePresenter
             ->addRule(Form::EQUAL, 'Heslá sa nezhodujú.', $form['password']);
         $form->onSuccess[] = callback($this, 'onLoginSubmit');
         $form->addSubmit('submit', 'Dokonči registráciu');
+        return $form;
+    }
+
+    public function createComponentPasswordChangeForm()
+    {
+        $form = new Form();
+        $form->setRenderer(new \EditFormRenderer());
+        $form->addGroup('Prihlasovacie údaje');
+        $form->addPassword('oldPassword', 'Staré heslo:')
+            ->addRule(Form::FILLED, 'Vyplň svoje staré heslo');
+        $form->addPassword('password', 'Nové heslo:')
+            ->addRule(Form::FILLED, 'Zadaj nové heslo')
+            ->addRule(Form::MIN_LENGTH, 'Heslo musí mať aspoň %d znakov', 8);
+        $form->addPassword('passwordConfirm', 'Heslo ešte raz:')
+            ->addRule(Form::EQUAL, 'Heslá sa nezhodujú.', $form['password']);
+        $form->onSuccess[] = callback($this, 'onPasswordChangeSubmit');
+        $form->addSubmit('submit', 'Zmeň heslo');
         return $form;
     }
 
@@ -81,6 +99,20 @@ class UdajePresenter extends BasePresenter
         } else {
             $this->redirect('RegistrateLogin');
         }
+    }
+    public function getUdaje($id)
+    {
+        $record = $this->context->sources->riesitelSource
+            ->getById($id);
+        $data = \FlatArray::deflate($record);
+        foreach (array('typ_studia', 'skola') as $key) {
+            if (isset($data["$key.id"])) {
+                $data[$key] = $data["$key.id"];
+            } else {
+                unset($data[$key]);
+            }
+        }
+        return $data;
     }
     public function onUdajeSubmit()
     {
@@ -122,6 +154,12 @@ class UdajePresenter extends BasePresenter
         } else {
             $form['login']->addError('Tento login je už obsadený');
         }
+    }
+
+    public function actionOsobne()
+    {
+        $identity = $this->identity;
+        $this['udajeForm']->setDefaults($this->getUdaje($identity->id));
     }
 
 }
