@@ -1,5 +1,6 @@
 <?php
 namespace SubmitModule;
+use Nette\Utils\Neon;
 
 /**
  * My Application
@@ -19,7 +20,29 @@ abstract class BasePresenter extends \Nette\Application\UI\Presenter
 {
     public function createComponentMenu()
     {
-        return new \Menu(APP_DIR . '/SubmitModule/templates/menu.neon', 'menu');
+        $file = APP_DIR . '/SubmitModule/templates/menu.neon';
+        if (!is_file($file)) {
+            throw new Nette\FileNotFoundException("File $file does not exists!");
+        }
+        $data = file_get_contents($file);
+        if ($data === false) {
+            throw new Nette\FileNotFoundException("File $file is not readable!");
+        }
+        $menuItems = Neon::decode($data);
+        if ($this->user->isLoggedIn()) {
+            $menuItems['Odhlásiť'] = 'Sign:out';
+        } else {
+            $menuItems['Prihlásiť'] = 'Sign:in';
+        }
+        return new \Menu($menuItems, 'menu');
+    }
+
+    public function getIdentity()
+    {
+        if (!$this->user->isLoggedIn()) {
+            $this->redirect('Sign:in');
+        }
+        return $this->user->identity;
     }
 
 }

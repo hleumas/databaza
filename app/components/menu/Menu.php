@@ -30,16 +30,9 @@ class Menu extends Control
      *                                description
      * @param string $htmlClass       optional css class of the ul
      */
-    public function __construct($descriptionFile, $htmlClass = null)
+    public function __construct($menuItems, $htmlClass = null)
     {
-        if (!is_file($descriptionFile)) {
-            throw new Nette\FileNotFoundException("File $descriptionFile does not exists!");
-        }
-        $data = file_get_contents($descriptionFile);
-        if ($data === false) {
-            throw new Nette\FileNotFoundException("File $descriptionFile is not readable!");
-        }
-        $this->_items = Neon::decode($data);
+        $this->_items = $menuItems;
         $this->_htmlClass = $htmlClass;
     }
 
