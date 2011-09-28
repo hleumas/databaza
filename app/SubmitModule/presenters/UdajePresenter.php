@@ -28,7 +28,11 @@ class UdajePresenter extends BasePresenter
             $sources->typStudiaSource->getAll()
         );
         $form->addSubmit('odosli', 'Odošli');
-        $form->onSuccess[] = callback($this, 'onUdajeSubmit');
+
+        /** Add required */
+        $form['osoba.email']->setRequired('Zadaj svoj email');
+        $form['osoba.datum_narodenia']->setRequired('Vyplň dátum narodenia');
+        $form['osoba.telefon']->setRequired('Vyplň svoj telefón');
         return $form;
     }
 
@@ -114,12 +118,26 @@ class UdajePresenter extends BasePresenter
         }
         return $data;
     }
+    public function onRegistrateUdajeSubmit()
+    {
+        $registrateData = $this->context->session->getSection('registrateData');
+        $registrateData['riesitel'] =
+            $this->createRiesitelRecord($this['udajeForm']);
+        $this->redirect('RegistrateLogin');
+    }
+
     public function onUdajeSubmit()
     {
-        $form = $this['udajeForm'];
-        $registrateData = $this->context->session->getSection('registrateData');
+        $this->context->sources->riesitelSource
+            ->update($this->createRiesitelRecord($this['udajeForm']));
+        $this->flashMessage('Údaje zmenené');
+        $this->redirect('this');
+    }
+
+    public function createRiesitelRecord($udajeForm)
+    {
         $sources = $this->context->sources;
-        $record = new \RiesitelRecord(\FlatArray::inflate($form->values));
+        $record = new \RiesitelRecord(\FlatArray::inflate($udajeForm->values));
 
         if ($record['koresp_kam'] != \RiesitelRecord::KORESP_ELSE) {
             $record['koresp_adresa'] = null;
@@ -129,9 +147,7 @@ class UdajePresenter extends BasePresenter
         $record['osoba']['adresa']['stat'] = 'SR';
         $record['typ_studia'] = $sources->typStudiaSource->getById($record['typ_studia']);
         $record['datum'] = new \Nette\DateTime();
-
-        $registrateData['riesitel'] = $record;
-        $this->redirect('RegistrateLogin');
+        return $record;
     }
 
     public function onLoginSubmit()
@@ -156,10 +172,32 @@ class UdajePresenter extends BasePresenter
         }
     }
 
+    public function actionRegistrateUdaje()
+    {
+        $this['udajeForm']->onSuccess[] = callback($this, 'onRegistrateUdajeSubmit');
+    }
     public function actionOsobne()
     {
         $identity = $this->identity;
         $this['udajeForm']->setDefaults($this->getUdaje($identity->id));
+        $this['udajeForm']->onSuccess[] = callback($this, 'onUdajeSubmit');
+    }
+
+    public function onPasswordChangeSubmit()
+    {
+        $data = $this['passwordChangeForm']->getValues();
+        if (!$this->context->authenticator->verifyCredentials(array(
+            $this->identity->data['login'],
+            $data['oldPassword']
+        ))) {
+            $this['passwordChangeForm']['oldPassword']->addError('Nesprávne heslo');
+        } else {
+            $this->context->authenticator->passwd(array(
+                $this->identity->data['login'],
+                $data['password']));
+            $this->flashMessage('Heslo úspešne zmenené');
+            $this->redirect('Udaje:osobne');
+        }
     }
 
 }
