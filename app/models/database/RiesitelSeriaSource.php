@@ -64,6 +64,15 @@ SQL;
         return $record;
     }
 
+    public function hasRecord($riesitel, $seria)
+    {
+        return (bool) $this->dbConnection
+            ->table('riesitel_seria')
+            ->where('riesitel_id', $riesitel)
+            ->where('seria_id', $seria)
+            ->count('*');
+    }
+
     public function setPriklad($riesitel, $seria, $cislo, $body)
     {
         $fetch = $this->dbConnection
@@ -98,6 +107,18 @@ SQL;
         $this->dbConnection->exec($sql, $riesitel, $seria, $cislo);
 
 
+    }
+
+    public function computeMeskanie($seriaId, $date)
+    {
+        $row = $this->dbConnection
+            ->table('seria')
+            ->select('termin')
+            ->where('id', $seriaId)
+            ->fetch();
+        $termin = new \Nette\DateTime($row['termin']);
+        $meskanie = $date->diff($termin)->days;
+        return $meskanie > 0 ? $meskanie : 0;
     }
 
     private function updateColumnValue($riesitel, $seria, $column, $value)
