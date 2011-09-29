@@ -1,0 +1,18 @@
+{block #content}
+<h1>Aktuálne príklady</h1>
+<h2>Odovzdaj svoje riešenia</h2>
+{control form}
+<h2>Odovzdané</h2>
+<table>
+<thead><tr><th>Č.</th><th>Názov</th><th>Opravuje</th><th>Body</th><th>Súbor</th></tr></thead>
+<tbody>
+<tr n:foreach="$priklady as $priklad">
+<th>{$priklad['kod']}</th><th>{$priklad['nazov']}</th><th>{$priklad['opravovatel']}</th>
+<th>{if !is_null($priklad['body'])}
+{if $priklad['body'] < 0}*{else}{$priklad['body']}{/if}{else}N/A{/if}</th>
+<th>{if !is_null($priklad['filename'])}
+<a href="{link stiahni,$priklad['id']}">{$priklad['filename']}</a>{else}N/A{/if}</th>
+</tr>
+</tbody>
+</table>
+{/block}

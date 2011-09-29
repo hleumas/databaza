@@ -73,6 +73,10 @@ class SourceContainer extends \Nette\DI\Container
         return new RiesitelSeriaSource($this->params['database']);
     }
 
+    public function createServiceRiesitelPrikladFileSource()
+    {
+        return new RiesitelPrikladFileSource($this->params['database'], $this->riesitelSeriaSource);
+    }
 
     public function createServiceKategoria()
     {
