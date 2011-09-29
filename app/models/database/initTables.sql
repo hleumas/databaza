@@ -144,3 +144,16 @@ CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (id) REFERENCES riesitel(id),
     UNIQUE KEY (login) 
 ) ENGINE INNODB;
+
+CREATE TABLE IF NOT EXISTS priklady_files (
+    id INT NOT NULL AUTO_INCREMENT,
+    riesitel_id INT NOT NULL,
+    priklad_id INT NOT NULL,
+    filename VARCHAR(64) NOT NULL,
+    filesize INT NOT NULL,
+    uploaded DATETIME NOT NULL,
+    content MEDIUMBLOB NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (riesitel_id) REFERENCES riesitel(id),
+    FOREIGN KEY (priklad_id) REFERENCES priklad(id)
+) ENGINE INNODB;
