@@ -1,0 +1,54 @@
+{**
+ * My Application layout template.
+ *
+ * @copyright  Copyright (c) 2010 John Doe
+ * @package    MyApplication
+ *
+ * @param string   $basePath web base path
+ * @param string   $robots   tell robots how to index the content of a page (optional)
+ * @param array    $flashes  flash messages
+ *}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<meta name="description" content="FKS databaza">
+	<meta name="robots" content="{$robots}" n:ifset="$robots">
+
+	<title>FKS databáza</title>
+
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+{**
+	<script type="text/javascript" src="{$basePath}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.livequery.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.ui.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.ui.gridito.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/chosen.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/accent.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.ui.datepicker-sk.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/datepicker.js"></script>
+*}
+
+	<script type="text/javascript" src="{$basePath}/js/mini.js"></script>
+
+    {block head}{/block}
+    </head>
+
+<body>
+    <div id='page'>
+        <div id='header'>
+        <p>databáza</p>
+        </div>
+        {control menu}
+        <div id='content'>
+        <div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+        {include #content}
+        </div>
+    </div>
+</body>
+</html>
