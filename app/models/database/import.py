@@ -31,7 +31,7 @@ def partition(s):
     
 db1=MySQLdb.connect('www.fks.sk', 'databaza_user', 'ENei7gah',
                    'fks_databaza_current', use_unicode=True, charset='utf8')
-db2=MySQLdb.connect('www.fks.sk', 'devel_user', 'jY26PGDAP8dZfHar',
+db2=MySQLdb.connect('www.fks.sk', 'devel_user', 'qNaBP8NSe3dwRurb',
                    'netteDBdevel', use_unicode=True, charset='utf8')
 
 db1.query("SELECT * FROM skoly")
@@ -67,6 +67,8 @@ db1.query('SELECT * FROM riesitelia')
 
 r = db1.store_result()
 d = r.fetch_row(0, 1)
+
+
 
 studia=[
         {'id': 1, 'nazov': u'Neštudent', 'skratka': u'N/A', 'dlzka': 0, 'maturitny_rocnik': 0},
@@ -126,7 +128,24 @@ for riesitel in d:
               'typ_studia_id'   : riesitel['typ_studia'],
               'koresp_kam'      : riesitel['koresp_kam'],
               'koresp_adresa_id': korespAdresa[riesitel['koresp_kam']],
+              'sustredeni'      : riesitel['sustredeni'],
+              'vyhier'          : 0,
+              'celostatiek'     : 0,
             }
     insertInto(db2, 'riesitel', items)
+
+
+db1.query('SELECT * FROM login')
+r = db1.store_result()
+d = r.fetch_row(0, 1)
+
+for login in d:
+    insertInto(db2, 'users', {
+        'id'       : login['id'],
+        'login'    : login['login'],
+        'salt'     : login['salt'],
+        'password' : login['password'],
+        'active'   : login['enabled'],
+        })
     
 db2.commit();
