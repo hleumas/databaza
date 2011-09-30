@@ -31,7 +31,10 @@ class RiesitelRecord extends CommonRecord
         'typ_studia'    => array(true, 'custom'),
         'telefon_rodic' => array(false, 'phone'),
         'koresp_kam'    => array(true, 'custom'),
-        'koresp_adresa' => array(false, 'object', 'AdresaRecord')
+        'koresp_adresa' => array(false, 'object', 'AdresaRecord'),
+        'sustredeni'    => array(true, 'integer'),
+        'vyhier'        => array(true, 'integer'),
+        'celostatiek'   => array(true, 'integer')
     );
 
     public function updateRocnik()

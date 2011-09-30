@@ -27,10 +27,12 @@ class RiesiteliaPresenter extends ZoznamyPresenter
     public function createComponentForm()
     {
         $sources = $this->context->sources;
+        $showFKS = ($sources->kategoria->id === 1);
         $form = new \RiesitelForm(
             'form',
             $sources->SkolaSource->getAll(),
-            $sources->typStudiaSource->getAll()
+            $sources->typStudiaSource->getAll(),
+            $showFKS
         );
         $form->addSubmit('odosli', 'Odošli');
         $form->onSuccess[] = callback($this, 'onSubmit');

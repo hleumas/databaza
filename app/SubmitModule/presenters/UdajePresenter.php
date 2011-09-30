@@ -23,10 +23,12 @@ class UdajePresenter extends BasePresenter
     public function createComponentUdajeForm()
     {
         $sources = $this->context->sources;
+        $showFKS = ($sources->kategoria->id === 1);
         $form = new \RiesitelForm(
             'udajeForm',
             $sources->skolaSource->getAll(),
-            $sources->typStudiaSource->getAll()
+            $sources->typStudiaSource->getAll(),
+            $showFKS
         );
         $form->addSubmit('odosli', 'Odošli');
 

@@ -66,8 +66,25 @@ typ_studia:
 rocnik:
     type: text
     label: 'Ročník'
-    cols: 2
+    cols: 3
     required: 'Zadaj číslo svojho ročníka'
+'Koľko krát som bol':
+    type: group
+sustredeni:
+    type: text
+    label: 'na sústredku FKS:'
+    cols: 3
+    required: 'Vyplň!'
+vyhier:
+    type: text
+    label: 'v prvej 3ke FKS:'
+    cols: 3
+    required: 'Vyplň!'
+celostatiek:
+    type: text
+    label: 'na CK FO kat. A:'
+    cols: 3
+    required: 'Vyplň!'
 'Korešpondencia':
     type: group
 koresp_kam:

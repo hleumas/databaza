@@ -23,7 +23,7 @@ class RiesitelForm extends Form
     private $_definitionFile = '/Form/riesitelForm.neon';
     private $_name;
 
-    public function __construct($name, $skoly, $studia)
+    public function __construct($name, $skoly, $studia, $showFKS)
     {
         $this->_name = $name;
         parent::__construct();
@@ -99,6 +99,23 @@ class RiesitelForm extends Form
             'PSČ má byť päťciferné číslo',
             '^(\s*[0-9]){5}\s*$'
         );
+
+        $this['sustredeni']->addRule(Form::RANGE, 'Musí byť nezáporné celé číslo', array(0, null));
+        $this['celostatiek']->addRule(Form::RANGE, 'Musí byť nezáporné celé číslo', array(0, null));
+        $this['vyhier']->addRule(Form::RANGE, 'Musí byť nezáporné celé číslo', array(0, null));
+
+        $this['sustredeni']->setValue('0');
+        $this['celostatiek']->setValue('0');
+        $this['vyhier']->setValue('0');
+
+        if ($showFKS) {
+            $type = 'number';
+        } else {
+            $type = 'hidden';
+        }
+        $this['sustredeni']->setType($type);
+        $this['celostatiek']->setType($type);
+        $this['vyhier']->setType($type);
 
     }
 
