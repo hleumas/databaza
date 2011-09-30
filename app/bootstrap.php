@@ -28,13 +28,15 @@ setlocale(LC_ALL, 'sk_SK.utf8');
 $configurator->container->addService('sources', function($cont) {
     $s = new SourceContainer();
     $s->params['database'] = $cont->database;
-    $s->params['kategoria_id'] = $cont->params['kategoria_id'];
     return $s;
 });
 
 $configurator->container->addService('authenticator', function($cont) {
     return new \Authenticator($cont->database);
 });
+
+$dbFKSprefix     = $configurator->container->params['dbfksprefix'];
+$submitFKSprefix = $configurator->container->params['submitfksprefix'];
  
 
 
@@ -45,12 +47,28 @@ $application->errorPresenter = 'Error';
 
 
 // Setup router
-$application->onStartup[] = function() use ($application) {
+$application->onStartup[] = function() use ($application, $dbFKSprefix, $submitFKSprefix) {
 	$router = $application->getRouter();
 
-	$router[] = new Route('index.php', 'Admin:Riesitelia:default', Route::ONE_WAY);
+    $router[] = new Route('index.php', array(
+        'module' => 'Admin',
+        'presenter' => 'Riesitelia',
+        'action' => 'default',
+        'kategoria_id' => '1'),
+        Route::ONE_WAY);
 
-	$router[] = new Route('<presenter>/<action>[/<id>]', 'Admin:Riesitelia:default');
+    $router[] = new Route("$dbFKSprefix<presenter>/<action>[/<id>]", array(
+        'module' => 'Admin',
+        'presenter' => 'Riesitelia',
+        'action' => 'default',
+        'kategoria_id' => '1'));
+
+    $router[] = new Route("$submitFKSprefix<presenter>/<action>[/<id>]", array(
+        'module' => 'Submit',
+        'presenter' => 'Priklady',
+        'action' => 'zoznam',
+        'kategoria_id' => '1'));
+
 };
 
 Nette\Forms\Container::extensionMethod('addDatePicker', function ($container, $name, $label = NULL) {

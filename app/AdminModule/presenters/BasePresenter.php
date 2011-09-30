@@ -19,17 +19,26 @@ use Nette\Utils\Neon;
  */
 abstract class BasePresenter extends \Nette\Application\UI\Presenter
 {
+    /** @persistent */
+    public $kategoria_id;
+
     public function createComponentMenu()
     {
         $file = APP_DIR . '/AdminModule/templates/menu.neon';
         if (!is_file($file)) {
-            throw new Nette\FileNotFoundException("File $file does not exists!");
+            throw new \Nette\FileNotFoundException("File $file does not exists!");
         }
         $data = file_get_contents($file);
         if ($data === false) {
-            throw new Nette\FileNotFoundException("File $file is not readable!");
+            throw new \Nette\FileNotFoundException("File $file is not readable!");
         }
         return new \Menu(Neon::decode($data), 'menu');
+    }
+
+    public function startup()
+    {
+        $this->context->sources->params['kategoria_id'] = $this->kategoria_id;
+        parent::startup();
     }
 
 }

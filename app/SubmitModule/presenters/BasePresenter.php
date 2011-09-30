@@ -18,15 +18,18 @@ use Nette\Utils\Neon;
  */
 abstract class BasePresenter extends \Nette\Application\UI\Presenter
 {
+    /** @persistent */
+    public $kategoria_id;
+
     public function createComponentMenu()
     {
         $file = APP_DIR . '/SubmitModule/templates/menu.neon';
         if (!is_file($file)) {
-            throw new Nette\FileNotFoundException("File $file does not exists!");
+            throw new \Nette\FileNotFoundException("File $file does not exists!");
         }
         $data = file_get_contents($file);
         if ($data === false) {
-            throw new Nette\FileNotFoundException("File $file is not readable!");
+            throw new \Nette\FileNotFoundException("File $file is not readable!");
         }
         $menuItems = Neon::decode($data);
         if ($this->user->isLoggedIn()) {
@@ -35,6 +38,12 @@ abstract class BasePresenter extends \Nette\Application\UI\Presenter
             $menuItems['Prihlásiť'] = 'Sign:in';
         }
         return new \Menu($menuItems, 'menu');
+    }
+
+    public function startup()
+    {
+        $this->context->sources->params['kategoria_id'] = $this->kategoria_id;
+        parent::startup();
     }
 
     public function getIdentity()
