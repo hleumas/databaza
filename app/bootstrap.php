@@ -61,13 +61,15 @@ $application->onStartup[] = function() use ($application, $dbFKSprefix, $submitF
         'module' => 'Admin',
         'presenter' => 'Riesitelia',
         'action' => 'default',
-        'kategoria_id' => '1'));
+        'kategoria_id' => '1'),
+        Route::SECURED);
 
     $router[] = new Route("$submitFKSprefix<presenter>/<action>[/<id>]", array(
         'module' => 'Submit',
         'presenter' => 'Priklady',
         'action' => 'zoznam',
-        'kategoria_id' => '1'));
+        'kategoria_id' => '1'),
+        Route::SECURED);
 
 };
 
