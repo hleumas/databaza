@@ -35,10 +35,8 @@ $configurator->container->addService('authenticator', function($cont) {
     return new \Authenticator($cont->database);
 });
 
-$dbFKSprefix     = $configurator->container->params['dbfksprefix'];
-$submitFKSprefix = $configurator->container->params['submitfksprefix'];
+$routes = $configurator->container->params['routes'];
  
-
 
 // Configure application
 $application = $configurator->container->application;
@@ -47,28 +45,23 @@ $application->errorPresenter = 'Error';
 
 
 // Setup router
-$application->onStartup[] = function() use ($application, $dbFKSprefix, $submitFKSprefix) {
-	$router = $application->getRouter();
+$application->onStartup[] = function() use ($application, $routes) {
+    $router = $application->getRouter();
 
-    $router[] = new Route('index.php', array(
-        'module' => 'Admin',
-        'presenter' => 'Riesitelia',
-        'action' => 'default',
-        'kategoria_id' => '1'),
-        Route::ONE_WAY);
+    foreach ($routes as $route) {
+      $metadata = \FlatArray::toArray($route['metadata']);
+      $router[] = new Route(
+          "//{$route['prefix']}/index.php",
+          $metadata,
+          Route::ONE_WAY);
 
-    $router[] = new Route("$dbFKSprefix<presenter>/<action>[/<id>]", array(
-        'module' => 'Admin',
-        'presenter' => 'Riesitelia',
-        'action' => 'default',
-        'kategoria_id' => '1'));
-
-    $router[] = new Route("$submitFKSprefix<presenter>/<action>[/<id>]", array(
-        'module' => 'Submit',
-        'presenter' => 'Priklady',
-        'action' => 'zoznam',
-        'kategoria_id' => '1'));
-
+      $mask = "//{$route['prefix']}/<presenter>/<action>[/<id>]";
+      if ($route['secured']) {
+          $router[] = new Route($mask, $metadata, Route::SECURED);
+      } else {
+          $router[] = new Route($mask, $metadata);
+      }
+    }
 };
 
 Nette\Forms\Container::extensionMethod('addDatePicker', function ($container, $name, $label = NULL) {
