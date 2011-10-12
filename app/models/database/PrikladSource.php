@@ -119,6 +119,7 @@ class PrikladSource extends CommonSource
         $record['seria_id'] = $record['seria'];
         unset($record['seria']);
         unset($record['cislo']);
+        unset($record['kod']);
         return parent::updateDb($record);
     }
 
