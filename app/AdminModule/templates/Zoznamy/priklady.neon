@@ -46,6 +46,9 @@ buttons:
     oboduj:
         label   : Oboduj
         showText: true
+    eriesenia:
+        label   : 'e-riešenia'
+        showText: true
 #    delete:
 #        label   : Zmaž
 #        icon    : ui-icon-closethick

@@ -49,6 +49,7 @@ class PrikladyPresenter extends ZoznamyPresenter
     {
         $grid->setEditHandler(callback($this, 'handleEdit'));
         $prikladSource = $this->context->sources->prikladSource;
+        $submitHandler = $this->context->sources->submitHandler;
         $grid['actions']->getComponent('up')->setHandler(
             function($row) use ($prikladSource) {
                 $prikladSource->lowerNumber($row['id']);
@@ -62,7 +63,15 @@ class PrikladyPresenter extends ZoznamyPresenter
             function($row) use($prikladSource) {
                 return $row['cislo'] < $prikladSource->getLastNumber($row['seria_id']);
             });
+        $grid['actions']->getComponent('eriesenia')->setHandler(callback($this, 'sendPriklady'));
         return parent::setGridHandlers($grid);
+    }
+
+    public function sendPriklady($row)
+    {
+        $archiv = $this->context->sources->submitHandler->getArchiv($row['id']);
+        $response = new \Nette\Application\Responses\FileResponse($archiv, 'ulohy.zip');
+        $this->sendResponse($response);
     }
 
     public function handleEdit($post)
