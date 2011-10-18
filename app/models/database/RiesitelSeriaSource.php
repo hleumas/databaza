@@ -84,14 +84,17 @@ SQL;
         if ($fetch === false) {
             throw new InvalidIdException('Invalid priklad cislo or seria');
         }
-        $prikladId = $fetch['id'];
+        $this->setPrikladById($riesitel, $fetch['id'], $body);
+    }
+
+    public function setPrikladById($riesitel, $priklad, $body)
+    {
         $sql = <<<SQL
 INSERT INTO riesitel_priklady
 (riesitel_id, priklad_id, body) VALUES (?, ?, ?)
 ON DUPLICATE KEY UPDATE body=VALUES(body)
 SQL;
-        $this->dbConnection->exec($sql, $riesitel, $prikladId, $body);
-        
+        $this->dbConnection->exec($sql, $riesitel, $priklad, $body);
     }
 
     public function deletePriklad($riesitel, $seria, $cislo)

@@ -80,7 +80,7 @@ class SourceContainer extends \Nette\DI\Container
 
     public function createServiceSubmitHandler()
     {
-        return new SubmitHandler($this->params['database']);
+        return new SubmitHandler($this->params['database'], $this->riesitelSeriaSource);
     }
 
     public function createServiceKategoria()

@@ -141,13 +141,9 @@ SQL;
             if ($body === '') {
                 $body = null;
             }
-            $this->context->database->exec(
-'INSERT INTO riesitel_priklady (riesitel_id, priklad_id, body)
-VALUES(?,?,?)
-ON DUPLICATE KEY UPDATE body=VALUES(body)',
-    $id, $values['priklad'], $body);
+            $this->context->sources->riesitelSeriaSource
+                ->setPrikladById($id, $values['priklad'], $body);
         }
-        //dump($form);
         $this->redirect('default');
     }
 
@@ -156,6 +152,7 @@ ON DUPLICATE KEY UPDATE body=VALUES(body)',
         $archiv = $this->context->sources->submitHandler->getArchiv($row['id']);
         $response = new \Nette\Application\Responses\FileResponse($archiv, 'ulohy.zip');
         $this->sendResponse($response);
+        unlink($archiv);
     }
 
     public function handleEdit($post)
