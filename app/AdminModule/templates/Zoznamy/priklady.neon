@@ -45,6 +45,7 @@ buttons:
         showText: false
     oboduj:
         label   : Oboduj
+        window  : true
         showText: true
     eriesenia:
         label   : 'e-riešenia'

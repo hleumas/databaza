@@ -23,7 +23,7 @@ use Nette\Utils\Neon;
 abstract class ZoznamyPresenter extends BasePresenter
 {
 
-    private $templateDir = '/AdminModule/templates/Zoznamy';
+    public $templateDir = '/AdminModule/templates/Zoznamy';
     private $semesterId = null;
     public  $submitted = false;
 
