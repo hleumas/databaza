@@ -64,7 +64,91 @@ class PrikladyPresenter extends ZoznamyPresenter
                 return $row['cislo'] < $prikladSource->getLastNumber($row['seria_id']);
             });
         $grid['actions']->getComponent('eriesenia')->setHandler(callback($this, 'sendPriklady'));
+        $grid['actions']->getComponent('oboduj')->setHandler(callback($this, 'oboduj'));
         return parent::setGridHandlers($grid);
+    }
+
+    public function oboduj($row)
+    {
+        $this->populateObodujForm($row['id'], $this['obodujForm'])->render();
+    }
+    public function renderOboduj()
+    {
+        $template = $this->template;
+        $template->setFile(APP_DIR . $this->templateDir . '/oboduj.latte');
+        $this['obodujForm']->validate();
+        $template->form = $this['obodujForm'];
+    }
+
+    public function createComponentObodujForm()
+    {
+        $form = new Form();
+        $form->setRenderer(new \EditFormRenderer());
+        $form->addGroup('Body');
+        $form->addHidden('priklad');
+        $form->onSuccess[] = callback($this, 'submitOboduj');
+
+        $priklad = $this->context->httpRequest->getPost('priklad');
+        if (!is_null($priklad)) {
+            return $this->populateObodujForm($priklad, $form);
+        }
+        return $form;
+    }
+    public function populateObodujForm($id, $form)
+    {
+        $form->setAction($this->link('oboduj', array('do' => 'obodujForm-submit')));
+        $riesitelia = $this->fetchObodujRiesitelia($id);
+
+        $form['priklad']->setValue($id);
+        foreach ($riesitelia as $riesitel) {
+            $form->addText(
+                "riesitel.{$riesitel['id']}",
+                "{$riesitel['meno']} {$riesitel['priezvisko']}",
+                3
+            )->setType('number')
+            ->setDefaultValue($riesitel['body'])
+            ->addCondition(Form::FILLED)->addRule(
+                Form::INTEGER,
+                'Počet bodov musí byť kladné číslo'
+            )->addRule(
+                Form::RANGE,
+                'Počet bodov musí byť kladné číslo',
+                array(0, null)
+            );
+        }
+        $form->addSubmit('send', 'Oboduj');
+        return $form;
+    }
+
+    private function fetchObodujRiesitelia($id)
+    {
+        $sql = <<<SQL
+SELECT meno, priezvisko, body, riesitel.id FROM riesitel 
+LEFT JOIN osoba ON riesitel.osoba_id = osoba.id
+LEFT JOIN riesitel_priklady ON riesitel_priklady.riesitel_id = riesitel.id
+WHERE riesitel_priklady.priklad_id = ?
+ORDER BY priezvisko ASC, meno ASC
+SQL;
+        return $this->context->database->fetchAll($sql, $id);
+    }
+
+    public function submitOboduj()
+    {
+        $this['grid']->flashMessage('Nahodené body');
+        $form = $this['obodujForm'];
+        $values = \FlatArray::inflate($form->values);
+        foreach ($values['riesitel'] as $id => $body) {
+            if ($body === '') {
+                $body = null;
+            }
+            $this->context->database->exec(
+'INSERT INTO riesitel_priklady (riesitel_id, priklad_id, body)
+VALUES(?,?,?)
+ON DUPLICATE KEY UPDATE body=VALUES(body)',
+    $id, $values['priklad'], $body);
+        }
+        //dump($form);
+        $this->redirect('default');
     }
 
     public function sendPriklady($row)
