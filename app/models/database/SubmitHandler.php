@@ -21,10 +21,12 @@ class SubmitHandler extends Object
 {
 
     private $_dbConnection;
+    private $_riesitelSeriaSource;
 
-    public function __construct($dbConnection)
+    public function __construct($dbConnection, $riesitelSeriaSource)
     {
         $this->_dbConnection = $dbConnection;
+        $this->_riesitelSeriaSource = $riesitelSeriaSource;
     }
 
     private function getData($prikladId)
@@ -67,7 +69,7 @@ SQL;
                          . $riesitel['priklad_id'] . '-'
                          . $riesitel['meno'] . '-'
                          . $riesitel['priezvisko'],
-                         '._', false);
+                         '._-', false);
             $path = "$mainDir/$riesitelDir";
             $archiv->addEmptyDir("$path");
             $archiv->addFromString("$path/body.txt", $riesitel['body']);
@@ -94,8 +96,43 @@ SQL;
         return $archivName;
     }
 
-    public function saveArchiv($archiv)
+    public function saveArchiv($archivName)
     {
+        $zip = new \ZipArchive();
+        $zip->open($archivName);
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $stat = $zip->statIndex($i);
+            $match = (Strings::match(
+                $stat['name'],
+                '#^[^/]+/([0-9]+)-([0-9]+)-[^/]*/(([0-9]+)-[^/]*|body\.txt)$#'
+            ));
+            if (is_null($match)) {
+                continue;
+            }
+
+            if ($match[3] === 'body.txt') {
+                $body = $zip->getFromIndex($i);
+                $body = Strings::match(
+                    $zip->getFromIndex($i),
+                    '#^\s*([0-9]+)\s*$#'
+                );
+                $body = is_null($body) ? null : (int)$body[1];
+
+                $this->_riesitelSeriaSource
+                    ->setPrikladById($match[1], $match[2], $body);
+            } else {
+                $file = array(
+                    'filesize' => $stat['size'],
+                    'content' => $zip->getFromIndex($i)
+                );
+                $this->_dbConnection->exec(
+                    'UPDATE priklady_files SET ? WHERE id=?',
+                    $file,
+                    $match[4]
+                );
+            }
+
+        }
     }
 
 }
