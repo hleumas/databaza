@@ -30,9 +30,12 @@ class PrikladyPresenter extends BasePresenter
         foreach ($priklady as $priklad) {
             $items[$priklad['id']] = $priklad['kod'] . ' ' . $priklad['nazov'];
         }
-        $form->addSelect('priklad', 'Príklad:', $items);
+        $form->addSelect('priklad', 'Príklad:', $items)
+            ->setPrompt('Zvoľ príklad')
+            ->setRequired('Zvoľ príklad');
         $form->addUpload('file', 'Riešenie:')
-            ->addRule(Form::MAX_FILE_SIZE, 'Príliš veľký súbor', 1000000);
+            ->addRule(Form::MAX_FILE_SIZE, 'Príliš veľký súbor', 1000000)
+            ->setRequired('Zvoľ riešenie na odovzdanie');
         $form->addSubmit('odovzdaj', 'Odovzdaj');
         $form->onSuccess[] = callback($this, 'onSubmit');
         return $form;
