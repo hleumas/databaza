@@ -31,7 +31,7 @@ class SubmitPresenter extends BasePresenter
 
     public function onSubmit()
     {
-        $archivName = $this['submitForm']->values['riesenia'];
+        $archivName = $this['submitForm']->values['riesenia']->getTemporaryFile();
         $this->context->sources->submitHandler->saveArchiv($archivName);
         unlink($archivName);
         $this->flashMessage('Úspešne nahraté');
