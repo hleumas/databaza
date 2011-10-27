@@ -10,7 +10,7 @@ namespace AdminModule;
 
 
 use Gridito\Grid;
-use Gridito\NetteModel;
+use Gridito\FullTextModel;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
@@ -23,11 +23,28 @@ use Nette\Utils\Neon;
  */
 class SkolyPresenter extends ZoznamyPresenter
 {
+    /** @persistent */
+    public $search;
+
+    public function createComponentSearch()
+    {
+        $form = new Form();
+        $form->setMethod('get');
+        $form->addText('search', '');
+        $form->addSubmit('submit', 'Hľadaj');
+        return $form;
+    }
 
     public function createGridModel()
     {
-        return new NetteModel(
+        $model = new FullTextModel(
             $this->context->database->table('zoznamy_skola_view'));
+        $search = $this->getParam('search', false);
+        if ($search) {
+            return $model->filter($search, array('nazov', 'skratka', 'mesto', 'email'));
+        } else {
+            return $model;
+        }
     }
 
     public function getData($id)
