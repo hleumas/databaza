@@ -14,7 +14,7 @@ use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
 use Nette\Utils\Neon;
-use Gridito\NetteModel;
+use Gridito\FullTextModel;
 /**
  * Zoznamy presenter.
  *
@@ -23,6 +23,17 @@ use Gridito\NetteModel;
  */
 class RiesiteliaPresenter extends ZoznamyPresenter
 {
+    /** @persistent */
+    public $search;
+
+    public function createComponentSearch()
+    {
+        $form = new Form();
+        $form->setMethod('get');
+        $form->addText('search', '');
+        $form->addSubmit('submit', 'Hľadaj');
+        return $form;
+    }
 
     public function createComponentForm()
     {
@@ -42,8 +53,14 @@ class RiesiteliaPresenter extends ZoznamyPresenter
 
     public function createGridModel()
     {
-        return new NetteModel(
+        $model = new FullTextModel(
             $this->context->database->table('zoznamy_riesitel_view'));
+        $search = $this->getParam('search', false);
+        if ($search) {
+            return $model->filter($search, array('meno', 'priezvisko', 'email', 'mesto', 'rok_maturity'));
+        } else {
+            return $model;
+        }
     }
     public function getData($id)
     {
