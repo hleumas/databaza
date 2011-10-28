@@ -104,7 +104,7 @@ SQL;
             $stat = $zip->statIndex($i);
             $match = (Strings::match(
                 $stat['name'],
-                '#^[^/]+/([0-9]+)-([0-9]+)-[^/]*/(([0-9]+)-[^/]*|body\.txt)$#'
+                '#[^/]+/([0-9]+)-([0-9]+)-[^/]*/(([0-9]+)-[^/]*|body\.txt)$#'
             ));
             if (is_null($match)) {
                 continue;
