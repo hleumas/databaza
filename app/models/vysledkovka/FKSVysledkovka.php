@@ -74,19 +74,21 @@ SQL;
 
     public function filterA($riesitel)
     {
-        return true;
-        /**if (!$this->filterB($riesitel)) {
+        if (!$this->filterB($riesitel)) {
             return true;
         }
-        if (!is_null($riesitel[6]) || !is_null($riesitel[7])) {
+        if (isset($riesitel['sent6']) || isset($riesitel['sent7'])) {
             return true;
         }
         return false;
-         */
     }
     public function filterB($riesitel)
     {
         if ($riesitel['sustredeni'] > 2 || $riesitel['celostatiek'] > 0) {
+            return false;
+        }
+
+        if (!isset($riesitel['sent1']) && !isset($riesitel['sent2']) && !isset($riesitel['sent3'])) {
             return false;
         }
 

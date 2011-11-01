@@ -34,7 +34,8 @@ abstract class VysledkovkaModel extends AbstractModel
             $serie
         );
         $results = $this->sortPoradie(end($raw));
-        $this->filterRiesitelia($results);
+        $results = $this->enumPoradie($results);
+        $results = $this->filterRiesitelia($results);
         $this->results = $this->enumPoradie($results);
 	}
 
@@ -93,21 +94,27 @@ SQL;
         foreach ($priklady as $priklad) {
             $data[$priklad['seria_id']][$priklad['riesitel_id']][$priklad['cislo']] = 
                 is_null($priklad['body']) ? '*' : $priklad['body'];
+            foreach ($data as $sid => $seria) {
+                $data[$sid][$priklad['riesitel_id']]["sent{$priklad['cislo']}"] = true;
+            }
         }
+
     }
 
     private function sumSerie(&$data)
     {
         $previousSeria = false;
-        foreach ($data as &$seria) {
+        foreach ($data as $sid => &$seria) {
             foreach ($seria as $id => &$riesitel) {
                 $riesitel['bonus'] = $this->getBonus($riesitel);
                 $riesitel['sum']   = $this->getSum($riesitel);
                 $riesitel['total'] = $riesitel['sum'];
+                $riesitel['serie'] = array();
                 if ($previousSeria !== false) {
                     $riesitel['total'] += $data[$previousSeria][$id]['total'];
                 }
             }
+            $previousSeria = $sid;
         }
     }
 
