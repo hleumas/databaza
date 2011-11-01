@@ -43,9 +43,9 @@ class FKSVysledkovka extends VysledkovkaModel
     {
         $sql = <<<SQL
 SELECT riesitel_seria.riesitel_id as id, riesitel_seria.seria_id,
-riesitel_seria.bonus, riesitel_seria.meskanie, riesitel.rok_maturity,
-riesitel.sustredeni, riesitel.vyhier, riesitel.celostatiek, semester.rok,
-semester.cast, osoba.meno, osoba.priezvisko
+riesitel_seria.bonus, riesitel_seria.meskanie, riesitel.typ_studia_id,
+riesitel.rok_maturity, riesitel.sustredeni, riesitel.vyhier,
+riesitel.celostatiek, semester.rok, semester.cast, osoba.meno, osoba.priezvisko
 FROM riesitel_seria LEFT JOIN riesitel ON
 riesitel_seria.riesitel_id = riesitel.id
 LEFT JOIN osoba ON
@@ -93,7 +93,7 @@ SQL;
         }
 
         /** 1 = maturuje tento rok */
-        $rokyDoMaturity = $riesitel['rok_maturity'] - $riesitel['rok'] + $riesitel['cast'] - 1;
+        $rokyDoMaturity = $riesitel['rok_maturity'] - $riesitel['rok'] - $riesitel['cast'] + 2;
 
         if ($riesitel['vyhier'] > 0 && $rokyDoMaturity <= 2) {
             return false;
@@ -127,7 +127,6 @@ SQL;
 
     protected function getEmptyRiesitel($riesitel)
     {
-        dump($riesitel);
         $result = \FlatArray::toArray($riesitel);
         $result['meskanie'] = 0;
         $result['bonus'] = 0;

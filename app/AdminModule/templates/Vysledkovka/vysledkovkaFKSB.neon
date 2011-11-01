@@ -1,0 +1,34 @@
+columns:
+    poradie:
+        label   : Por.
+        length  : 4
+    meno:
+        label   : Meno
+    priezvisko:
+        label   : Priezvisko
+    rocnik:
+        label   : Roč.
+    rok_maturity:
+        label   : Maturita
+    1:
+        label   : B0
+    2:
+        label   : B1
+    3:
+        label   : B2
+    4:
+        label   : B3
+    5:
+        label   : B4
+    sum:
+        label   : Sum
+    total:
+        label   : Body
+
+
+buttons: []
+#    toWeb:
+#        label   : 'Ulož výsledkovky na web'
+#        toolbar : true
+#        window  : true
+#        icon    : ui-icon-plusthick
