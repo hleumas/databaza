@@ -27,6 +27,11 @@ class VysledkovkaPresenter extends BasePresenter
     /** @persistent */
     public $seria;
 
+    private $priklady = array(
+        'vysledkovkaFKSA' => array(4, 5, 6, 7),
+        'vysledkovkaFKSB' => array(1, 2, 3, 4, 5)
+    );
+
     public function getSerie()
     {
         $lastSeriaId = $this['seriaSelector']->seria;
@@ -81,6 +86,8 @@ SQL;
             return new FKSVysledkovka($db, $serie, FKSVysledkovka::A);
         case 'vysledkovkaFKSB':
             return new FKSVysledkovka($db, $serie, FKSVysledkovka::B);
+        default:
+            throw new Exception("Neznama vysledkovka");
         }
     }
     public function createComponentVysledkovka($name)
@@ -94,7 +101,52 @@ SQL;
         $grid['columns']->getComponent('rocnik')->setRenderer(function($row) {
             return $row['typ_studia_id'] - $row['rok_maturity'] + $row['rok'] + $row['cast'] - 1;
         });
+        $grid['toolbar']->getComponent('download')->setHandler(callback($this, 'download' . ucfirst($name)));
         //$grid->addColumn('rocnik', 'Ročník')->setRenderer(
         return $grid;
+    }
+
+    public function downloadVysledkovkaFKSA()
+    {
+        $this->actionDownload('vysledkovkaFKSA');
+    }
+
+    public function downloadVysledkovkaFKSB()
+    {
+        $this->actionDownload('vysledkovkaFKSB');
+    }
+
+    public function getTexVysledkovka($name)
+    {
+        $riesitelia = $this->getVysledkovkaModel($name)->getItems();
+        $tex = '';
+        foreach ($riesitelia as $riesitel) {
+            $tex .= implode('&&', array(
+                $riesitel['poradie'],
+                $riesitel['meno'] . ' ' . $riesitel['priezvisko'],
+                $riesitel['skratka']
+            ));
+            foreach ($this->priklady[$name] as $priklad) {
+                $tex .= "&&{$riesitel[$priklad]}";
+            }
+            $tex .= '&&';
+            $tex .= implode('&&', array(
+                $riesitel['bonus'], 
+                number_format($riesitel['sum'], 2, ',', ' '),
+                number_format($riesitel['total'], 2, ',', ' ')
+            ));
+            $tex .= "\\\\\n";
+        }
+        return $tex;
+
+    }
+
+    public function actionDownload($name)
+    {
+        $file = tempnam('/tmp', 'vys');
+        file_put_contents($file, $this->getTexVysledkovka($name));
+        $response = new \Nette\Application\Responses\FileResponse($file, "$name.tex");
+        $this->sendResponse($response);
+        unlink($file);
     }
 }

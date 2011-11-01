@@ -45,7 +45,7 @@ class FKSVysledkovka extends VysledkovkaModel
 SELECT riesitel_seria.riesitel_id as id, riesitel_seria.seria_id,
 riesitel_seria.bonus, riesitel_seria.meskanie, riesitel.typ_studia_id,
 riesitel.rok_maturity, riesitel.sustredeni, riesitel.vyhier,
-riesitel.celostatiek, semester.rok, semester.cast, osoba.meno, osoba.priezvisko
+riesitel.celostatiek, semester.rok, semester.cast, osoba.meno, osoba.priezvisko, skola.skratka
 FROM riesitel_seria LEFT JOIN riesitel ON
 riesitel_seria.riesitel_id = riesitel.id
 LEFT JOIN osoba ON
@@ -54,6 +54,8 @@ LEFT JOIN seria ON
 seria.id = riesitel_seria.seria_id
 LEFT JOIN semester ON
 semester.id = seria.semester_id
+LEFT JOIN skola ON
+riesitel.skola_id = skola.id
 WHERE riesitel_seria.seria_id IN (?)
 SQL;
         return $dbConection->fetchAll($sql, $serie);
