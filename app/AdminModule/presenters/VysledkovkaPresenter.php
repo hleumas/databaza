@@ -121,16 +121,16 @@ SQL;
         $riesitelia = $this->getVysledkovkaModel($name)->getItems();
         $tex = '';
         foreach ($riesitelia as $riesitel) {
-            $tex .= implode('&&', array(
+            $tex .= implode('&', array(
                 $riesitel['poradie'],
                 $riesitel['meno'] . ' ' . $riesitel['priezvisko'],
                 $riesitel['skratka']
             ));
             foreach ($this->priklady[$name] as $priklad) {
-                $tex .= "&&{$riesitel[$priklad]}";
+                $tex .= "&{$riesitel[$priklad]}";
             }
-            $tex .= '&&';
-            $tex .= implode('&&', array(
+            $tex .= '&';
+            $tex .= implode('&', array(
                 $riesitel['bonus'], 
                 number_format($riesitel['sum'], 2, ',', ' '),
                 number_format($riesitel['total'], 2, ',', ' ')
