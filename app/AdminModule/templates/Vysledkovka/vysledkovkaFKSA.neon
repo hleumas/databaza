@@ -10,6 +10,8 @@ columns:
         label   : Roč.
     rok_maturity:
         label   : Maturita
+    skratka:
+        label   : Škola
     4:
         label   : A1
     5:
@@ -18,15 +20,21 @@ columns:
         label   : A3
     7:
         label   : A4
+    bonus:
+        label   : Bonus
     sum:
         label   : Sum
     total:
         label   : Body
 
 
-buttons: []
-#    toWeb:
-#        label   : 'Ulož výsledkovky na web'
-#        toolbar : true
-#        window  : true
-#        icon    : ui-icon-plusthick
+buttons:
+    save:
+        label   : 'Ulož výsledkovky'
+        toolbar : true
+        window  : false
+        icon    : ui-icon-disk
+    download:
+        label   : 'Stiahni TeX'
+        toolbar : true
+        icon    : ui-icon-circle-triangle-s
