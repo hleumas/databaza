@@ -17,6 +17,7 @@ require LIBS_DIR . '/Nette/loader.php';
 
 // Enable Nette\Debug for error visualisation & logging
 Debugger::$strictMode = TRUE;
+Debugger::$email = 'root@fks.sk';
 Debugger::enable();
 
 
