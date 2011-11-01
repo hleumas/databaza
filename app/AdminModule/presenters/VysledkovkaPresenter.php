@@ -56,44 +56,45 @@ SQL;
             $sources->kategoria);
     }
 
-    public function createComponentGridA()
+    public function getVysledkovkaTemplate($name)
     {
-        $grid = new Grid();
-        $grid->setModel(new FKSVysledkovka(
-            $this->context->database,
-            $this->getSerie(),
-            FKSVysledkovka::A
-        ));
-        $grid->addColumn('poradie', 'por');
-        $grid->addColumn('meno', 'Meno');
-        $grid->addColumn('priezvisko', 'Priezvisko');
-        $grid->addColumn(4, 'A1');
-        $grid->addColumn(5, 'A2');
-        $grid->addColumn(6, 'A3');
-        $grid->addColumn(7, 'A4');
-        $grid->addColumn('sum', 'SUM');
-        $grid->addColumn('total', 'Spolu');
-        return $grid;
+        $file = __DIR__ . "/../templates/Vysledkovka/$name.neon";
+        if (!is_file($file) || !is_readable($file)) {
+            throw new \Nette\FileNotFoundException("File $file is missing or is not readable.");
+        }
+        return $file;
+    }
+    public function createComponent($name)
+    {
+        if (Strings::startsWith($name, 'vysledkovka')) {
+            return $this->createComponentVysledkovka($name);
+        }
+        return parent::createComponent($name);
     }
 
-    public function createComponentGridB()
+    public function getVysledkovkaModel($name)
     {
-        $grid = new Grid();
-        $grid->setModel(new FKSVysledkovka(
-            $this->context->database,
-            $this->getSerie(),
-            FKSVysledkovka::B
-        ));
-        $grid->addColumn('poradie', 'por');
-        $grid->addColumn('meno', 'Meno');
-        $grid->addColumn('priezvisko', 'Priezvisko');
-        $grid->addColumn(1, 'B0');
-        $grid->addColumn(2, 'B1');
-        $grid->addColumn(3, 'B2');
-        $grid->addColumn(4, 'B3');
-        $grid->addColumn(5, 'B4');
-        $grid->addColumn('sum', 'SUM');
-        $grid->addColumn('total', 'Spolu');
+        $db = $this->context->database;
+        $serie = $this->getSerie();
+        switch($name) {
+        case 'vysledkovkaFKSA':
+            return new FKSVysledkovka($db, $serie, FKSVysledkovka::A);
+        case 'vysledkovkaFKSB':
+            return new FKSVysledkovka($db, $serie, FKSVysledkovka::B);
+        }
+    }
+    public function createComponentVysledkovka($name)
+    {
+        $file  = $this->getVysledkovkaTemplate($name);
+        $model = $this->getVysledkovkaModel($name);
+        $grid = \NeonGriditoFactory::createGrid(
+            $model,
+            file_get_contents($file)
+        );
+        $grid['columns']->getComponent('rocnik')->setRenderer(function($row) {
+            return $row['typ_studia_id'] - $row['rok_maturity'] + $row['rok'] + $row['cast'] - 1;
+        });
+        //$grid->addColumn('rocnik', 'Ročník')->setRenderer(
         return $grid;
     }
 }
