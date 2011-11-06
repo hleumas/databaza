@@ -1,7 +1,14 @@
 {block #content}
 {control seriaSelector}
+{if $fks}{include #fks}{else}{include #ufo}{/if}
+{/block}
+{define #ufo}
+<h2>Výsledkovka kategórie UFO</h2>
+{control vysledkovkaUFO}
+{/define}
+{define #fks}
 <h2>Výsledkovka kategórie A</h2>
 {control vysledkovkaFKSA}
 <h2>Výsledkovka kategórie B</h2>
 {control vysledkovkaFKSB}
-{/block}
+{/define}
