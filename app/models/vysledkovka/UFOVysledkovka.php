@@ -82,10 +82,10 @@ SQL;
         $rokyDoMaturity = $riesitel['rok_maturity'] - $riesitel['rok'] - $riesitel['cast'] + 2;
         $hodnota = $riesitel['sum'] * (36-$riesitel['sum']);
         if ($rokyDoMaturity == 6)  {
-            return 0.008 * $hodnota;
+            return round(0.008 * $hodnota, 2);
         }
         if ($rokyDoMaturity > 6) {
-            return 0.015 * $hodnota;
+            return round(0.015 * $hodnota, 2);
         }
         return 0;
     }
