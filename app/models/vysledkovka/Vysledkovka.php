@@ -106,8 +106,11 @@ SQL;
         $previousSeria = false;
         foreach ($data as $sid => &$seria) {
             foreach ($seria as $id => &$riesitel) {
-                $riesitel['bonus'] = $this->getBonus($riesitel);
                 $riesitel['sum']   = $this->getSum($riesitel);
+                $riesitel['bonus'] = $this->getBonus($riesitel);
+
+                $riesitel['sum'] += $riesitel['bonus'];
+
                 $riesitel['total'] = $riesitel['sum'];
                 $riesitel['serie'] = array();
                 if ($previousSeria !== false) {

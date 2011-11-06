@@ -1,0 +1,40 @@
+columns:
+    poradie:
+        label   : Por.
+        length  : 4
+    meno:
+        label   : Meno
+    priezvisko:
+        label   : Priezvisko
+    rocnik:
+        label   : Roč.
+    rok_maturity:
+        label   : Maturita
+    skratka:
+        label   : Škola
+    1:
+        label   : U1
+    2:
+        label   : U2
+    3:
+        label   : U3
+    4:
+        label   : U4
+    bonus:
+        label   : Bonus
+    sum:
+        label   : Sum
+    total:
+        label   : Body
+
+
+buttons:
+    save:
+        label   : 'Ulož výsledkovku'
+        toolbar : true
+        window  : false
+        icon    : ui-icon-disk
+    download:
+        label   : 'Stiahni TeX'
+        toolbar : true
+        icon    : ui-icon-circle-triangle-s

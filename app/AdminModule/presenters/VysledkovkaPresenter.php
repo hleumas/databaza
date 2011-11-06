@@ -11,6 +11,7 @@ namespace AdminModule;
 
 use Gridito\Grid;
 use Gridito\FKSVysledkovka;
+use Gridito\UFOVysledkovka;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
@@ -29,7 +30,8 @@ class VysledkovkaPresenter extends BasePresenter
 
     private $priklady = array(
         'vysledkovkaFKSA' => array(4, 5, 6, 7),
-        'vysledkovkaFKSB' => array(1, 2, 3, 4, 5)
+        'vysledkovkaFKSB' => array(1, 2, 3, 4, 5),
+        'vysledkovkaUFO'  => array(1, 2, 3, 4)
     );
 
     public function getSerie()
@@ -37,7 +39,7 @@ class VysledkovkaPresenter extends BasePresenter
         $lastSeriaId = $this['seriaSelector']->seria;
         $sql = <<<SQL
 SELECT id FROM
-seria,(SELECT semester_id, cislo from seria where id=2) t
+seria,(SELECT semester_id, cislo from seria where id=?) t
 WHERE seria.semester_id=t.semester_id AND seria.cislo <= t.cislo
 SQL;
         $data = $this->context->database->fetchAll($sql, $lastSeriaId);
@@ -51,6 +53,12 @@ SQL;
         return $serie;
             
     }
+
+    public function renderDefault()
+    {
+        $this->template->fks = ($this->context->sources->kategoria->nazov == 'FKS');
+    }
+
     public function createComponentSeriaSelector()
     {
         $sources = $this->context->sources;
@@ -86,6 +94,8 @@ SQL;
             return new FKSVysledkovka($db, $serie, FKSVysledkovka::A);
         case 'vysledkovkaFKSB':
             return new FKSVysledkovka($db, $serie, FKSVysledkovka::B);
+        case 'vysledkovkaUFO':
+            return new UFOVysledkovka($db, $serie);
         default:
             throw new Exception("Neznama vysledkovka");
         }
@@ -114,6 +124,11 @@ SQL;
     public function downloadVysledkovkaFKSB()
     {
         $this->actionDownload('vysledkovkaFKSB');
+    }
+
+    public function downloadVysledkovkaUFO()
+    {
+        $this->actionDownload('vysledkovkaUFO');
     }
 
     public function getTexVysledkovka($name)
