@@ -65,7 +65,28 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
     {
         parent::setGridHandlers($grid);
         $grid->setEditHandler(callback($this, 'handleEdit'));
+        $grid['toolbar']->getComponent('stitky')->setHandler(callback($this, 'sendStitky'));
         return $grid;
+    }
+
+    public function sendStitky()
+    {
+        $model = $this->createGridModel();
+        $items = $model->getItems();
+        $adresy = array();
+        foreach ($items as $item) {
+            if ($item['submit'] == '0') {
+                $adresy[] = array(
+                    "{$item['meno']} {$item['priezvisko']}",
+                    "{$item['ulica']}",
+                    "{$item['psc']}, {$item['mesto']}",
+                    "");
+            }
+        }
+        $file = \Stitky::renderStitky($adresy, 3, 8);
+        $response = new \Nette\Application\Responses\FileResponse($file, "stitky.pdf");
+        $this->sendResponse($response);
+        unlink($file);
     }
 
     public function handleEdit($post)
