@@ -18,6 +18,10 @@ buttons:
         toolbar : true
         window  : true
         icon    : ui-icon-plusthick
+    stitky:
+        label   : Vygeneruj štítky
+        toolbar : true
+        window  : false
 #    edit:
 #        label   : Zmeň
 #        window  : true

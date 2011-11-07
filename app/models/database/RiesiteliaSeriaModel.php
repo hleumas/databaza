@@ -37,7 +37,7 @@ class RiesiteliaSeriaModel extends Gridito\AbstractModel
         list($where, $id) = $this->getRiesitelWhere($riesitelId);
         $sql = <<<SQL
 SELECT riesitel_priklady.riesitel_id, riesitel_priklady.body,
-       riesitel_priklady.priklad_id, priklad.cislo
+       riesitel_priklady.priklad_id, riesitel_priklady.submit, priklad.cislo
 FROM riesitel_priklady LEFT JOIN riesitel_seria
 ON riesitel_priklady.riesitel_id = riesitel_seria.riesitel_id
 LEFT JOIN priklad
@@ -68,9 +68,13 @@ SQL;
     {
         list($where, $id) = $this->getRiesitelWhere($riesitelId);
         $sql = <<<SQL
-SELECT zoznamy_riesitel_view.*, riesitel_seria.meskanie, riesitel_seria.bonus, riesitel_seria.obalky
+SELECT zoznamy_riesitel_view.*, riesitel_seria.meskanie, riesitel_seria.bonus, 
+riesitel_seria.obalky, adresa.ulica, adresa.mesto, adresa.psc
 FROM zoznamy_riesitel_view LEFT JOIN riesitel_seria
 ON zoznamy_riesitel_view.id = riesitel_seria.riesitel_id
+LEFT JOIN riesitel ON zoznamy_riesitel_view.id = riesitel.id
+LEFT JOIN osoba ON riesitel.osoba_id = osoba.id
+LEFT JOIN adresa ON osoba.adresa_id = adresa.id
 WHERE $where
 SQL;
         return $this->database->fetchAll($sql, $id);
@@ -81,10 +85,14 @@ SQL;
         $rows = array();
         foreach ($riesitelia as $riesitel) {
             $rows[$riesitel['id']] = $riesitel;
+            $rows[$riesitel['id']]->submit = true;
         }
         foreach ($priklady as $priklad) {
             $rows[$priklad['riesitel_id']]->$priklad['cislo'] = 
                 is_null($priklad['body']) ? -1 : $priklad['body'];
+            if (!$priklad['submit']) {
+                $rows[$priklad['riesitel_id']]->submit = false;
+            }
         }
         return $rows;
     }
