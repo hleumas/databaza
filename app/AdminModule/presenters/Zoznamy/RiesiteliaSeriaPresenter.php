@@ -22,9 +22,20 @@ use Nette\Utils\Strings;
  */
 class RiesiteliaSeriaPresenter extends ZoznamyPresenter
 {
+    /** @persistent */
+    public $search;
 
     /** @persistent */
     public $seria;
+
+    public function createComponentSearch()
+    {
+        $form = new Form();
+        $form->setMethod('get');
+        $form->addText('search', '');
+        $form->addSubmit('submit', 'Hľadaj');
+        return $form;
+    }
 
     public function createComponentSeriaSelector()
     {
@@ -38,10 +49,16 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
 
     public function createGridModel()
     {
-        return new \RiesiteliaSeriaModel(
+        $model = new \RiesiteliaSeriaModel(
             $this->context->database,
             $this['seriaSelector']->seria
         );
+        $search = $this->getParam('search', false);
+        if ($search) {
+            return $model->filter($search, array('meno', 'priezvisko', 'email', 'mesto', 'rok_maturity'));
+        } else {
+            return $model;
+        }
     }
 
     public function createComponentGrid()
