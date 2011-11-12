@@ -2,9 +2,11 @@ columns:
     meno:
         label: Meno
         length: 32
+        sortable: true
     priezvisko:
         label: Priezvisko
         length: 32
+        sortable: true
     skola_skratka:
         label: Škola
         length: 32

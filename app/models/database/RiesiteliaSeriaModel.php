@@ -66,6 +66,13 @@ SQL;
 
     private function getRiesitelia($riesitelId = null)
     {
+        list($sortCollumn, $sortType) = $this->getSorting();
+        if (!$sortCollumn) {
+            $sortCollumn = 'priezvisko';
+            $sortType = 'ASC';
+        }
+        $sortCollumn = \Nette\Utils\Strings::webalize($sortCollumn);
+        $sortType = \Nette\Utils\Strings::webalize($sortType);
         list($where, $id) = $this->getRiesitelWhere($riesitelId);
         $sql = <<<SQL
 SELECT zoznamy_riesitel_view.*, riesitel_seria.meskanie, riesitel_seria.bonus, 
@@ -76,6 +83,7 @@ LEFT JOIN riesitel ON zoznamy_riesitel_view.id = riesitel.id
 LEFT JOIN osoba ON riesitel.osoba_id = osoba.id
 LEFT JOIN adresa ON osoba.adresa_id = adresa.id
 WHERE $where
+ORDER BY $sortCollumn $sortType
 SQL;
         return $this->database->fetchAll($sql, $id);
     }
