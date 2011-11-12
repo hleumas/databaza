@@ -8,7 +8,7 @@ use Nette\Database\Table\Selection;
  * @author Samuel Hapak
  * @license MIT
  */
-class RiesiteliaSeriaModel extends Gridito\AbstractModel
+class RiesiteliaSeriaModel extends \Gridito\FullTextModel
 {
     /** @var Nette\Database\Table\Selection */
     private $seriaID;
@@ -66,6 +66,13 @@ SQL;
 
     private function getRiesitelia($riesitelId = null)
     {
+        list($sortCollumn, $sortType) = $this->getSorting();
+        if (!$sortCollumn) {
+            $sortCollumn = 'priezvisko';
+            $sortType = 'ASC';
+        }
+        $sortCollumn = \Nette\Utils\Strings::webalize($sortCollumn);
+        $sortType = \Nette\Utils\Strings::webalize($sortType);
         list($where, $id) = $this->getRiesitelWhere($riesitelId);
         $sql = <<<SQL
 SELECT zoznamy_riesitel_view.*, riesitel_seria.meskanie, riesitel_seria.bonus, 
@@ -76,6 +83,7 @@ LEFT JOIN riesitel ON zoznamy_riesitel_view.id = riesitel.id
 LEFT JOIN osoba ON riesitel.osoba_id = osoba.id
 LEFT JOIN adresa ON osoba.adresa_id = adresa.id
 WHERE $where
+ORDER BY $sortCollumn $sortType
 SQL;
         return $this->database->fetchAll($sql, $id);
     }
@@ -107,13 +115,13 @@ SQL;
         return reset($rows);
 	}
 
-	public function getItems()
+	protected function fetchData($limit = null, $offset = 0)
 	{
         return array_slice($this->buildRows(
             $this->getRiesitelia(),
             $this->getPriklady(),
             $this->getPrikladyCount()
-        ), $this->getOffset(), $this->getLimit());
+        ), $offset, $limit);
 	}
 
 
@@ -121,7 +129,7 @@ SQL;
 	 * Item count
 	 * @return int
 	 */
-	protected function _count()
+	protected function countData()
 	{
         return $this->database
             ->table('riesitel_seria')

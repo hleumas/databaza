@@ -2,7 +2,6 @@
 
 namespace Gridito;
 
-use Nette\Database\Table\Selection;
 use \Nette\Utils\Strings;
 
 /**
@@ -11,23 +10,12 @@ use \Nette\Utils\Strings;
  * @author Samuel Hapak
  * @license MIT
  */
-class FullTextModel extends AbstractModel
+abstract class FullTextModel extends AbstractModel
 {
-    /** @var Nette\Database\Table\Selection */
-    private $selection;
 
     private $data     = null;
     private $lastSort = null;
     private $filter   = null;
-
-	/**
-	 * Constructor
-	 * @param Selection $selection
-	 */
-	public function __construct(Selection $selection)
-	{
-        $this->selection = $selection;
-	}
 
     public function filter($phrase, $collumns) {
         $phrase = strtolower(Strings::toAscii($phrase));
@@ -39,24 +27,9 @@ class FullTextModel extends AbstractModel
         return $this;
     }
 
-	public function getItemByUniqueId($uniqueId)
-	{
-        $select = clone $this->selection;
-        return $select->where($this->getPrimaryKey(), $uniqueId)
-            ->fetch();
-	}
+    protected abstract function fetchData($limit = null, $offset = 0);
 
-    private function fetchDB($limit = null, $offset = 0)
-    {
-        $select = clone $this->selection;
-        $this->lastSort = $this->getSorting();
-		list($sortColumn, $sortType) = $this->lastSort;
-		if ($sortColumn) {
-            $select->order("$sortColumn $sortType");
-		}
-        return $select->limit($limit, $offset)
-            ->fetchPairs($this->getPrimaryKey());
-    }
+    protected abstract function countData();
 
     private function filterData()
     {
@@ -88,7 +61,7 @@ class FullTextModel extends AbstractModel
     private function getFiltered($limit = null, $offset = 0)
     {
         if ($this->lastSort !== $this->getSorting() || is_null($this->data)) {
-            $this->data = $this->fetchDB();
+            $this->data = $this->fetchData();
             $this->lastSort = $this->getSorting();
             $this->filterData();
         }
@@ -98,7 +71,7 @@ class FullTextModel extends AbstractModel
 	public function getItems()
 	{
         if (is_null($this->filter)) {
-            return $this->fetchDB($this->getLimit(), $this->getOffset());
+            return $this->fetchData($this->getLimit(), $this->getOffset());
         } else {
             return $this->getFiltered($this->getLimit(), $this->getOffset());
         }
@@ -112,7 +85,7 @@ class FullTextModel extends AbstractModel
 	protected function _count()
 	{
         if (is_null($this->filter)) {
-            return $this->selection->count('*');
+            return $this->countData();
         } else {
             return count($this->getFiltered());
         }

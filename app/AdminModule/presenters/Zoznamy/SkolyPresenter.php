@@ -10,7 +10,7 @@ namespace AdminModule;
 
 
 use Gridito\Grid;
-use Gridito\FullTextModel;
+use Gridito\FullTextSelection;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
@@ -37,7 +37,7 @@ class SkolyPresenter extends ZoznamyPresenter
 
     public function createGridModel()
     {
-        $model = new FullTextModel(
+        $model = new FullTextSelection(
             $this->context->database->table('zoznamy_skola_view'));
         $search = $this->getParam('search', false);
         if ($search) {

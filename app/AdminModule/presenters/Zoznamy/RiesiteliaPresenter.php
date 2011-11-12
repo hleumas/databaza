@@ -14,7 +14,7 @@ use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Nette\Application\UI\Form;
 use Nette\Utils\Neon;
-use Gridito\FullTextModel;
+use Gridito\FullTextSelection;
 /**
  * Zoznamy presenter.
  *
@@ -53,7 +53,7 @@ class RiesiteliaPresenter extends ZoznamyPresenter
 
     public function createGridModel()
     {
-        $model = new FullTextModel(
+        $model = new FullTextSelection(
             $this->context->database->table('zoznamy_riesitel_view'));
         $search = $this->getParam('search', false);
         if ($search) {
