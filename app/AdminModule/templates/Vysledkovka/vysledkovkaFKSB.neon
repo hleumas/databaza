@@ -31,11 +31,11 @@ columns:
 
 
 buttons:
-#    toWeb:
-#        label   : 'Ulož výsledkovky na web'
-#        toolbar : true
-#        window  : true
-#        icon    : ui-icon-plusthick
+    save:
+        label   : 'Ulož výsledkovky'
+        toolbar : true
+        window  : false
+        icon    : ui-icon-disk
     download:
         label   : 'Stiahni TeX'
         toolbar : true

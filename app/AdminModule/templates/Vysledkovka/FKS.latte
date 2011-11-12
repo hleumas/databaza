@@ -1,0 +1,31 @@
+<h1>A</h1>
+<table>
+  <thead>
+    <tr>
+      <th n:foreach="array('Por.', 'Meno', 'Škola', 'A1', 'A2', 'A3', 'A4', 'Bonus', 'Sum', 'Body') as $name">{$name}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr n:foreach="$vysledkovkaA as $riesitel" n:class="$iterator->even ? parity0 : parity1">
+       <th>{$riesitel['poradie']}</th>
+       <th>{$riesitel['meno']} {$riesitel['priezvisko']}</th>
+       <th n:foreach="array('skratka', '1', '2', '3', '4', 'bonus', 'sum', 'total') as $col">{$riesitel[$col]}</th>
+    </tr>
+  </tbody>
+</table>
+
+<h1>B</h1>
+<table>
+  <thead>
+    <tr>
+      <th n:foreach="array('Por.', 'Meno', 'Škola', 'B0', 'B1', 'B2', 'B3', 'B4', 'Bonus', 'Sum', 'Body') as $name">{$name}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr n:foreach="$vysledkovkaA as $riesitel" n:class="$iterator->even ? parity0 : parity1">
+       <th>{$riesitel['poradie']}</th>
+       <th>{$riesitel['meno']} {$riesitel['priezvisko']}</th>
+       <th n:foreach="array('skratka', '1', '2', '3', '4', '5', 'bonus', 'sum', 'total') as $col">{$riesitel[$col]}</th>
+    </tr>
+  </tbody>
+</table>

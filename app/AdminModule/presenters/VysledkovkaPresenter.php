@@ -97,7 +97,7 @@ SQL;
         case 'vysledkovkaUFO':
             return new UFOVysledkovka($db, $serie);
         default:
-            throw new Exception("Neznama vysledkovka");
+            throw new \Exception("Neznama vysledkovka");
         }
     }
     public function createComponentVysledkovka($name)
@@ -112,8 +112,38 @@ SQL;
             return $row['typ_studia_id'] - $row['rok_maturity'] + $row['rok'] + $row['cast'] - 1;
         });
         $grid['toolbar']->getComponent('download')->setHandler(callback($this, 'download' . ucfirst($name)));
+        $grid['toolbar']->getComponent('save')->setHandler(callback($this, 'save' . ucfirst($name)));
         //$grid->addColumn('rocnik', 'Ročník')->setRenderer(
         return $grid;
+    }
+
+    public function saveVysledkovkaFKSA()
+    {
+        $this->saveVysledkovka('FKS');
+    }
+
+    public function saveVysledkovkaFKSB()
+    {
+        $this->saveVysledkovka('FKS');
+    }
+
+    public function saveVysledkovkaUFO()
+    {
+        $this->saveVysledkovka('UFO');
+    }
+
+    public function saveVysledkovka($category)
+    {
+        $file = __DIR__ . "/../templates/Vysledkovka/$category.latte";
+        $template = $this->template;
+        $template->setFile($file);
+        if ($category === 'FKS') {
+            $template->vysledkovkaA = $this->getVysledkovkaModel('vysledkovkaFKSA')->getItems();
+            $template->vysledkovkaB = $this->getVysledkovkaModel('vysledkovkaFKSB')->getItems();
+        } else {
+            $template->vysledkovka = $this->getVysledkovkaModel('vysledkovkaUFO')->getItems();
+        }
+        $template->save($this->context->params['vysledkovka'][$category]);
     }
 
     public function downloadVysledkovkaFKSA()
