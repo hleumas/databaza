@@ -28,6 +28,10 @@ buttons:
         label   : Zaobálkuj riešiteľov
         toolbar : true
         window  : false
+    email:
+        label   : Pošli hromadnú správu
+        toolbar : true
+        window  : true
 #    edit:
 #        label   : Zmeň
 #        window  : true

@@ -84,6 +84,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
         $grid->setEditHandler(callback($this, 'handleEdit'));
         $grid['toolbar']->getComponent('stitky')->setHandler(callback($this, 'sendStitky'));
         $grid['toolbar']->getComponent('zaobalkuj')->setHandler(callback($this, 'zaobalkuj'));
+        $grid['toolbar']->getComponent('email')->setHandler(callback($this, 'renderEmail'));
         return $grid;
     }
 
@@ -208,6 +209,40 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
         $form->addSubmit('odosli', 'Odobálkuj');
 
         return $form;
+    }
+
+    public function createComponentEmail()
+    {
+        $form = new Form();
+        $form->addText('subject', 'Predmet:');
+        $form->addTextArea('body', 'Telo:');
+        $form->addSubmit('send', 'Odošli riešiteľom');
+        $form->onSuccess[] = callback($this, 'sendEmail');
+        return $form;
+    }
+
+    public function sendEmail()
+    {
+        $model = $this->createGridModel();
+        $items = $model->getItems();
+        $values = $this['email']->values;
+        foreach ($items as $riesitel) {
+            try {
+            $mail = new \Nette\Mail\Message;
+            $mail->setFrom('otazky@fks.sk');
+            $mail->addTo($riesitel['email']);
+            $mail->setSubject($values['subject']);
+            $mail->setBody($values['body']);
+            $mail->send();
+            } catch (\Exception $e) {
+                $this['grid']->flashMessage($e->getMessage());
+            }
+        }
+    }
+
+    public function renderEmail()
+    {
+        $this['email']->render();
     }
 
     public function getData($id)
