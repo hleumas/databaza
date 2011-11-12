@@ -6,9 +6,9 @@
   </thead>
   <tbody>
     <tr n:foreach="$vysledkovkaA as $riesitel" n:class="$iterator->even ? parity0 : parity1">
-       <th>{$riesitel['poradie']}</th>
-       <th>{$riesitel['meno']} {$riesitel['priezvisko']}</th>
-       <th n:foreach="array('skratka', '1', '2', '3', '4', 'bonus', 'sum', 'total') as $col">{$riesitel[$col]}</th>
+       <td>{$riesitel['poradie']}</td>
+       <td>{$riesitel['meno']} {$riesitel['priezvisko']}</td>
+       <td n:foreach="array('skratka', 1, 2, 3, 4, 'bonus', 'sum', 'total') as $col">{$riesitel[$col]}</td>
     </tr>
   </tbody>
 </table>
