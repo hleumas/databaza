@@ -238,6 +238,7 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
                 $this['grid']->flashMessage($e->getMessage());
             }
         }
+        $this->redirect('this');
     }
 
     public function renderEmail()
