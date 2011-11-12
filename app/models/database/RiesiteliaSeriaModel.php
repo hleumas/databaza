@@ -8,7 +8,7 @@ use Nette\Database\Table\Selection;
  * @author Samuel Hapak
  * @license MIT
  */
-class RiesiteliaSeriaModel extends Gridito\AbstractModel
+class RiesiteliaSeriaModel extends \Gridito\FullTextModel
 {
     /** @var Nette\Database\Table\Selection */
     private $seriaID;
@@ -107,13 +107,13 @@ SQL;
         return reset($rows);
 	}
 
-	public function getItems()
+	protected function fetchData($limit = null, $offset = 0)
 	{
         return array_slice($this->buildRows(
             $this->getRiesitelia(),
             $this->getPriklady(),
             $this->getPrikladyCount()
-        ), $this->getOffset(), $this->getLimit());
+        ), $offset, $limit);
 	}
 
 
@@ -121,7 +121,7 @@ SQL;
 	 * Item count
 	 * @return int
 	 */
-	protected function _count()
+	protected function countData()
 	{
         return $this->database
             ->table('riesitel_seria')
