@@ -83,9 +83,36 @@ class RiesiteliaSeriaPresenter extends ZoznamyPresenter
         parent::setGridHandlers($grid);
         $grid->setEditHandler(callback($this, 'handleEdit'));
         $grid['toolbar']->getComponent('stitky')->setHandler(callback($this, 'sendStitky'));
+        $grid['toolbar']->getComponent('zaobalkuj')->setHandler(callback($this, 'zaobalkuj'));
         return $grid;
     }
 
+    public function zaobalkuj()
+    {
+        $model = $this->createGridModel();
+        $items = $model->getItems();
+        $ludia = '';
+        $kody = $model->getKody();
+        foreach ($items as $riesitel) {
+            if ($riesitel['submit'] != '0') {
+                continue;
+            }
+            $ludia .= $riesitel->meno . ' ' . $riesitel->priezvisko . ' ';
+            $poslal = array();
+            foreach ($kody as $priklad) {
+                if (isset($riesitel->$priklad['cislo'])) {
+                    $poslal[] = $priklad['kod'];
+                }
+            }
+            $ludia .= implode(', ', $poslal);
+            $ludia .= "\n\n";
+        }
+        $file = tempnam('/tmp', 'oba');
+        file_put_contents($file, $ludia);
+        $response = new \Nette\Application\Responses\FileResponse($file, "zaobalkuj.txt");
+        $this->sendResponse($response);
+        unlink($file);
+    }
     public function sendStitky()
     {
         $model = $this->createGridModel();
