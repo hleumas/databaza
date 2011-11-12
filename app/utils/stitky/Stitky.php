@@ -15,7 +15,7 @@
 
 class Stitky extends \Nette\Object
 {
-    const HEIGHT = 278;
+    const HEIGHT = 279;
     const WIDTH  = 210;
 
     public static function renderStitky($data, $xcount, $ycount)
