@@ -24,6 +24,10 @@ buttons:
         label   : Vygeneruj štítky
         toolbar : true
         window  : false
+    zaobalkuj:
+        label   : Zaobálkuj riešiteľov
+        toolbar : true
+        window  : false
 #    edit:
 #        label   : Zmeň
 #        window  : true
