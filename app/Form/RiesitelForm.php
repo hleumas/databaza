@@ -65,6 +65,8 @@ class RiesitelForm extends Form
 
         $this['rocnik']
             ->setType('number')
+            ->addRule(FORM::INTEGER,
+                'Ročník musí byť číslo od 1 do 10')
             ->addRule(
                 FORM::RANGE,
                 'Ročník musí byť číslo od 1 do 10',
