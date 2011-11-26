@@ -103,6 +103,11 @@ class UdajePresenter extends BasePresenter
         $registrateData['riesitelID'] = $values['riesitel'];
         if ($values['riesitel'] == '-1') {
             $this->redirect('RegistrateUdaje');
+        } elseif ($this->context->database
+                    ->table('users')
+                    ->where('id', $values['riesitel'])
+                    ->count('*')) {
+            $this['nameForm']['riesitel']->addError('Konto už existuje. Ak si zabudol heslo, napíš na otazky@fks.sk');
         } else {
             $this->redirect('RegistrateLogin');
         }
