@@ -83,10 +83,10 @@ SQL;
 
     private function addPriklady(&$data, $priklady)
     {
-        foreach ($data as &$seria) {
-            foreach ($seria as &$riesitel) {
+        foreach ($data as $sid => $seria) {
+            foreach ($data[$sid] as $rid=> $riesitel) {
                 for ($i = 1; $i <= $this->pCount; $i++) {
-                    $riesitel[$i] = null;
+                    $data[$sid][$rid][$i] = null;
                 }
             }
         }
