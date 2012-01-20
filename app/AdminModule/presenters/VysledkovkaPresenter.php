@@ -41,6 +41,7 @@ class VysledkovkaPresenter extends BasePresenter
 SELECT id FROM
 seria,(SELECT semester_id, cislo from seria where id=?) t
 WHERE seria.semester_id=t.semester_id AND seria.cislo <= t.cislo
+ORDER BY seria.cislo ASC
 SQL;
         $data = $this->context->database->fetchAll($sql, $lastSeriaId);
         if ($data === false) {
