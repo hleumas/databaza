@@ -1,0 +1,11 @@
+{block content}
+{control form}
+
+{ifset $result}
+<p n:foreach='$result as $adresa'>
+{foreach $adresa as $item}
+{l}{$item}{r}
+{/foreach}
+</p>
+{/ifset}
+{/block}
