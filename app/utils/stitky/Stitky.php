@@ -15,21 +15,28 @@
 
 class Stitky extends \Nette\Object
 {
-    const HEIGHT = 289;
+    const HEIGHT = 297;
     const WIDTH  = 210;
 
-    public static function renderStitky($data, $xcount, $ycount)
+    public static function renderStitky($data, $xcount, $ycount, $m_top = 0, $m_right = 0, $m_bottom = 0, $m_left = 0)
     {
-        $v = round(self::HEIGHT / $ycount, 2);
-        $h = round(self::WIDTH / $xcount, 2);
+        $height = self::HEIGHT;
+        $width  = self::WIDTH;
+        $theight = self::HEIGHT - $m_top - $m_bottom - 7;
+        $twidth  = self::WIDTH - $m_left - $m_right;
+        $v = round($theight / $ycount, 2) - 0.1;
+        $h = round($twidth / $xcount, 2) - 0.1;
 
-        $rules = "\\def\\vyska{{$v}mm}%\n\\def\\sirka{{$h}mm}%\n";
+        $rules  = "\initpage{{$height}mm}{{$width}mm}{{$m_left}mm}{{$m_right}mm}{{$m_top}mm}{{$m_bottom}mm}\n";
+        $rules .= "\\def\\vyska{{$v}mm}%\n\\def\\sirka{{$h}mm}%\n";
+        $rules .= "\begin{document}\n\\noindent";
 
         foreach ($data as $row) {
             $rules .= '\adresa{'
                    .  implode('}{', $row)
                    .  "}\n";
         }
+        $rules .= "\end{document}\n";
 
         $name = array();
         exec("mktemp -d", $name);
