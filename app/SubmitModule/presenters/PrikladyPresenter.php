@@ -19,9 +19,22 @@ use Nette\Mail\Message;
  */
 class PrikladyPresenter extends BasePresenter
 {
+    /** @persistent */
+    public $seria;
+
     private function getSeriaId()
     {
-        return $this->context->sources->kategoria->aktualna_seria_id;
+        return $this['seriaSelector']->seria;
+    }
+
+    public function createComponentSeriaSelector()
+    {
+        $sources = $this->context->sources;
+        return new \SeriaSelector(
+            $this->seria,
+            $sources->seriaSource,
+            $sources->semesterSource,
+            $sources->kategoria);
     }
     public function createComponentForm()
     {
@@ -59,6 +72,9 @@ class PrikladyPresenter extends BasePresenter
     public function actionStiahni($id)
     {
         $file = $this->context->sources->riesitelPrikladFileSource->getById($id);
+        if (!$this->user->isLoggedIn() || $file->riesitel_id != $this->identity->id) {
+            $this->terminate();
+        }
         $fname = tempnam('/tmp', 'down');
         file_put_contents($fname, $file['content']);
         $response = new \Nette\Application\Responses\FileResponse($fname, $file['filename']);
