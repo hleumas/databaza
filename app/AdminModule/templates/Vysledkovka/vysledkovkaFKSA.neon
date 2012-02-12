@@ -38,3 +38,7 @@ buttons:
         label   : 'Stiahni TeX'
         toolbar : true
         icon    : ui-icon-circle-triangle-s
+    csv:
+        label   : 'Stiahni CSV'
+        toolbar : true
+        icon    : ui-icon-circle-triangle-s
