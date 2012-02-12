@@ -44,8 +44,9 @@ class FKSVysledkovka extends VysledkovkaModel
         $sql = <<<SQL
 SELECT riesitel_seria.riesitel_id as id, riesitel_seria.seria_id,
 riesitel_seria.bonus, riesitel_seria.meskanie, riesitel.typ_studia_id,
-riesitel.rok_maturity, riesitel.sustredeni, riesitel.vyhier,
-riesitel.celostatiek, semester.rok, semester.cast, osoba.meno, osoba.priezvisko, skola.skratka
+riesitel.telefon_rodic, riesitel.rok_maturity, riesitel.sustredeni, 
+riesitel.vyhier, riesitel.celostatiek, semester.rok, semester.cast, osoba.meno, 
+osoba.priezvisko, osoba.telefon, osoba.email, skola.skratka
 FROM riesitel_seria LEFT JOIN riesitel ON
 riesitel_seria.riesitel_id = riesitel.id
 LEFT JOIN osoba ON

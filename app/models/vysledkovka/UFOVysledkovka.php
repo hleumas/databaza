@@ -35,8 +35,8 @@ class UFOVysledkovka extends VysledkovkaModel
         $sql = <<<SQL
 SELECT riesitel_seria.riesitel_id as id, riesitel_seria.seria_id,
 riesitel_seria.bonus, riesitel_seria.meskanie, riesitel.typ_studia_id,
-riesitel.rok_maturity, semester.rok, semester.cast, osoba.meno, 
-osoba.priezvisko, skola.skratka
+riesitel.rok_maturity, riesitel.telefon_rodic, osoba.telefon, osoba.email, 
+semester.rok, semester.cast, osoba.meno, osoba.priezvisko, skola.skratka
 FROM riesitel_seria LEFT JOIN riesitel ON
 riesitel_seria.riesitel_id = riesitel.id
 LEFT JOIN osoba ON

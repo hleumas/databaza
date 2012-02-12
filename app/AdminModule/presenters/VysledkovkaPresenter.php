@@ -114,6 +114,7 @@ SQL;
         });
         $grid['toolbar']->getComponent('download')->setHandler(callback($this, 'download' . ucfirst($name)));
         $grid['toolbar']->getComponent('save')->setHandler(callback($this, 'save' . ucfirst($name)));
+        $grid['toolbar']->getComponent('csv')->setHandler(callback($this, 'getCsv' . ucfirst($name)));
         //$grid->addColumn('rocnik', 'Ročník')->setRenderer(
         return $grid;
     }
@@ -145,6 +146,19 @@ SQL;
             $template->vysledkovka = $this->getVysledkovkaModel('vysledkovkaUFO')->getItems();
         }
         $template->save($this->context->params['vysledkovka'][$category]);
+    }
+
+    public function getCsvVysledkovkaFKSA()
+    {
+        $this->actionGetCsv('vysledkovkaFKSA');
+    }
+    public function getCsvVysledkovkaFKSB()
+    {
+        $this->actionGetCsv('vysledkovkaFKSB');
+    }
+    public function getCsvVysledkovkaUFO()
+    {
+        $this->actionGetCsv('vysledkovkaUFO');
     }
 
     public function downloadVysledkovkaFKSA()
@@ -187,11 +201,39 @@ SQL;
 
     }
 
+    public function getCsvVysledkovka($name)
+    {
+        $riesitelia = $this->getVysledkovkaModel($name)->getItems();
+        $csv = "Poradie;Meno;Priezvisko;Telefon;Telefon_rodic;Email;Skola\n";
+        foreach ($riesitelia as $riesitel) {
+            $csv .= implode(';', array(
+                $riesitel['poradie'],
+                $riesitel['meno'],
+                $riesitel['priezvisko'],
+                $riesitel['telefon'],
+                $riesitel['telefon_rodic'],
+                $riesitel['email'],
+                $riesitel['skratka']
+            ));
+            $csv .= "\n";
+        }
+        return $csv;
+    }
+
     public function actionDownload($name)
     {
         $file = tempnam('/tmp', 'vys');
         file_put_contents($file, $this->getTexVysledkovka($name));
         $response = new \Nette\Application\Responses\FileResponse($file, "$name.tex");
+        $this->sendResponse($response);
+        unlink($file);
+    }
+
+    public function actionGetCsv($name)
+    {
+        $file = tempnam('/tmp', 'vys');
+        file_put_contents($file, $this->getCsvVysledkovka($name));
+        $response = new \Nette\Application\Responses\FileResponse($file, "$name.csv");
         $this->sendResponse($response);
         unlink($file);
     }
