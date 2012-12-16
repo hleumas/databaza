@@ -138,9 +138,7 @@ SQL;
 
     protected function getBonus($riesitel)
     {
-        //return $riesitel['bonus'] - 2 * $riesitel['meskanie'];
-        //dump($riesitel);
-        return 0;
+        return $riesitel['bonus'] - 2 * $riesitel['meskanie'];
     }
 
 }
