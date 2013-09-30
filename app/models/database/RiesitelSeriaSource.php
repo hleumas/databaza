@@ -121,6 +121,9 @@ SQL;
             ->fetch();
         $termin = new \Nette\DateTime($row['termin']);
         $meskanie = $date->diff($termin)->days;
+        if ($date < $termin) {
+          $meskanie = 0;
+        }
         return $meskanie > 0 ? $meskanie : 0;
     }
 
