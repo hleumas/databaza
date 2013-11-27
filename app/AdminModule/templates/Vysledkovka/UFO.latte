@@ -2,14 +2,14 @@
 <table>
   <thead>
     <tr>
-      <th n:foreach="array('Por.', 'Meno', 'Škola', 'U1', 'U2', 'U3', 'U4', 'Bonus', 'Sum', 'Body') as $name">{$name}</th>
+      <th n:foreach="array('Por.', 'Meno', 'Škola', 'U1', 'U2', 'U3', 'U4', 'U5', 'U6', 'Bonus', 'Sum', 'Body') as $name">{$name}</th>
     </tr>
   </thead>
   <tbody>
     <tr n:foreach="$vysledkovka as $riesitel" n:class="$iterator->even ? parity0 : parity1">
        <td>{$riesitel['poradie']}</td>
        <td>{$riesitel['meno']} {$riesitel['priezvisko']}</td>
-       <td n:foreach="array('skratka', 1, 2, 3, 4, 'bonus', 'sum', 'total') as $col">{$riesitel[$col]}</td>
+       <td n:foreach="array('skratka', 1, 2, 3, 4, 5, 6, 'bonus', 'sum', 'total') as $col">{$riesitel[$col]}</td>
     </tr>
   </tbody>
 </table>

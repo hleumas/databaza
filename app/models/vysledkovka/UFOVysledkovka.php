@@ -14,8 +14,9 @@ use \Nette\Utils\Strings;
 class UFOVysledkovka extends VysledkovkaModel
 {
 
-    private $pCount = 4;
-    private $priklady = array(1, 2, 3, 4);
+    private $pCount = 6;
+    private $priklady = array(1, 2, 3, 4, 5, 6);
+    private $maxPoints = 54;
 
     private $seriaId;
 
@@ -80,7 +81,7 @@ SQL;
     protected function getBonus($riesitel)
     {
         $rokyDoMaturity = $riesitel['rok_maturity'] - $riesitel['rok'] - $riesitel['cast'] + 2;
-        $hodnota = $riesitel['sum'] * (36-$riesitel['sum']);
+        $hodnota = $riesitel['sum'] * ($this->maxPoints-$riesitel['sum']);
         if ($rokyDoMaturity == 6)  {
             return round(0.008 * $hodnota, 2);
         }

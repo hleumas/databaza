@@ -31,7 +31,7 @@ class VysledkovkaPresenter extends BasePresenter
     private $priklady = array(
         'vysledkovkaFKSA' => array(4, 5, 6, 7),
         'vysledkovkaFKSB' => array(1, 2, 3, 4, 5),
-        'vysledkovkaUFO'  => array(1, 2, 3, 4)
+        'vysledkovkaUFO'  => array(1, 2, 3, 4, 5, 6)
     );
 
     public function getSerie()

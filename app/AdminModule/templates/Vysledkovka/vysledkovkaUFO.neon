@@ -20,6 +20,10 @@ columns:
         label   : U3
     4:
         label   : U4
+    5:
+        label   : U5
+    6:
+        label   : U6
     bonus:
         label   : Bonus
     sum:
